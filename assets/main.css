@@ -1,0 +1,21 @@
+header{
+    position: fixed;
+    width: 100%;
+    height: 120px;
+    background-color: gray;
+}
+
+main{
+    background-color: black;
+    padding-top: 120px;
+}
+
+main #home .container{
+    background-color: aquamarine;
+    height: 500px;
+}
+
+main #about .container{
+    background-color: azure;
+    height: 500px;
+}
