@@ -46,3 +46,23 @@ main #about .container{
     background-color: azure;
     height: 500px;
 }
+
+main #plans .container{
+    background-color: bisque;
+    height: 500px;
+}
+
+main #booking .container{
+    background-color: burlywood;
+    height: 500px;
+}
+
+main #contact .container{
+    background-color: cadetblue;
+    height: 500px;
+}
+
+footer{
+    height: 150px;
+    
+}
