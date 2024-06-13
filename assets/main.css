@@ -177,5 +177,10 @@ main #contact .container{
 
 footer{
     height: 150px;
-    
+    display: flex;
+    align-items: center;
+    font-family: "Farsan", cursive;
+    padding: 15px;
+    text-align: center;
+    justify-content: center;
 }

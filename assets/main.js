@@ -12,3 +12,26 @@ var planSwiper = new Swiper(".planSwiper", {
         dynamicBullets: true
     }
 })
+
+window.addEventListener('scroll', function(){
+    if(window.scrollY > 100){
+        gsap.to("header", {
+            duration: 0.7,
+            height: 85,
+
+        })
+        gsap.to(".mobile-header-img", {
+            duration: 0.7,
+            width: 80
+        })
+    }else{
+        gsap.to("header", {
+            duration: 0.5,
+            height: 200
+        })
+        gsap.to(".mobile-header-img", {
+            duration: 0.5,
+            width: 200
+        })
+    } 
+})
