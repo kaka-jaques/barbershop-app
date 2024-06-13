@@ -134,11 +134,25 @@ main #plans .planSwiper .swiper-slide .swiper-card{
     height: 100%;
     width: 80%;
     background-color: #fff;
+    background-image: linear-gradient(165deg,#b4b4b433 30%,#9a9a9a34 100%);
     border-radius: 15px;
     display: flex;
     padding: 50px 15px;
     text-align: left;
     flex-direction: column;
+}
+
+main #plans .planSwiper .swiper-slide .swiper-card p{
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    display: flex;
+    height: fit-content;
+    margin-bottom: 10px;
+}
+
+main #plans .planSwiper .swiper-slide .swiper-card .fa-circle{
+    height: 8px;
 }
 
 main #plans .planSwiper .swiper-slide .swiper-card .btn{
