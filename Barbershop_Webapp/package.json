@@ -1,0 +1,14 @@
+{
+  "name": "barbershop_webapp",
+  "version": "1.0.0",
+  "description": "Aplicativo para gerenciamento de uma barbearia por assinatura",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kalil J. Fakhouri",
+  "license": "ISC",
+  "dependencies": {
+    "@angular/cli": "^15.2.11"
+  }
+}

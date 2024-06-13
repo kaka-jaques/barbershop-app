@@ -21,7 +21,7 @@
 </head>
 <body>
     <header>
-        <div class="row">
+        <div class="row" id="desktop-header">
             <div id="logo" class="col" style="margin-right: 25%; border-left: none;">
                 <img src="assets/imgs/Logo.png" alt="">
             </div>
@@ -41,21 +41,136 @@
                 <a href="#contact">Contato</a>
             </div>
         </div>
+        <div class="row" id="mobile-header">
+            <div class="col">
+                <img src="assets/imgs/Logo.png" alt="">
+            </div>
+        </div>
     </header>
     <main>
         <section id="home">
             <div class="container">
-
-            </div>
-        </section>
-        <section id="about">
-            <div class="container">
-
+                <div class="row" id="mobile-home">
+                    <div class="row">
+                        <div class="col">
+                            <a href="#">
+                                <button class="btn btn-light"><i class="fa-brands fa-whatsapp"></i> <b>Whatsapp</b></button>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a href="">
+                                <button class="btn btn-light"><i class="fa-solid fa-calendar-days"></i> <b>Agendamento</b></button>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a href="">
+                                <button class="btn btn-light"><b>Imperium's Club</b></button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <section id="plans">
             <div class="container">
-
+                <div class="swiper planSwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="swiper-card">
+                                <div class="row">
+                                    <div class="col">
+                                        <h2>Plano I</h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <h4>R$120,00/mês</h4>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <div class="col">
+                                    <div class="row">
+                                        * Corte Apenas de Cabelo
+                                    </div>
+                                    <div class="row">
+                                        * Cortes Ilimitados
+                                    </div>
+                                    <div class="row">
+                                        * Agendamento Preferencial
+                                    </div>
+                                </div>
+                                <br><br><br><br><br><br><br>
+                                <div class="col">
+                                    <button class="btn btn-dark"><h4>Assinar</h4></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="swiper-card">
+                                <div class="row">
+                                    <div class="col">
+                                        <h2>Plano II</h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <h4>R$80,00/mês</h4>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <div class="col">
+                                    <div class="row">
+                                        * Corte Apenas de Barba
+                                    </div>
+                                    <div class="row">
+                                        * Cortes Ilimitados
+                                    </div>
+                                    <div class="row">
+                                        * Agendamento Preferencial
+                                    </div>
+                                </div>
+                                <br><br><br><br><br><br><br>
+                                <div class="col">
+                                    <button class="btn btn-dark"><h4>Assinar</h4></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="swiper-card">
+                                <div class="row">
+                                    <div class="col">
+                                        <h2>Plano Premium</h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <h4>R$200,00/mês</h4>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <div class="col">
+                                    <div class="row">
+                                        * Corte de Cabelo e Barba
+                                    </div>
+                                    <div class="row">
+                                        * Cortes Ilimitados
+                                    </div>
+                                    <div class="row">
+                                        * Agendamento Prioritário
+                                    </div>
+                                </div>
+                                <br><br><br><br><br><br><br>
+                                <div class="col">
+                                    <button class="btn btn-dark"><h4>Assinar</h4></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <section id="booking">
@@ -72,5 +187,10 @@
     <footer>
         
     </footer>
+
+<!-- Swiper -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<!-- My JS -->
+ <script src="assets/main.js"></script>
 </body>
 </html>

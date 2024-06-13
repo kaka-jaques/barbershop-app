@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Farsan&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lugrasimo&display=swap');
+
+
+body{
+    font-family: "Lugrasimo", cursive;
+    
+}
+
 header{
     position: fixed;
     width: 100%;
@@ -5,10 +14,11 @@ header{
     background-color: white;
     display: flex;
     align-items: center;
-    z-index: 1
+    justify-content: center;
+    z-index: 99
 }
 
-header .col{
+header #desktop-header .col{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -18,47 +28,136 @@ header .col{
     margin-bottom: auto;
 }
 
-header .col a{
+header #desktop-header .col a{
     text-decoration: none;
     color: black;
 }
 
-header #logo{
+header #desktop-header #logo{
     width: 20%;
     margin-left: 10%;
 }
 
-header img{
+header #desktop-header img{
     width: 170%;
 }
 
+header #mobile-header{
+    display: none;
+}
+
+header #mobile-header img{
+    width: 60%;
+}
+
+header #mobile-header .col{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+}
+
+@media screen and (max-width: 981px) {
+    header #desktop-header{
+        display: none;
+    }
+    header #mobile-header{
+        display: flex;
+    }
+    header{
+        height: 200px;
+    }
+    main{
+        padding-top: 200px !important;
+    }
+}
+
 main{
-    background-color: black;
+    background-color: rgb(34, 34, 34);
     padding-top: 120px;
 }
 
 main #home .container{
-    background-color: aquamarine;
+    background-color: rgb(34, 34, 34);
+    background-image: linear-gradient(rgba(76, 76, 76, 0.652), rgba(0, 0, 0, 0.608)), url("imgs/background3.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
     height: 500px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+main #home #mobile-home{
+    justify-content: center;
+    margin-bottom: 75px;
+}
+
+main #home #mobile-home .col{
+    display: flex;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+main #home #mobile-home .col button{
+    width: 170px;
+    height: 50px;
 }
 
 main #about .container{
-    background-color: azure;
+    background-color: rgb(34, 34, 34);
     height: 500px;
 }
 
 main #plans .container{
-    background-color: bisque;
+    background-color: rgb(34, 34, 34);
     height: 500px;
+    margin-top: 100px;
 }
 
+main #plans .planSwiper{
+    width: 100%;
+    height: 100%;
+}
+
+main #plans .planSwiper .swiper-slide{
+    text-align: center;
+    font-size: 18px;
+    background: #ffffff00;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main #plans .planSwiper .swiper-slide .swiper-card{
+    height: 100%;
+    width: 80%;
+    background-color: #fff;
+    border-radius: 15px;
+    display: flex;
+    padding: 50px 15px;
+    text-align: left;
+    flex-direction: column;
+}
+
+main #plans .planSwiper .swiper-slide .swiper-card .btn{
+    width: 100%;
+    align-items: center;
+}
+
+main #plans .planSwiper .swiper-slide .swiper-card .btn h4{
+    margin: 0;
+}
+
+
 main #booking .container{
-    background-color: burlywood;
+    background-color: rgb(34, 34, 34);
     height: 500px;
 }
 
 main #contact .container{
-    background-color: cadetblue;
+    background-color: rgb(34, 34, 34);
     height: 500px;
 }
 
