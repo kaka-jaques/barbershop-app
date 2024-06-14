@@ -18,6 +18,18 @@ header{
     z-index: 99
 }
 
+header .fa-user{
+    position: fixed;
+    top: 210px;
+    right: 5%;
+    height: 20px;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 25px;
+    background-color: white;
+    cursor: pointer;
+}
+
 header #desktop-header .col{
     display: flex;
     align-items: center;
@@ -134,11 +146,25 @@ main #plans .planSwiper .swiper-slide .swiper-card{
     height: 100%;
     width: 80%;
     background-color: #fff;
+    background-image: linear-gradient(165deg,#b4b4b433 30%,#9a9a9a34 100%);
     border-radius: 15px;
     display: flex;
     padding: 50px 15px;
     text-align: left;
     flex-direction: column;
+}
+
+main #plans .planSwiper .swiper-slide .swiper-card p{
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    display: flex;
+    height: fit-content;
+    margin-bottom: 10px;
+}
+
+main #plans .planSwiper .swiper-slide .swiper-card .fa-circle{
+    height: 8px;
 }
 
 main #plans .planSwiper .swiper-slide .swiper-card .btn{
@@ -163,5 +189,47 @@ main #contact .container{
 
 footer{
     height: 150px;
-    
+    display: flex;
+    align-items: center;
+    font-family: "Farsan", cursive;
+    padding: 15px;
+    text-align: center;
+    justify-content: center;
+}
+
+#main-login{
+    width: 100%;
+    height: 100%;
+    padding: 10%;
+    display: flex;
+    background-color: #3e3e3e;
+    align-items: center;
+    position: absolute;
+}
+
+#login-card{
+    background-color: white;
+    height: 60%;
+    width: 100%;
+    border-radius: 15px;
+    padding: 10%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#login-card .col{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#login-card .col input{
+    height: fit-content;
+    border: 1px solid rgb(63, 63, 63);
+    border-radius: 5px;
+}
+
+#login-card .col button{
+    width: 100%;
 }
