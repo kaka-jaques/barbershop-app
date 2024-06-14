@@ -5,3 +5,4 @@
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/kaka-jaques/barbershop-app/static.yml)
 ![GitHub License](https://img.shields.io/github/license/kaka-jaques/barbershop-app)
+

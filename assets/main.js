@@ -47,7 +47,7 @@ window.addEventListener('scroll', function () {
 function GotoLogin(event) {
     event.preventDefault();
     loadContent('/login.html');
-    history.pushState({ page: 'login' }, 'Login', '/login');
+    history.pushState({ page: 'login' }, 'Login', '/login.html');
 };
 
 function loadContent(url) {
@@ -60,7 +60,7 @@ function loadContent(url) {
 }
 
 window.addEventListener('popstate', () => {
-    if (window.location.pathname === '/login') {
+    if (window.location.pathname === '/login.html') {
         loadContent('/login.html');
     }
     else {
