@@ -44,29 +44,27 @@ window.addEventListener('scroll', function () {
     }
 })
 
-function GotoLogin(event) {
-    event.preventDefault();
-    loadContent('/login.html');
-    history.pushState({ page: 'login' }, 'Login', '/login.html');
-};
-
-function loadContent(url) {
-    fetch(url)
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('content').innerHTML = data;
+function hoveredButton(element, icon, hover){
+    if(hover){
+        gsap.to(element,{
+            duration: 0.5,
+            backgroundImage: 'linear-gradient(250deg, rgb(255, 255, 255) 100%, #ffffff3d 0%)'
         })
-        .catch(error => console.error('Error load content:', error));
+        gsap.to(icon,{
+            duration: 0.5,
+            color: 'black'
+        })
+    }else{
+        gsap.to(element,{
+            duration: 0.5,
+            backgroundImage: 'linear-gradient(250deg, rgb(255, 255, 255) 75%, #ffffff3d 0%)'
+        })
+        gsap.to(icon,{
+            duration: 0.5,
+            color: 'white'
+        })
+    }
 }
-
-window.addEventListener('popstate', () => {
-    if (window.location.pathname === '/login.html') {
-        loadContent('/login.html');
-    }
-    else {
-        loadContent('/index.html');
-    }
-})
 
 function sendLogin() {
     if (document.getElementById('login-email').value != '' && document.getElementById('login-password').value != '') {
