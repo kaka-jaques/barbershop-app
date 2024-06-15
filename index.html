@@ -50,7 +50,9 @@
                     <img class="mobile-header-img" src="assets/imgs/Logo.png" alt="">
                 </div>
             </div>
-            <i id="login-button" onclick="GotoLogin(event)" class="fa-solid fa-user"></i>
+            <a href="/login.html">
+                <i id="login-button" class="fa-solid fa-user"></i>
+            </a>
         </header>
         <main>
             <section id="home">
@@ -60,23 +62,30 @@
                             <div class="col">
                                 <a href="https://api.whatsapp.com/send/?phone=554796803621&text=Olá! Gostaria de Agendar meu horário!&type=phone_number"
                                     target="_blank">
-                                    <button class="btn btn-light"><i class="fa-brands fa-whatsapp"></i>
-                                        <b>Whatsapp</b></button>
+                                    <button class="btn btn-light" onmouseover="hoveredButton(this, this.querySelector('.fa-whatsapp'), true)" onmouseout="hoveredButton(this, this.querySelector('.fa-whatsapp'), false)">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                        Whatsapp
+                                    </button>
                                 </a>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
                                 <a href="">
-                                    <button class="btn btn-light"><i class="fa-solid fa-calendar-days"></i>
-                                        <b>Agendamento</b></button>
+                                    <button class="btn btn-light" onmouseover="hoveredButton(this, this.querySelector('.fa-calendar-days'), true)" onmouseout="hoveredButton(this, this.querySelector('.fa-calendar-days'), false)">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                        Agendamento
+                                    </button>
                                 </a>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
                                 <a href="">
-                                    <button class="btn btn-light"><b>Imperium's Club</b></button>
+                                    <button class="btn btn-light" onmouseover="hoveredButton(this, this.querySelector('.fa-crown'), true)" onmouseout="hoveredButton(this, this.querySelector('.fa-crown'), false)">
+                                        <i class="fa-solid fa-crown"></i>    
+                                        Imperium's Club
+                                    </button>
                                 </a>
                             </div>
                         </div>
@@ -87,6 +96,41 @@
                 <div class="container">
                     <div class="swiper planSwiper">
                         <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <div class="swiper-card">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h2>Plano Imperator</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4>R$319,99/mês</h4>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <div class="col">
+                                        <div class="row">
+                                            <p><i class="fa-solid fa-circle"></i>&nbsp;Corte de Cabelo e Barba</p>
+                                        </div>
+                                        <div class="row">
+                                            <p><i class="fa-solid fa-circle"></i>&nbsp;Cortes Ilimitados</p>
+                                        </div>
+                                        <div class="row">
+                                            <p><i class="fa-solid fa-circle"></i>&nbsp;Agendamento Prioritário</p>
+                                        </div>
+                                        <div class="row">
+                                            <p style="align-items: flex-start;"><i class="fa-solid fa-circle mt-2"></i>&nbsp;Acesso a Academia X &nbsp;3x/semana</p>
+                                        </div>
+                                    </div>
+                                    <br><br><br><br><br><br><br>
+                                    <div class="col">
+                                        <button class="btn btn-dark">
+                                            <h4>Assinar</h4>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="swiper-slide">
                                 <div class="swiper-card">
                                     <div class="row">
@@ -187,6 +231,41 @@
                                                 <i class="fa-solid fa-circle"></i>&nbsp;
                                                 Agendamento Prioritário
                                             </p>
+                                        </div>
+                                    </div>
+                                    <br><br><br><br><br><br><br>
+                                    <div class="col">
+                                        <button class="btn btn-dark">
+                                            <h4>Assinar</h4>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="swiper-card">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h2>Plano Imperator II</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4>R$359,99/mês</h4>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <div class="col">
+                                        <div class="row">
+                                            <p><i class="fa-solid fa-circle"></i>&nbsp;Corte de Cabelo e Barba</p>
+                                        </div>
+                                        <div class="row">
+                                            <p><i class="fa-solid fa-circle"></i>&nbsp;Cortes Ilimitados</p>
+                                        </div>
+                                        <div class="row">
+                                            <p><i class="fa-solid fa-circle"></i>&nbsp;Agendamento Prioritário</p>
+                                        </div>
+                                        <div class="row">
+                                            <p style="align-items: flex-start;"><i class="fa-solid fa-circle mt-2"></i>&nbsp;Acesso a Academia X &nbsp;6x/semana</p>
                                         </div>
                                     </div>
                                     <br><br><br><br><br><br><br>
