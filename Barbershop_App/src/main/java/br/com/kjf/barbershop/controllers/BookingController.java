@@ -27,9 +27,21 @@ public class BookingController {
 		
 	}
 	
-	public List<BookingVO> getNextBooks(){
+	public List<BookingVO> getNextBooksToAdmin(){
 		
 		return bookingRepository.findNextBooks(new GregorianCalendar());
+		
+	}
+	
+	public List<BookingVO> getNextBooksToClient(){
+		
+		List<BookingVO> bookWithoutCredentials = bookingRepository.findNextBooks(new GregorianCalendar());
+		
+		for(BookingVO book : bookWithoutCredentials) {
+			book.setClient_vo(null);
+		}
+		
+		return bookWithoutCredentials;
 		
 	}
 	
