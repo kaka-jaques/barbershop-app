@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -29,6 +31,9 @@ public class ClientVO {
 	private String cpf;
 	@Column(nullable = false)
 	private Boolean active;
+	@ManyToOne
+	@JoinColumn(name = "planos_id", nullable = false)
+	private PlansVO plano;
 	@OneToOne(mappedBy = "client")
 	private UserVO user;
 	@OneToMany(mappedBy = "client_vo", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -38,7 +43,7 @@ public class ClientVO {
 		super();
 	}
 
-	public ClientVO(Integer id, String name, LocalDate birthDate, String cpf, Boolean active, UserVO user,
+	public ClientVO(Integer id, String name, LocalDate birthDate, String cpf, Boolean active, PlansVO plan, UserVO user,
 			List<BookingVO> bookings) {
 		super();
 		this.id = id;
@@ -48,6 +53,7 @@ public class ClientVO {
 		this.active = active;
 		this.user = user;
 		this.bookings = bookings;
+		this.plano = plan;
 	}
 
 	public Integer getId() {
@@ -104,6 +110,14 @@ public class ClientVO {
 
 	public void setBookings(List<BookingVO> bookings) {
 		this.bookings = bookings;
+	}
+
+	public PlansVO getPlanos() {
+		return plano;
+	}
+
+	public void setPlanos(PlansVO planos) {
+		this.plano = planos;
 	}
 	
 }
