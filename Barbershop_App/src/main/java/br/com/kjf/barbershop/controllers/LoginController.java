@@ -22,7 +22,7 @@ public class LoginController {
 	@GetMapping("/login")
 	public ResponseEntity<?> websiteLogin(@RequestBody UserVO user){
 		
-		
+		return ResponseEntity.ok(new UserVO());
 		
 	}
 	

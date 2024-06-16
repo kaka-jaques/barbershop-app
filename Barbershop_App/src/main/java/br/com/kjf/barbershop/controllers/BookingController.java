@@ -4,8 +4,10 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,19 +23,19 @@ public class BookingController {
 	private BookingRepository bookingRepository;
 	
 	@GetMapping
-	public List<BookingVO> getAllBooks(){
+	public ResponseEntity<?> getAllBooks(){
 		
-		return bookingRepository.findAll();
-		
-	}
-	
-	public List<BookingVO> getNextBooksToAdmin(){
-		
-		return bookingRepository.findNextBooks(new GregorianCalendar());
+		return ResponseEntity.ok(bookingRepository.findAll());
 		
 	}
 	
-	public List<BookingVO> getNextBooksToClient(){
+	public ResponseEntity<?> getNextBooksToAdmin(@RequestHeader("Authorization") String auth){
+		
+		return ResponseEntity.ok(bookingRepository.findNextBooks(new GregorianCalendar()));
+		
+	}
+	
+	public ResponseEntity<?> getNextBooksToClient(){
 		
 		List<BookingVO> bookWithoutCredentials = bookingRepository.findNextBooks(new GregorianCalendar());
 		
@@ -41,7 +43,7 @@ public class BookingController {
 			book.setClient_vo(null);
 		}
 		
-		return bookWithoutCredentials;
+		return ResponseEntity.ok(bookWithoutCredentials);
 		
 	}
 	
