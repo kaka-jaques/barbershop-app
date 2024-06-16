@@ -22,7 +22,7 @@ public class JwtUtil {
 	
 	@PostConstruct
 	public void init() {
-		byte[] keyBytes = Decoders.BASE64.decode("secret");
+		byte[] keyBytes = Decoders.BASE64.decode("mX+M1z9W2Y8pQxWh6fFgNcOvV2/JnO0+WJq3fTFLPeE=\r\n");
 		key = Keys.hmacShaKeyFor(keyBytes);
 	}
 	
@@ -31,7 +31,6 @@ public class JwtUtil {
 		return createToken(claims, user.getUser());
 	}
 	
-	@SuppressWarnings("deprecation") //Verificar o melhor método para criar o token
 	public String createToken(Map<String, Object> claims, String subject) {
 		return Jwts.builder()
 				.claims(claims)
