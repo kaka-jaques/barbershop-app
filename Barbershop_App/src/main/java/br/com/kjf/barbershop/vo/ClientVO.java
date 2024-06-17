@@ -1,5 +1,6 @@
 package br.com.kjf.barbershop.vo;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import jakarta.persistence.CascadeType;
@@ -34,6 +35,7 @@ public class ClientVO {
 	@ManyToOne
 	@JoinColumn(name = "planos_id", nullable = false)
 	private PlansVO plano;
+	private Date renovation;
 	@OneToOne(mappedBy = "client")
 	private UserVO user;
 	@OneToMany(mappedBy = "client_vo", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -43,7 +45,7 @@ public class ClientVO {
 		super();
 	}
 
-	public ClientVO(Integer id, String name, LocalDate birthDate, String cpf, Boolean active, PlansVO plan, UserVO user,
+	public ClientVO(Integer id, String name, LocalDate birthDate, String cpf, Boolean active, PlansVO plan, Date renovation , UserVO user,
 			List<BookingVO> bookings) {
 		super();
 		this.id = id;
@@ -54,6 +56,23 @@ public class ClientVO {
 		this.user = user;
 		this.bookings = bookings;
 		this.plano = plan;
+		this.renovation = renovation;
+	}
+	
+	public PlansVO getPlano() {
+		return plano;
+	}
+
+	public void setPlano(PlansVO plano) {
+		this.plano = plano;
+	}
+
+	public Date getRenovation() {
+		return renovation;
+	}
+
+	public void setRenovation(Date renovation) {
+		this.renovation = renovation;
 	}
 
 	public Integer getId() {

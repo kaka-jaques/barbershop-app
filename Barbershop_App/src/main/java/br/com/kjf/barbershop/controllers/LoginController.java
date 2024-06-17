@@ -63,7 +63,9 @@ public class LoginController {
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		
-		return ResponseEntity.ok(new String(jwtUtil.generateLoginToken(userDetailsService.loadUserByUsername(user.getUser()).getUsername())));
+		userRepository.save(user);
+		
+		return ResponseEntity.ok(new String("Sucessful Registered!"));
 		
 	}
 	

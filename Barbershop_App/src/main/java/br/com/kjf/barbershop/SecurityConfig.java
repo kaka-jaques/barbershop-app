@@ -7,6 +7,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,12 +23,14 @@ import br.com.kjf.barbershop.classes.UserDetailsServiceUtils;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	@Autowired
-	private JwtAuthenticationFilter jwtAuthenticationFilter;
-	
-	@Autowired
-	private UserDetailsServiceUtils userDetailsServiceUtils;
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final UserDetailsServiceUtils userDetailsServiceUtils;
 
+	public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsServiceUtils userDetailsServiceUtils) {
+		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+		this.userDetailsServiceUtils = userDetailsServiceUtils;
+	}
+	
     @Bean
     PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
@@ -42,17 +46,26 @@ public class SecurityConfig {
 				.build();
 	}
 	
+    @Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSec) throws Exception{
-        httpSec.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/auth/**").authenticated()
-                        .requestMatchers("").hasAnyRole("ADMIN"))
-                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        httpSec.csrf(AbstractHttpConfigurer::disable)
+        			.authorizeHttpRequests(authorizeRequests -> 
+        					authorizeRequests
+        						.requestMatchers("/auth/**").permitAll()
+        						.anyRequest().authenticated()
+        					)
+        					.sessionManagement(sessionManagement ->
+        							sessionManagement
+        								.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        							);
 		
 		httpSec.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		
 		return httpSec.build();
 	}
+    
+    public WebSecurityCustomizer webSecurityCustomizer() {
+    	return web -> web.ignoring().requestMatchers("/auth/**");
+    }
 	
 }
