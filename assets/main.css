@@ -64,7 +64,7 @@ header #mobile-header{
 }
 
 header #mobile-header img{
-    width: 60%;
+    width: 100%;
 }
 
 header #mobile-header .col{
@@ -187,7 +187,7 @@ main #plans .planSwiper .swiper-slide .swiper-card .btn h4{
 }
 
 
-main #booking .container{
+main #partners .container{
     background-color: rgb(34, 34, 34);
     height: 500px;
 }

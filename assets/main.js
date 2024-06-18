@@ -22,7 +22,7 @@ window.addEventListener('scroll', function () {
         })
         gsap.to(".mobile-header-img", {
             duration: 0.7,
-            width: 80
+            width: 260
         })
         gsap.to(".fa-user", {
             duration: 0.7,
@@ -35,7 +35,7 @@ window.addEventListener('scroll', function () {
         })
         gsap.to(".mobile-header-img", {
             duration: 0.5,
-            width: 200
+            width: 375
         })
         gsap.to(".fa-user", {
             duration: 0.5,

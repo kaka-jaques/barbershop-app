@@ -1,12 +1,16 @@
 package br.com.kjf.barbershop.vo;
 
+import java.util.Set;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -24,17 +28,28 @@ public class UserVO {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "client_id", referencedColumnName = "id")
 	private ClientVO client;
+	@ManyToMany(fetch = FetchType.EAGER)
+	private Set<RoleVO> role;
 	
 	public UserVO() {
 		super();
 	}
 
-	public UserVO(Integer id, String user, String password, ClientVO client) {
+	public UserVO(Integer id, String user, String password, ClientVO client, Set<RoleVO> role) {
 		super();
 		this.id = id;
 		this.user = user;
 		this.password = password;
 		this.client = client;
+		this.role = role;
+	}
+
+	public Set<RoleVO> getRole() {
+		return role;
+	}
+
+	public void setRole(Set<RoleVO> role) {
+		this.role = role;
 	}
 
 	public Integer getId() {

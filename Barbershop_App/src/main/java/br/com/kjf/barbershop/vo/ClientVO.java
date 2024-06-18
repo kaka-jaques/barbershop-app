@@ -1,13 +1,19 @@
 package br.com.kjf.barbershop.vo;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -29,16 +35,21 @@ public class ClientVO {
 	private String cpf;
 	@Column(nullable = false)
 	private Boolean active;
+	@ManyToOne
+	@JoinColumn(name = "planos_id", nullable = false)
+	private PlansVO plano;
+	private Date renovation;
 	@OneToOne(mappedBy = "client")
+	@JsonIgnore
 	private UserVO user;
-	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "client_vo", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BookingVO> bookings;
 	
 	public ClientVO() {
 		super();
 	}
 
-	public ClientVO(Integer id, String name, LocalDate birthDate, String cpf, Boolean active, UserVO user,
+	public ClientVO(Integer id, String name, LocalDate birthDate, String cpf, Boolean active, PlansVO plan, Date renovation , UserVO user,
 			List<BookingVO> bookings) {
 		super();
 		this.id = id;
@@ -48,6 +59,24 @@ public class ClientVO {
 		this.active = active;
 		this.user = user;
 		this.bookings = bookings;
+		this.plano = plan;
+		this.renovation = renovation;
+	}
+	
+	public PlansVO getPlano() {
+		return plano;
+	}
+
+	public void setPlano(PlansVO plano) {
+		this.plano = plano;
+	}
+
+	public Date getRenovation() {
+		return renovation;
+	}
+
+	public void setRenovation(Date renovation) {
+		this.renovation = renovation;
 	}
 
 	public Integer getId() {
@@ -104,6 +133,14 @@ public class ClientVO {
 
 	public void setBookings(List<BookingVO> bookings) {
 		this.bookings = bookings;
+	}
+
+	public PlansVO getPlanos() {
+		return plano;
+	}
+
+	public void setPlanos(PlansVO planos) {
+		this.plano = planos;
 	}
 	
 }
