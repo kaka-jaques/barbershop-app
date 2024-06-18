@@ -1,10 +1,12 @@
 package br.com.kjf.barbershop.classes;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,20 +32,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException{
 		
 		String username = null;
-		
-		System.out.println(request.getRequestURI());
-		
-		if(request.getRequestURI().startsWith("/auth/")) {
-			chain.doFilter(request, response);
-			return;
-		}
+		String[] freePaths = {"/auth/", "/meta/webhook"};
 		
 		if(request.getHeader("Authorization") != null && request.getHeader("Authorization").startsWith("Bearer ")) {
 			
 			try {
 				username = jwtUtil.extractUsername(request.getHeader("Authorization").substring(7));
 			}catch(ExpiredJwtException e) {
-				e.printStackTrace();
+				response.setStatus(401);
+				response.setContentType("application/json");
+				response.getWriter().write("{"
+						+ "\"error\": \"token_expired\","
+						+ "\"message\": " +e.getMessage()
+						+ "}");
+			}catch(AuthenticationException e) {
+				response.setStatus(401);
+				response.setContentType("application/json");
+				response.getWriter().write("{"
+						+ "\"error\": \"authentication_error\","
+						+ "\"message\": " +e.getMessage()
+						+ "}");
 			}
 			
 			if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -59,6 +67,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			
 			chain.doFilter(request, response);
 			
+		} else if(Arrays.asList(freePaths).contains(request.getRequestURI())) {
+			
+			chain.doFilter(request, response);
+			
+		}else {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			response.setContentType("application/json");
+			response.getWriter().write("{"
+					+ "\"error\": \"request_not_found\","
+					+ "\"message\": \"This endpoint not exist\"" 
+					+ "}");
 		}
 		
 	}
