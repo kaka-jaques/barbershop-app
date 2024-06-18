@@ -1,6 +1,5 @@
 package br.com.kjf.barbershop;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,13 +44,14 @@ public class SecurityConfig {
 				.and()
 				.build();
 	}
-	
+
     @Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity httpSec) throws Exception{
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSec) throws Exception{
         httpSec.csrf(AbstractHttpConfigurer::disable)
         			.authorizeHttpRequests(authorizeRequests -> 
         					authorizeRequests
         						.requestMatchers("/auth/**").permitAll()
+        						.requestMatchers("/book/all", "/book/admin").hasRole("ADMIN")
         						.anyRequest().authenticated()
         					)
         					.sessionManagement(sessionManagement ->

@@ -2,6 +2,8 @@ package br.com.kjf.barbershop.vo;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,8 +26,6 @@ public class PlansVO {
 	private String description;
 	@Column(nullable = false)
 	private Double price;
-	@OneToMany(mappedBy = "plano", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ClientVO> clients;
 	
 	public PlansVO() {
 		super();
@@ -37,7 +37,6 @@ public class PlansVO {
 		this.name = name;
 		this.description = description;
 		this.price = price;
-		this.clients = clients;
 	}
 
 	public Integer getId() {
@@ -70,14 +69,6 @@ public class PlansVO {
 
 	public void setPrice(Double price) {
 		this.price = price;
-	}
-
-	public List<ClientVO> getClients() {
-		return clients;
-	}
-
-	public void setClients(List<ClientVO> clients) {
-		this.clients = clients;
 	}
 	
 }

@@ -16,25 +16,27 @@ import br.com.kjf.barbershop.vo.BookingVO;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("booking")
+@RequestMapping("/book")
 public class BookingController {
 
 	@Autowired
 	private BookingRepository bookingRepository;
 	
-	@GetMapping
+	@GetMapping("/all")
 	public ResponseEntity<?> getAllBooks(){
 		
 		return ResponseEntity.ok(bookingRepository.findAll());
 		
 	}
 	
-	public ResponseEntity<?> getNextBooksToAdmin(@RequestHeader("Authorization") String auth){
+	@GetMapping("/admin")
+	public ResponseEntity<?> getNextBooksToAdmin(){
 		
 		return ResponseEntity.ok(bookingRepository.findNextBooks(new GregorianCalendar()));
 		
 	}
 	
+	@GetMapping("/client")
 	public ResponseEntity<?> getNextBooksToClient(){
 		
 		List<BookingVO> bookWithoutCredentials = bookingRepository.findNextBooks(new GregorianCalendar());

@@ -3,6 +3,9 @@ package br.com.kjf.barbershop.vo;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +40,7 @@ public class ClientVO {
 	private PlansVO plano;
 	private Date renovation;
 	@OneToOne(mappedBy = "client")
+	@JsonIgnore
 	private UserVO user;
 	@OneToMany(mappedBy = "client_vo", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BookingVO> bookings;

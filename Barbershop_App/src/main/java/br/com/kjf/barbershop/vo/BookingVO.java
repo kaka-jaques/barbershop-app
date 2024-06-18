@@ -1,6 +1,7 @@
 package br.com.kjf.barbershop.vo;
 
 import java.util.GregorianCalendar;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

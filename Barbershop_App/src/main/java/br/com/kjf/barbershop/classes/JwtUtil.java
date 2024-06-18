@@ -26,17 +26,27 @@ public class JwtUtil {
 		key = Keys.hmacShaKeyFor(keyBytes);
 	}
 	
-	public String generateLoginToken(String user) {
+	public String generateLoginToken(String user, Boolean keepLogged) {
 		Map<String, Object> claims = new HashMap<>();
-		return createToken(claims, user);
+		return createToken(claims, user, keepLogged);
 	}
 	
-	public String createToken(Map<String, Object> claims, String subject) {
+	public String createToken(Map<String, Object> claims, String subject, Boolean keepLogged) {
+		
+		int time;
+		
+		if(keepLogged) {
+			time = 360;
+		}
+		else {
+			time = 15;
+		}
+		
 		return Jwts.builder()
 				.claims(claims)
 				.subject(subject)
 				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+				.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * time))
 				.signWith(key)
 				.compact();
 	}
