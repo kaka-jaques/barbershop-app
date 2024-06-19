@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +32,7 @@ import br.com.kjf.barbershop.repository.RoleRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.RoleVO;
 import br.com.kjf.barbershop.vo.UserVO;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 
 @RestController
@@ -57,6 +59,24 @@ public class LoginController {
 	private JwtUtil jwtUtil;
 	
 	private ObjectMapper objMapper = new ObjectMapper();
+	
+	@GetMapping
+	public ResponseEntity<?> websiteAuth(@RequestHeader("Authorization")String auth) throws JsonMappingException, JsonProcessingException{
+		
+		UserVO user;
+		
+		try {
+			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(7)));
+		}catch(ExpiredJwtException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(objMapper.readTree("{\"status\": \"Token expired or invalid!\", "
+							+ "\"error\": \""+e.getMessage()
+							+ "\"}"));
+		}
+		
+		return ResponseEntity.status(HttpStatus.FOUND).body(user);
+		
+	}
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> websiteLogin(@RequestBody UserVO user, @RequestHeader("keep")boolean keep) throws JsonMappingException, JsonProcessingException, UsernameNotFoundException{

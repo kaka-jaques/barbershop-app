@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException{
 		
 		String username = null;
-		String[] freePaths = {"/auth/login", "/auth/register", "/meta/webhook"};
+		String[] freePaths = {"/auth/login", "/auth/register", "/auth", "/meta/webhook"};
 		
 		System.out.println(request.getRequestURI());
 		
