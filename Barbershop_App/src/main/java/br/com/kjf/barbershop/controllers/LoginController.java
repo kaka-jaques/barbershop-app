@@ -14,8 +14,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,7 @@ import br.com.kjf.barbershop.repository.RoleRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.RoleVO;
 import br.com.kjf.barbershop.vo.UserVO;
+import jakarta.servlet.http.Cookie;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -56,7 +59,7 @@ public class LoginController {
 	private ObjectMapper objMapper = new ObjectMapper();
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> websiteLogin(@RequestBody UserVO user, @RequestParam(required = false, defaultValue = "false")boolean keepLogged) throws JsonMappingException, JsonProcessingException, UsernameNotFoundException{
+	public ResponseEntity<?> websiteLogin(@RequestBody UserVO user, @RequestHeader("keep")boolean keep) throws JsonMappingException, JsonProcessingException, UsernameNotFoundException{
 		
 		try {
 			authenticationManager.authenticate(
@@ -71,7 +74,7 @@ public class LoginController {
 		return ResponseEntity.ok(
 				objMapper.readTree("{"
 						+ "\"status\": \"Sucessful Logged!\","
-						+ "\"token\": \""+ jwtUtil.generateLoginToken(userDetails.getUsername(), keepLogged) +"\""
+						+ "\"token\": \""+ jwtUtil.generateLoginToken(userDetails.getUsername(), keep) +"\""
 						+ "}")
 				);
 		

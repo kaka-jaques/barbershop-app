@@ -8,7 +8,7 @@ import br.com.kjf.barbershop.vo.UserVO;
 
 public interface UserRepository extends JpaRepository<UserVO, Integer>{
 
-	@Query("FROM UserVO WHERE user = :user")
-	public UserVO findByUsername(@Param("user") String user);
+	@Query("FROM UserVO WHERE user = :user OR email = :user")
+	public UserVO findByUsernameOrEmail(@Param("user") String user);
 	
 }

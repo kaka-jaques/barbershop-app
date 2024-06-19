@@ -44,22 +44,22 @@ window.addEventListener('scroll', function () {
     }
 })
 
-function hoveredButton(element, icon, hover){
-    if(hover){
-        gsap.to(element,{
+function hoveredButton(element, icon, hover) {
+    if (hover) {
+        gsap.to(element, {
             duration: 0.5,
             backgroundImage: 'linear-gradient(250deg, rgb(255, 255, 255) 100%, #ffffff3d 0%)'
         })
-        gsap.to(icon,{
+        gsap.to(icon, {
             duration: 0.5,
             color: 'black'
         })
-    }else{
-        gsap.to(element,{
+    } else {
+        gsap.to(element, {
             duration: 0.5,
             backgroundImage: 'linear-gradient(250deg, rgb(255, 255, 255) 75%, #ffffff3d 0%)'
         })
-        gsap.to(icon,{
+        gsap.to(icon, {
             duration: 0.5,
             color: 'white'
         })
@@ -73,23 +73,60 @@ function sendLogin() {
         document.getElementById('login-button').style.cursor = 'not-allowed';
         document.getElementById('login-email').style.border = '1px solid rgb(63, 63, 63)';
         document.getElementById('login-password').style.border = '1px solid rgb(63, 63, 63)';
-        login()
-    } else{
-        if(document.getElementById('login-email').value === ''){
+        login(document.getElementById('login-email').value, document.getElementById('login-password').value, document.getElementById('keep').checked);
+    } else {
+        if (document.getElementById('login-email').value === '') {
             document.getElementById('login-email').style.border = '1px solid red';
         }
-        else{
+        else {
             document.getElementById('login-email').style.border = '1px solid rgb(63, 63, 63)';
         }
-        if(document.getElementById('login-password').value === ''){
+        if (document.getElementById('login-password').value === '') {
             document.getElementById('login-password').style.border = '1px solid red';
         }
-        else{
+        else {
             document.getElementById('login-password').style.border = '1px solid rgb(63, 63, 63)';
         }
     }
 }
 
-function login() {
-    
+function login(user, password, keep) {
+    const body = {
+        user: user,
+        password: password
+    }
+
+    console.log(body);
+
+    fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json',
+            'keep': keep
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                document.getElementById('login-button').innerHTML = 'Login';
+                document.getElementById('login-button').disabled = false;
+                document.getElementById('login-button').style.cursor = 'pointer';
+                document.getElementById('login-email').style.border = '1px solid rgb(63, 63, 63)';
+                document.getElementById('login-password').style.border = '1px solid rgb(63, 63, 63)';
+                alert('Login ou senha inválidos!');
+            }
+            return response.json()
+        })
+        .then(data => {
+            console.log(data);
+            const expiration = new Date();
+            if (keep = true) {
+                expiration.setDate(expiration.getTime() + (1000 * 60 * 60 * 360));
+                document.cookie = "token=" + data.token + "; Max-Age="+ (60*60*15) +"; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Secure;"
+            } else {
+                expiration.setDate(expiration.getTime() + (1000 * 60 * 60 * 15));
+                document.cookie = "token=" + data.token + "; Max-Age="+ (15*24*60*60) +"; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Secure;"
+            }
+        })
+
 }
