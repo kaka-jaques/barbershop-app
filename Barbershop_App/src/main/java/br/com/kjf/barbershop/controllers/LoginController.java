@@ -63,7 +63,7 @@ public class LoginController {
 	@GetMapping
 	public ResponseEntity<?> websiteAuth(@RequestHeader("Authorization")String auth) throws JsonMappingException, JsonProcessingException{
 		
-		UserVO user;
+		UserVO user = new UserVO();
 		
 		try {
 			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(7)));
