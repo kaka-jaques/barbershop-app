@@ -29,3 +29,29 @@
 >- Gerir assinaturas🔄️
 >- Gerir cargos🔄️
 >- Gerir anúncios de promoções para site e/ou whatsapp🔄️
+
+## Tecnologias
+>### API Rest Springboot
+>- Java 17
+>- Springboot Framework
+>- Spring Security
+>- Spring Web
+>- Spring JPA
+>- Spring Mail
+>- Lombok
+>- MySQL J
+>- JWT Token
+>### Website
+>- HTML
+>- CSS
+>- JS
+>- Bootstrap 5.2
+>- GSAP 3.12
+>- Fontawesome 6.2
+>- Swiper 11
+>### Sistema de Gestão
+>- Angular
+>- Bootstrap 5.2
+>- Fontawesome 6.2
+>- Electron
+>- Ionic
