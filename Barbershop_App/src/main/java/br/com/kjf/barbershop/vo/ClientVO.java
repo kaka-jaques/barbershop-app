@@ -27,11 +27,10 @@ public class ClientVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column(nullable = false)
 	private String name;
+	private String image_url;
 	@Temporal(TemporalType.DATE)
 	private LocalDate birthDate;
-	@Column(nullable = false)
 	private String cpf;
 	@Column(nullable = false)
 	private Boolean active;
@@ -48,21 +47,15 @@ public class ClientVO {
 	public ClientVO() {
 		super();
 	}
-
-	public ClientVO(Integer id, String name, LocalDate birthDate, String cpf, Boolean active, PlansVO plan, Date renovation , UserVO user,
-			List<BookingVO> bookings) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.birthDate = birthDate;
-		this.cpf = cpf;
-		this.active = active;
-		this.user = user;
-		this.bookings = bookings;
-		this.plano = plan;
-		this.renovation = renovation;
-	}
 	
+	public String getImage_url() {
+		return image_url;
+	}
+
+	public void setImage_url(String image_url) {
+		this.image_url = image_url;
+	}
+
 	public PlansVO getPlano() {
 		return plano;
 	}
@@ -133,14 +126,6 @@ public class ClientVO {
 
 	public void setBookings(List<BookingVO> bookings) {
 		this.bookings = bookings;
-	}
-
-	public PlansVO getPlanos() {
-		return plano;
-	}
-
-	public void setPlanos(PlansVO planos) {
-		this.plano = planos;
 	}
 	
 }

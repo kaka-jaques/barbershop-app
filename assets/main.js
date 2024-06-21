@@ -1,3 +1,30 @@
+var user = null;
+var name = null;
+var email = null;
+var profile_image = null;
+
+fetch('https://localhost/auth', {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+        'Content-Type': 'application/json',
+    }
+})
+    .then(response => {
+        console.log(response.json());
+        if (response.ok) {
+            response.json().then(data => {
+                user = data.user;
+                name = data.client.name;
+                email = data.email;
+                profile_image = data.client.image_url;
+            })
+        } else {
+            console.log('Erro na autenticação');
+            console.log(response);
+        }
+    })
+
 var planSwiper = new Swiper(".planSwiper", {
     centeredSlides: true,
     followFinger: true,
@@ -96,37 +123,105 @@ function login(user, password, keep) {
         password: password
     }
 
-    console.log(body);
-
-    fetch('http://localhost:8080/auth/login', {
+    fetch('https://localhost/auth/login', {
         method: 'POST',
         body: JSON.stringify(body),
         headers: {
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Methods': '*',
             'keep': keep
         }
     })
         .then(response => {
-            if (!response.ok) {
+            if (response.ok) {
+                saveCookie(response.json(), keep);
+            } else if (response.status === 401) {
                 document.getElementById('login-button').innerHTML = 'Login';
                 document.getElementById('login-button').disabled = false;
                 document.getElementById('login-button').style.cursor = 'pointer';
                 document.getElementById('login-email').style.border = '1px solid rgb(63, 63, 63)';
                 document.getElementById('login-password').style.border = '1px solid rgb(63, 63, 63)';
                 alert('Login ou senha inválidos!');
-            }
-            return response.json()
-        })
-        .then(data => {
-            console.log(data);
-            const expiration = new Date();
-            if (keep = true) {
-                expiration.setDate(expiration.getTime() + (1000 * 60 * 60 * 360));
-                document.cookie = "token=" + data.token + "; Max-Age="+ (60*60*15) +"; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Secure;"
             } else {
-                expiration.setDate(expiration.getTime() + (1000 * 60 * 60 * 15));
-                document.cookie = "token=" + data.token + "; Max-Age="+ (15*24*60*60) +"; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Secure;"
+                console.log(response.json());
+                alert('Erro! Por favor contate o administrador do sistema.');
+            }
+
+        })
+}
+
+function sendRegister() {
+    if (document.getElementById('register-email').value != '' && document.getElementById('register-password').value != '' && document.getElementById('register-user').value != '') {
+        document.getElementById('register-button').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+        document.getElementById('register-button').disabled = true;
+        document.getElementById('register-button').style.cursor = 'not-allowed';
+        document.getElementById('register-email').style.border = '1px solid rgb(63, 63, 63)';
+        document.getElementById('register-password').style.border = '1px solid rgb(63, 63, 63)';
+        document.getElementById('register-user').style.border = '1px solid rgb(63, 63, 63)';
+        register();
+    } else {
+        if (document.getElementById('register-email').value === '') {
+            document.getElementById('register-email').style.border = '1px solid red';
+        }
+        else {
+            document.getElementById('register-email').style.border = '1px solid rgb(63, 63, 63)';
+        }
+        if (document.getElementById('register-password').value === '') {
+            document.getElementById('register-password').style.border = '1px solid red';
+        }
+        else {
+            document.getElementById('register-password').style.border = '1px solid rgb(63, 63, 63)';
+        }
+    }
+}
+
+function register() {
+
+    const body = {
+        user: document.getElementById('register-user').value,
+        email: document.getElementById('register-email').value,
+        password: document.getElementById('register-password').value
+    }
+
+    console.log(body.json);
+
+    fetch('https://localhost/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Methods': '*'
+        }
+    })
+        .then(response => {
+            if (response.status === 201) {
+                response.json().then(data => {
+                    console.log(data);
+                    saveCookie(data, false);
+                })
+            } else {
+                console.log(response.json());
+                alert('Erro! Por favor contate o administrador do sistema.');
             }
         })
 
+}
+
+function saveCookie(data, keep) {
+    const expiration = new Date();
+    if (keep) {
+        expiration.setDate(expiration.getDate() + 15);
+        document.cookie = "token=" + data.token + "; Max-Age=" + expiration.toUTCString() + "; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Domain=localhost:8080; HttpOnly";
+        location.href = '/index.html';
+    } else {
+        expiration.setDate(expiration.getHours() + 15);
+        document.cookie = "token=" + data.token + "; Max-Age=" + expiration.toUTCString() + "; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Domain=localhost:8080; HttpOnly";
+        location.href = '/index.html';
+    }
 }

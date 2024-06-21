@@ -34,8 +34,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String username = null;
 		String[] freePaths = {"/auth/login", "/auth/register", "/auth", "/meta/webhook"};
 		
-		System.out.println(request.getRequestURI());
-		
 		if(request.getHeader("Authorization") != null && request.getHeader("Authorization").startsWith("Bearer ")) {
 			
 			try {
@@ -73,6 +71,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			
 			chain.doFilter(request, response);
 			
+		}else if(request.getHeader("Authorization") == null){
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			response.setContentType("application/json");
+			response.getWriter().write("{"
+					+ "\"error\": \"token_not_found\","
+					+ "\"message\": \"Your token is expired or not exist!\"" 
+					+ "}");
 		}else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			response.setContentType("application/json");

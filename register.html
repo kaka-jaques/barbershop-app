@@ -30,19 +30,19 @@
                     <img src="assets/imgs/logo.jpeg">
                 </div>
                 <div class="col">
-                    <input type="email" type="text" autocomplete="email" placeholder="User ou Email" name="email" id="login-email">
+                    <input type="text" name="User" id="register-user" placeholder="User" required>
                 </div>
                 <div class="col">
-                    <input type="password" autocomplete="current-password" placeholder="Senha" name="password" id="login-password">
+                    <input type="email" type="text" autocomplete="email" placeholder="Email" name="email" id="register-email" required>
                 </div>
                 <div class="col">
-                    <input type="checkbox" name="remember" id="keep">&nbsp; Manter conectado
+                    <input type="password" autocomplete="new-password" placeholder="Senha" name="password" id="register-password" required>
                 </div>
                 <div class="col">
-                    <button id="login-button" onclick="sendLogin()" class="btn btn-dark">Login</button>
+                    <button id="register-button" onclick="sendRegister()" class="btn btn-dark">Cadastre-se</button>
                 </div>
                 <div class="col">
-                    <a href="/register.html">Crie sua conta</a>
+                    <a href="/login.html">Já tem cadastro? Faça o Login</a>
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 package br.com.kjf.barbershop;
 
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import br.com.kjf.barbershop.classes.JwtAuthenticationFilter;
 import br.com.kjf.barbershop.classes.UserDetailsServiceUtils;
@@ -48,24 +52,24 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSec) throws Exception{
         httpSec.csrf(AbstractHttpConfigurer::disable)
-        			.authorizeHttpRequests(authorizeRequests -> 
-        					authorizeRequests
-        						.requestMatchers("/auth/**", "/meta/**").permitAll()
-        						.requestMatchers("/book/all", "/book/admin").hasRole("ADMIN")
-        						.anyRequest().authenticated()
-        					)
-        					.sessionManagement(sessionManagement ->
-        							sessionManagement
-        								.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        							);
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers("/auth/**", "/meta/**").permitAll()
+                                .requestMatchers("/book/all", "/book/admin").hasRole("ADMIN")
+                                .anyRequest().authenticated()
+                )
+                .sessionManagement(sessionManagement ->
+                        sessionManagement
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                ).cors(cors -> cors.configurationSource(null));
 		
 		httpSec.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		
 		return httpSec.build();
 	}
     
-    public WebSecurityCustomizer webSecurityCustomizer() {
-    	return web -> web.ignoring().requestMatchers("/auth/**");
-    }
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//    	return web -> web.ignoring().requestMatchers("/auth/**");
+//    }
 	
 }
