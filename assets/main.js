@@ -3,7 +3,7 @@ var name = null;
 var email = null;
 var profile_image = null;
 
-fetch('https://localhost/auth', {
+fetch('http://localhost:8080/auth', {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -123,15 +123,12 @@ function login(user, password, keep) {
         password: password
     }
 
-    fetch('https://localhost/auth/login', {
+    fetch('http://localhost:8080/auth/login', {
         method: 'POST',
+        credentials: 'include',
         body: JSON.stringify(body),
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Allow-Headers': '*',
-            'Access-Control-Allow-Methods': '*',
             'keep': keep
         }
     })
@@ -188,7 +185,7 @@ function register() {
 
     console.log(body.json);
 
-    fetch('https://localhost/auth/register', {
+    fetch('http://localhost:8080/auth/register', {
         method: 'POST',
         body: JSON.stringify(body),
         headers: {
@@ -217,11 +214,11 @@ function saveCookie(data, keep) {
     const expiration = new Date();
     if (keep) {
         expiration.setDate(expiration.getDate() + 15);
-        document.cookie = "token=" + data.token + "; Max-Age=" + expiration.toUTCString() + "; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Domain=localhost:8080; HttpOnly";
-        location.href = '/index.html';
+        //document.cookie = "token=" + data.token + "; Max-Age=" + expiration.toUTCString() + "; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Domain=localhost:8080; HttpOnly";
+        //location.href = '/index.html';
     } else {
         expiration.setDate(expiration.getHours() + 15);
-        document.cookie = "token=" + data.token + "; Max-Age=" + expiration.toUTCString() + "; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Domain=localhost:8080; HttpOnly";
-        location.href = '/index.html';
+        //document.cookie = "token=" + data.token + "; Max-Age=" + expiration.toUTCString() + "; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Domain=localhost:8080; HttpOnly";
+        //location.href = '/index.html';
     }
 }

@@ -39,7 +39,7 @@ import br.com.kjf.barbershop.vo.UserVO;
 import io.jsonwebtoken.ExpiredJwtException;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500", allowCredentials = "true")
+@CrossOrigin(origins = {"http://127.0.0.1:5500", "http://localhost:5500"}, allowCredentials = "true")
 @RequestMapping("/auth")
 public class LoginController {
 
@@ -67,15 +67,12 @@ public class LoginController {
 	private ObjectMapper objMapper = new ObjectMapper();
 	
 	@GetMapping
-	public ResponseEntity<?> websiteAuth(@RequestHeader(name = "Authorization")String auth) throws JsonMappingException, JsonProcessingException{
+	public ResponseEntity<?> websiteAuth(@RequestHeader(name = "Cookie")String auth) throws JsonMappingException, JsonProcessingException{
 		
 		UserVO user = null;
 		
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
-		
 		try {
-			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(7)));
+			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(6)));
 		}catch(ExpiredJwtException e) {
 			return null;
 		}catch(AuthenticationException e) {
@@ -83,13 +80,13 @@ public class LoginController {
 		}
 		
 		if(user == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(objMapper.readTree(("{"
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(objMapper.readTree(("{"
 						+ "\"error\": \"user_not_found\","
 						+ "\"message\": \"The authentication token return an invalid user.\""
 						+ "}")));
 		}else {
 			user.setPassword(null);
-			return ResponseEntity.status(HttpStatus.FOUND).headers(headers).body(user);
+			return ResponseEntity.status(HttpStatus.FOUND).body(user);
 		}
 		
 	}
@@ -109,7 +106,7 @@ public class LoginController {
 		
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUser());
 		String token = jwtUtil.generateLoginToken(userDetails.getUsername(), keep);
-		headers.add("Set-Cookie", "token="+token+";Max-Age=10800; SameSite=Strict;");
+		headers.add("Set-Cookie", "token="+token+";Max-Age=999999; SameSite=Strict; HttpOnly;");
 		
 		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(
 				objMapper.readTree("{"
