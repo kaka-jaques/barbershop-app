@@ -11,9 +11,14 @@ fetch('http://localhost:8080/auth', {
     }
 })
     .then(response => {
-        console.log(response.json());
-        if (response.ok) {
+        if (response.status == 302) {
+            if(window.location.pathname == '/login.html') {
+                document.getElementById('main-login').style.display = 'none';
+            }else if(window.location.pathname == '/register.html'){
+                window.location.href = '/login.html';
+            }
             response.json().then(data => {
+                console.log(data);
                 user = data.user;
                 name = data.client.name;
                 email = data.email;
