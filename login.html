@@ -48,11 +48,15 @@
         </div>
         <div id="main-profile">
             <div class="nav-bar">
+                <i class="fa-solid fa-xmark mt-3" onclick="window.location.href = '/'"></i>
                 <div class="row mt-4">
-                    <i class="fa-solid fa-user" onclick="alert('clicado!')"></i>
+                    <i class="fa-solid fa-user" onclick="changingWindow(document.getElementsByClassName('profile-content')[0])"></i>
                 </div>
                 <div class="row">
-                    <i class="fa-solid fa-dollar-sign" onclick="alert('clicado!')"></i>
+                    <i class="fa-solid fa-id-card" onclick="changingWindow(document.getElementsByClassName('profile-credentials')[0])"></i>
+                </div>
+                <div class="row">
+                    <i class="fa-solid fa-dollar-sign" onclick="changingWindow(document.getElementsByClassName('profile-plans')[0])"></i>
                 </div>
                 <div class="row">
                     <i class="fa-solid fa-right-from-bracket"
@@ -60,7 +64,7 @@
                 </div>
             </div>
             <div class="profile-content">
-                <div class="row" id="">
+                <div class="row">
                     <img id="profile-image" src="/assets/imgs/default_profile.png" alt="">
                     <button class="btn btn-light" onclick="document.getElementById('new-profile-img').click()">Atualizar
                         Imagem</button>
@@ -68,6 +72,34 @@
                     <input class="mt-5" type="text" name="name" id="name" placeholder="Nome">
                     <input type="text" name="User" id="user" placeholder="User">
                     <input type="email" name="email" id="email" placeholder="Email">
+                    <button class="btn btn-light" onclick="alert('clicado!')">Alterar Senha?</button>
+                    <button class="btn btn-dark mt-5">Salvar</button>
+                </div>
+            </div>
+            <div class="profile-credentials">
+                <div class="row">
+                    <input class="mt-5" type="date" name="birthday" id="birth">
+                </div>
+            </div>
+            <div class="profile-plans">
+                <div class="row">
+                    <div class="plan-card">
+                        <div class="row">
+                            <div class="col">
+                                <h2 id="plan-title">Plano</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <h4 id="plan-price">R$0,00/mês</h4>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col">
+                                <button class="btn btn-dark" onclick="window.location.href = '/#plans'">Alterar Plano</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

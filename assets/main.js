@@ -18,21 +18,18 @@ fetch('http://localhost:8080/auth', {
                 name = data.client.name;
                 email = data.email;
                 profile_image = data.client.image_url;
+                if (window.location.pathname == '/login.html') {
+                    document.getElementById('main-login').style.display = 'none';
+                    document.getElementById('main-profile').style.display = 'flex';
+                    document.getElementById('user').value = user;
+                    document.getElementById('profile-image').src = profile_image;
+                    document.getElementById('name').value = name;
+                    document.getElementById('email').value = email;
+                }
+                else if (window.location.pathname == '/register.html') {
+                    window.location.href = '/login.html';
+                }
             })
-
-            if(window.location.pathname == '/login.html') 
-            {
-                document.getElementById('main-login').style.display = 'none';
-                document.getElementById('main-profile').style.display = 'flex';
-                document.getElementById('user').value = user;
-                document.getElementById('profile-img').src = profile_image;
-                document.getElementById('name').value = name;
-                document.getElementById('email').value = email;
-            }
-            else if(window.location.pathname == '/register.html')
-            {
-                window.location.href = '/login.html';
-            }
         }
     })
 
@@ -213,5 +210,15 @@ function register() {
                 alert('Erro! Por favor contate o administrador do sistema.');
             }
         })
+
+}
+
+var elemAtual = document.getElementsByClassName('profile-content')[0];
+
+function changingWindow(elem){
+    
+    elemAtual.style.display = 'none';
+    elemAtual = elem;
+    elem.style.display = 'flex';
 
 }

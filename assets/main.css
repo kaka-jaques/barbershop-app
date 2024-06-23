@@ -269,11 +269,14 @@ footer{
     background-color: white;
     height: 100%;
     width: 20%;
+    display: flex;
+    flex-direction: column;
 }
 
 #main-profile .nav-bar .row{
     height: 20%;
     align-items: center;
+    margin: 0;
 }
 
 #main-profile .nav-bar svg{
@@ -282,39 +285,73 @@ footer{
     cursor: pointer;
 }
 
-#main-profile .profile-content{
+#main-profile .nav-bar .fa-right-from-bracket, .fa-xmark{
+    color: red;
+}
+
+#main-profile .profile-content, .profile-credentials, .profile-plans{
     height: 100%;
     width: 80%;
     display: flex;
+    background-image: linear-gradient(165deg,#38383893 30%,#3c3c3c9b 100%), url('/assets/imgs/background3.jpg');
+}
+
+#main-profile .profile-credentials, .profile-plans{
+    display: none;
 }
 
 #main-profile .profile-content img{
     margin-top: 30px;
-    width: 140px;
-    height: 140px;
+    width: 180px;
+    height: 180px;
     padding: 0;
     border: 0.5px solid black;
     border-radius: 100px;
 }
 
-#main-profile .profile-content .row{
+#main-profile .profile-content .row, .profile-credentials .row, .profile-plans .row{
     width: 100%;
     margin: 0;
     align-items: center;
     flex-direction: column;
 }
 
-#main-profile .profile-content .btn{
+#main-profile .profile-content .btn-light{
     width: fit-content;
     height: fit-content;
-    color: rgb(0, 133, 228);
+    color: rgb(9, 142, 237);
     background-color: transparent;
     border: none;
     box-shadow: none;
 }
 
-#main-profile .profile-content input{
+#main-profile .profile-content .btn-dark{
+    width: 80%;
+    background-color: rgb(67, 67, 67);
+    border-color: rgb(67, 67, 67);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+#main-profile .profile-content input, .profile-credentials input, .profile-plans input{
     width: 80%;
     border-radius: 10px;
-    height: 40px;
+    height: 50px;
+    margin-bottom: 20px;
+    background-color: rgb(240, 240, 240);
+    font-size: 20px;
+}
+
+#main-profile .profile-plans .plan-card .row .col{
+    padding: 0;
+    margin: 0;
+}
+
+#main-profile .profile-plans .plan-card{
+    width: 80%;
+    height: 70%;
+    background-color: white;
+    margin-top: 30%;
+    padding: 20px;
+    border-radius: 15px;
 }
