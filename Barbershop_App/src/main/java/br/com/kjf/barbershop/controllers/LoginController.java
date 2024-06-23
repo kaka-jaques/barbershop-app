@@ -63,13 +63,24 @@ public class LoginController {
 	
 	private ObjectMapper objMapper = new ObjectMapper();
 	
+	@GetMapping("/logout")
+	public ResponseEntity<?> websiteLogout(){
+		
+		HttpHeaders headers = new HttpHeaders();
+		
+		headers.set("Set-Cookie", "token='';Max-Age=0");
+		
+		return ResponseEntity.ok().headers(headers).build();
+		
+	}
+	
 	@GetMapping
 	public ResponseEntity<?> websiteAuth(@RequestHeader(name = "Cookie")String auth) throws JsonMappingException, JsonProcessingException{
 		
 		UserVO user = null;
 		
 		try {
-			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(6)));
+			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(6, (auth.indexOf(";") == -1?auth.length():auth.indexOf(";")))));
 		}catch(ExpiredJwtException e) {
 			return null;
 		}catch(AuthenticationException e) {
@@ -83,6 +94,9 @@ public class LoginController {
 						+ "}")));
 		}else {
 			user.setPassword(null);
+			user.getClient().getBookings().forEach(book -> {
+				book.setClient_vo(null);
+			});
 			return ResponseEntity.status(HttpStatus.FOUND).body(user);
 		}
 		
@@ -102,8 +116,8 @@ public class LoginController {
 		}
 		
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUser());
-		String token = jwtUtil.generateLoginToken(userDetails.getUsername(), keep);
-		headers.add("Set-Cookie", "token="+token+";Max-Age=999999; SameSite=Strict; HttpOnly;");
+		final String token = jwtUtil.generateLoginToken(userDetails.getUsername(), keep);
+		headers.add("Set-Cookie", "token="+token+";Max-Age="+(keep?"1296000":"54000")+"; SameSite=Strict; HttpOnly;");
 		
 		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(
 				objMapper.readTree("{"
@@ -126,7 +140,7 @@ public class LoginController {
 		user.setRole(roles);
 		
 		ClientVO client = new ClientVO();
-		client.setImage_url("https://cdn-icons-png.flaticon.com/512/17/17004.png");
+		client.setImage_url("/assets/imgs/default_profile.png");
 		client.setActive(true);
 		client.setPlano(plansRepository.findById(1));
 		
@@ -134,10 +148,16 @@ public class LoginController {
 		
 		userRepository.save(user);
 		
+		final String token = jwtUtil.generateLoginToken(userDetailsService.loadUserByUsername(user.getUser()).getUsername(), false);
+		
+		HttpHeaders headers = new HttpHeaders();
+		
+		headers.set("Set-Cookie", "token="+token+";Max-Age=54000; SameSite=Strict; HttpOnly;");
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(
 					objMapper.readTree("{"
 							+ "\"status\": \"Sucessful Registered!\","
-							+ "\"token\": \""+ jwtUtil.generateLoginToken(userDetailsService.loadUserByUsername(user.getUser()).getUsername(), false) +"\""
+							+ "\"token\": \""+ token +"\""
 							+ "}")
 				);
 		

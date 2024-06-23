@@ -41,7 +41,7 @@ public class ClientVO {
 	@OneToOne(mappedBy = "client")
 	@JsonIgnore
 	private UserVO user;
-	@OneToMany(mappedBy = "client_vo", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BookingVO> bookings;
 	
 	public ClientVO() {

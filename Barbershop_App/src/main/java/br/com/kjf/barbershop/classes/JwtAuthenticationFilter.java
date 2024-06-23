@@ -34,10 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String username = null;
 		String[] freePaths = {"/auth/login", "/auth/register", "/auth", "/meta/webhook"};
 		
-		if(request.getHeader("Authorization") != null && request.getHeader("Authorization").startsWith("Bearer ")) {
+		if(request.getHeader("Cookie") != null && request.getHeader("Cookie").startsWith("token=")) {
+			
+			String token = request.getHeader("Cookie").substring(6, (request.getHeader("Cookie").indexOf(";") == -1?request.getHeader("Cookie").length():request.getHeader("Cookie").indexOf(";")));
 			
 			try {
-				username = jwtUtil.extractUsername(request.getHeader("Authorization").substring(7));
+				username = jwtUtil.extractUsername(token);
 			}catch(ExpiredJwtException e) {
 				response.setStatus(401);
 				response.setContentType("application/json");
@@ -57,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 				
-				if(jwtUtil.validateToken(request.getHeader("Authorization").substring(7), userDetails.getUsername())) {
+				if(jwtUtil.validateToken(token, userDetails.getUsername())) {
 					UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 					upat.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(upat);
@@ -71,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			
 			chain.doFilter(request, response);
 			
-		}else if(request.getHeader("Authorization") == null){
+		}else if(request.getHeader("Cookie") == null){
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			response.setContentType("application/json");
 			response.getWriter().write("{"

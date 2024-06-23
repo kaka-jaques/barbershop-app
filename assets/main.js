@@ -12,21 +12,27 @@ fetch('http://localhost:8080/auth', {
 })
     .then(response => {
         if (response.status == 302) {
-            if(window.location.pathname == '/login.html') {
-                document.getElementById('main-login').style.display = 'none';
-            }else if(window.location.pathname == '/register.html'){
-                window.location.href = '/login.html';
-            }
+
             response.json().then(data => {
-                console.log(data);
                 user = data.user;
                 name = data.client.name;
                 email = data.email;
                 profile_image = data.client.image_url;
             })
-        } else {
-            console.log('Erro na autenticação');
-            console.log(response);
+
+            if(window.location.pathname == '/login.html') 
+            {
+                document.getElementById('main-login').style.display = 'none';
+                document.getElementById('main-profile').style.display = 'flex';
+                document.getElementById('user').value = user;
+                document.getElementById('profile-img').src = profile_image;
+                document.getElementById('name').value = name;
+                document.getElementById('email').value = email;
+            }
+            else if(window.location.pathname == '/register.html')
+            {
+                window.location.href = '/login.html';
+            }
         }
     })
 
@@ -139,7 +145,7 @@ function login(user, password, keep) {
     })
         .then(response => {
             if (response.ok) {
-                saveCookie(response.json(), keep);
+                window.location.reload();
             } else if (response.status === 401) {
                 document.getElementById('login-button').innerHTML = 'Login';
                 document.getElementById('login-button').disabled = false;
@@ -195,17 +201,12 @@ function register() {
         body: JSON.stringify(body),
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Allow-Headers': '*',
-            'Access-Control-Allow-Methods': '*'
         }
     })
         .then(response => {
             if (response.status === 201) {
                 response.json().then(data => {
                     console.log(data);
-                    saveCookie(data, false);
                 })
             } else {
                 console.log(response.json());
@@ -213,17 +214,4 @@ function register() {
             }
         })
 
-}
-
-function saveCookie(data, keep) {
-    const expiration = new Date();
-    if (keep) {
-        expiration.setDate(expiration.getDate() + 15);
-        //document.cookie = "token=" + data.token + "; Max-Age=" + expiration.toUTCString() + "; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Domain=localhost:8080; HttpOnly";
-        //location.href = '/index.html';
-    } else {
-        expiration.setDate(expiration.getHours() + 15);
-        //document.cookie = "token=" + data.token + "; Max-Age=" + expiration.toUTCString() + "; Expires=" + expiration.toUTCString() + "; path=/; SameSite=Strict; Domain=localhost:8080; HttpOnly";
-        //location.href = '/index.html';
-    }
 }

@@ -25,14 +25,26 @@ public class BookingController {
 	@GetMapping("/all")
 	public ResponseEntity<?> getAllBooks(){
 		
-		return ResponseEntity.ok(bookingRepository.findAll());
+		List<BookingVO> books = bookingRepository.findAll();
+		
+		books.forEach(book -> {
+			book.getClient_vo().setBookings(null);
+		});
+		
+		return ResponseEntity.ok(books);
 		
 	}
 	
 	@GetMapping("/admin")
 	public ResponseEntity<?> getNextBooksToAdmin(){
 		
-		return ResponseEntity.ok(bookingRepository.findNextBooks(new GregorianCalendar()));
+		List<BookingVO> books = bookingRepository.findNextBooks(new GregorianCalendar());
+		
+		books.forEach(book -> {
+			book.getClient_vo().setBookings(null);
+		});
+		
+		return ResponseEntity.ok(books);
 		
 	}
 	

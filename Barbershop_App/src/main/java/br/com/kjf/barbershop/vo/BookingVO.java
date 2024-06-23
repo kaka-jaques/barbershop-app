@@ -22,7 +22,7 @@ public class BookingVO {
 	private GregorianCalendar bookingDate;
 	@ManyToOne
 	@JoinColumn(name = "client_id", nullable = false)
-	private ClientVO client_vo;
+	private ClientVO client;
 	
 	public BookingVO() {
 		super();
@@ -32,7 +32,7 @@ public class BookingVO {
 		super();
 		this.id = id;
 		this.bookingDate = bookingDate;
-		this.client_vo = client_vo;
+		this.client = client_vo;
 	}
 
 	public Integer getId() {
@@ -52,11 +52,11 @@ public class BookingVO {
 	}
 
 	public ClientVO getClient_vo() {
-		return client_vo;
+		return client;
 	}
 
 	public void setClient_vo(ClientVO client_vo) {
-		this.client_vo = client_vo;
+		this.client = client_vo;
 	}
 	
 }
