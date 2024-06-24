@@ -30,6 +30,10 @@ fetch('http://localhost:8080/auth', {
                     window.location.href = '/login.html';
                 }
             })
+        }else{
+            if(window.location.pathname == '/booking.html'){
+                window.location.href = '/login.html';
+            }
         }
     })
 
@@ -220,5 +224,32 @@ function changingWindow(elem){
     elemAtual.style.display = 'none';
     elemAtual = elem;
     elem.style.display = 'flex';
+
+
+    let position = '';
+
+    if(elem.classList.contains('profile-content')){
+        position = '190deg, transparent 12%, black 12%, black 32%, transparent 32%';
+        document.getElementsByClassName('fa-user')[0].style.color = 'white';
+        document.getElementsByClassName('fa-id-card')[0].style.color = 'black';
+        document.getElementsByClassName('fa-dollar-sign')[0].style.color = 'black';
+    }
+    else if(elem.classList.contains('profile-credentials')){
+        position = '190deg, transparent 32%, black 32%, black 50%, transparent 50%';
+        document.getElementsByClassName('fa-id-card')[0].style.color = 'white';
+        document.getElementsByClassName('fa-dollar-sign')[0].style.color = 'black';
+        document.getElementsByClassName('fa-user')[0].style.color = 'black';
+    }
+    else if(elem.classList.contains('profile-plans')){
+        position = '190deg, transparent 52%, black 52%, black 70%, transparent 70%';
+        document.getElementsByClassName('fa-dollar-sign')[0].style.color = 'white';
+        document.getElementsByClassName('fa-user')[0].style.color = 'black';
+        document.getElementsByClassName('fa-id-card')[0].style.color = 'black';
+    }
+
+    gsap.to('.nav-bar',{
+        duration: 0.3,
+        backgroundImage: 'linear-gradient('+position+')'
+    })
 
 }
