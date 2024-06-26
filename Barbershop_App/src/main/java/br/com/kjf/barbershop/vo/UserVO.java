@@ -37,16 +37,6 @@ public class UserVO {
 		super();
 	}
 
-	public UserVO(Integer id, String email, String user, String password, ClientVO client, Set<RoleVO> role) {
-		super();
-		this.id = id;
-		this.email = email;
-		this.user = user;
-		this.password = password;
-		this.client = client;
-		this.role = role;
-	}
-
 	public String getEmail() {
 		return email;
 	}

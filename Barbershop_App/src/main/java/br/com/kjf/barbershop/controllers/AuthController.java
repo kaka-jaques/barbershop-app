@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,9 +37,9 @@ import br.com.kjf.barbershop.vo.UserVO;
 import io.jsonwebtoken.ExpiredJwtException;
 
 @RestController
-@CrossOrigin(origins = {"http://127.0.0.1:5500", "http://localhost:5500"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5500"}, allowCredentials = "true")
 @RequestMapping("/auth")
-public class LoginController {
+public class AuthController {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -79,6 +80,13 @@ public class LoginController {
 		
 		UserVO user = null;
 		
+		if(auth == null || !auth.startsWith("token")) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(objMapper.readTree(("{"
+					+ "\"error\": \"token_not_found\","
+					+ "\"message\": \"The authentication token is null.\""
+					+ "}")));
+		}
+		
 		try {
 			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(6, (auth.indexOf(";") == -1?auth.length():auth.indexOf(";")))));
 		}catch(ExpiredJwtException e) {
@@ -95,10 +103,29 @@ public class LoginController {
 		}else {
 			user.setPassword(null);
 			user.getClient().getBookings().forEach(book -> {
-				book.setClient_vo(null);
+				book.setClient(null);
 			});
 			return ResponseEntity.status(HttpStatus.FOUND).body(user);
 		}
+		
+	}
+	
+	@PutMapping("/update")
+	public ResponseEntity<?> profileUpdate(@RequestBody UserVO user) throws JsonMappingException, JsonProcessingException{
+		
+		try {
+			userRepository.save(user);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(objMapper.readTree(("{"
+					+ "\"error\": \"user_already_in_user\","
+					+ "\"message\": \"The user already exist!\""
+					+ "}")));
+		}
+		
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(objMapper.readTree(("{"
+				+ "\"status\": \"profile_updated\","
+				+ "\"message\": \"Your profile was sucessful updated!\""
+				+ "}")));
 		
 	}
 	

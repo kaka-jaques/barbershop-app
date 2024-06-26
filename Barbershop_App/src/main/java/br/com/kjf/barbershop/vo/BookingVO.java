@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,19 +21,31 @@ public class BookingVO {
 	private Integer id;
 	@Column(nullable = false)
 	private GregorianCalendar bookingDate;
+	@OneToOne
+	@JoinColumn(name = "services_id", nullable = false)
+	private ServicesVO services;
 	@ManyToOne
 	@JoinColumn(name = "client_id", nullable = false)
 	private ClientVO client;
 	
-	public BookingVO() {
-		super();
+	public ServicesVO getServices() {
+		return services;
 	}
 
-	public BookingVO(Integer id, GregorianCalendar bookingDate, ClientVO client_vo) {
+	public void setServices(ServicesVO services) {
+		this.services = services;
+	}
+
+	public ClientVO getClient() {
+		return client;
+	}
+
+	public void setClient(ClientVO client) {
+		this.client = client;
+	}
+
+	public BookingVO() {
 		super();
-		this.id = id;
-		this.bookingDate = bookingDate;
-		this.client = client_vo;
 	}
 
 	public Integer getId() {
@@ -49,14 +62,6 @@ public class BookingVO {
 
 	public void setBookingDate(GregorianCalendar bookingDate) {
 		this.bookingDate = bookingDate;
-	}
-
-	public ClientVO getClient_vo() {
-		return client;
-	}
-
-	public void setClient_vo(ClientVO client_vo) {
-		this.client = client_vo;
 	}
 	
 }
