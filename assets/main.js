@@ -29,12 +29,12 @@ fetch('http://localhost:8080/auth', {
                 else if (window.location.pathname == '/register.html') {
                     window.location.href = '/login.html';
                 }
-                else if(window.location.pathname == '/booking.html'){
-                    constructCalendar();
+                else if (window.location.pathname == '/booking.html') {
+                    constructCalendar(data);
                 }
             })
-        }else{
-            if(window.location.pathname == '/booking.html'){
+        } else {
+            if (window.location.pathname == '/booking.html') {
                 window.location.href = '/login.html';
             }
         }
@@ -222,8 +222,8 @@ function register() {
 
 var elemAtual = document.getElementsByClassName('profile-content')[0];
 
-function changingWindow(elem){
-    
+function changingWindow(elem) {
+
     elemAtual.style.display = 'none';
     elemAtual = elem;
     elem.style.display = 'flex';
@@ -231,28 +231,28 @@ function changingWindow(elem){
 
     let position = '';
 
-    if(elem.classList.contains('profile-content')){
+    if (elem.classList.contains('profile-content')) {
         position = '190deg, transparent 12%, black 12%, black 32%, transparent 32%';
         document.getElementsByClassName('fa-user')[0].style.color = 'white';
         document.getElementsByClassName('fa-id-card')[0].style.color = 'black';
         document.getElementsByClassName('fa-dollar-sign')[0].style.color = 'black';
     }
-    else if(elem.classList.contains('profile-credentials')){
+    else if (elem.classList.contains('profile-credentials')) {
         position = '190deg, transparent 32%, black 32%, black 50%, transparent 50%';
         document.getElementsByClassName('fa-id-card')[0].style.color = 'white';
         document.getElementsByClassName('fa-dollar-sign')[0].style.color = 'black';
         document.getElementsByClassName('fa-user')[0].style.color = 'black';
     }
-    else if(elem.classList.contains('profile-plans')){
+    else if (elem.classList.contains('profile-plans')) {
         position = '190deg, transparent 52%, black 52%, black 70%, transparent 70%';
         document.getElementsByClassName('fa-dollar-sign')[0].style.color = 'white';
         document.getElementsByClassName('fa-user')[0].style.color = 'black';
         document.getElementsByClassName('fa-id-card')[0].style.color = 'black';
     }
 
-    gsap.to('.nav-bar',{
+    gsap.to('.nav-bar', {
         duration: 0.3,
-        backgroundImage: 'linear-gradient('+position+')'
+        backgroundImage: 'linear-gradient(' + position + ')'
     })
 
 }
@@ -287,21 +287,23 @@ const maxDaysOfMonth = {
     11: 31
 }
 
-function constructCalendar(){
+function constructCalendar(data) {
 
     document.getElementById('month').innerHTML = months[new Date().getMonth()];
 
-    if(window.screen.width < 380 || window.screen.height < 785){
-        for(let i=1;i<=7;i++){
-            gsap.to($('.day-'+i).find('h3'), {
+    let plan = data.client.plano;
+
+    if (window.screen.width < 380 || window.screen.height < 785) {
+        for (let i = 1; i <= 7; i++) {
+            gsap.to($('.day-' + i).find('h3'), {
                 duration: 0,
                 fontSize: 18
             });
-            gsap.to($('.day-'+i).find('svg'), {
+            gsap.to($('.day-' + i).find('svg'), {
                 duration: 0,
                 width: 7
             });
-            gsap.to('#month',{
+            gsap.to('#month', {
                 duration: 0,
                 fontSize: 20
             });
@@ -315,15 +317,26 @@ function constructCalendar(){
     let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 
     let dia = 1;
+    let nextMonth = false;
 
-    if(firstDayOfMonth.getDay() > 0){
-        for(let j = 1; j <= 7; j++){
-            document.getElementById('week-1').querySelector('.day-'+j).querySelector('h3').innerHTML = (maxDaysOfMonth[new Date().getMonth()-1] - firstDayOfMonth.getDay()+j)
-            if(j >= firstDayOfMonth.getDay()+1){
-                document.getElementById('week-1').querySelector('.day-'+j).querySelector('h3').innerHTML = dia;
+    if (firstDayOfMonth.getDay() > 0) {
+        for (let j = 1; j <= 7; j++) {
+            document.getElementById('week-1').querySelector('.day-' + j).querySelector('h3').innerHTML = (maxDaysOfMonth[new Date().getMonth() - 1] - firstDayOfMonth.getDay() + j);
+            if (j < firstDayOfMonth.getDay() + 1) {
+                document.getElementById('week-1').querySelector('.day-' + j).querySelector('.text-success').style.display = 'none'
+                document.getElementById('week-1').querySelector('.day-' + j).querySelector('.text-danger').style.display = 'none'
+                document.getElementById('week-1').querySelector('.day-' + j).querySelector('button').disabled = true
+            }
+            if (j >= firstDayOfMonth.getDay() + 1) {
+                document.getElementById('week-1').querySelector('.day-' + j).querySelector('h3').innerHTML = dia;
+                if (dia < new Date().getDate()) {
+                    document.getElementById('week-1').querySelector('.day-' + j).querySelector('.text-success').style.display = 'none';
+                    document.getElementById('week-1').querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
+                    document.getElementById('week-1').querySelector('.day-' + j).querySelector('button').disabled = true
+                }
                 dia++;
             }
-            if(j == 1){
+            if (j == 1) {
                 document.getElementById('week-1').querySelector('.day-1').querySelector('.text-success').style.display = 'none'
                 document.getElementById('week-1').querySelector('.day-1').querySelector('.text-danger').style.display = 'none'
                 document.getElementById('week-1').querySelector('.day-1').querySelector('button').disabled = true
@@ -331,18 +344,42 @@ function constructCalendar(){
         }
     }
 
-    for(let i = 2; i <= 6; i++){
+    for (let i = 2; i <= 6; i++) {
 
-        for(let j=1; j <= 7; j++){
-            document.getElementById('week-'+i).querySelector('.day-'+j).querySelector('h3').innerHTML = dia;
+        for (let j = 1; j <= 7; j++) {
+            document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('h3').innerHTML = dia;
+            document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-danger').style.display = 'none';
+            document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
             dia++;
-            if(dia>maxDaysOfMonth[new Date().getMonth()]){
+            if (dia > maxDaysOfMonth[new Date().getMonth()]) {
                 dia = 1;
+                nextMonth = true;
             }
-            if(j == 1){
-                document.getElementById('week-'+i).querySelector('.day-1').querySelector('.text-success').style.display = 'none'
-                document.getElementById('week-'+i).querySelector('.day-1').querySelector('.text-danger').style.display = 'none'
-                document.getElementById('week-'+i).querySelector('.day-1').querySelector('button').disabled = true
+            if((dia + 7 > new Date().getDate() && nextMonth) || (nextMonth && dia > (new Date().getDate() + 8 - maxDaysOfMonth[new Date().getMonth()]))) {
+                if(plan.price > 0){
+                    document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-success').style.display = 'none';
+                    document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
+                    document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-danger').style.display = 'block';
+                    document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('button').disabled = true
+                }
+            }
+            // if (nextMonth) {
+            //     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-success').style.display = 'none';
+            //     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-danger').style.display = 'none';
+            //     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'block';
+            //     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('button').disabled = true
+            // }
+            if (dia <= new Date().getDate() && j != 1 && !nextMonth) {
+                document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-success').style.display = 'none';
+                document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
+                document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-danger').style.display = 'block';
+                document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('button').disabled = true
+            }
+            if (j == 1) {
+                document.getElementById('week-' + i).querySelector('.day-1').querySelector('.text-success').style.display = 'none'
+                document.getElementById('week-' + i).querySelector('.day-1').querySelector('.text-danger').style.display = 'none'
+                document.getElementById('week-' + i).querySelector('.day-1').querySelector('.text-secondary').style.display = 'block'
+                document.getElementById('week-' + i).querySelector('.day-1').querySelector('button').disabled = true
             }
         }
 
@@ -357,24 +394,30 @@ function constructCalendar(){
 
 }
 
-function openOverlay(elem){
+function openOverlay(elem) {
 
     dia = elem.querySelector('h3').textContent
 
-    document.querySelector('#calendar-overlay').querySelector('h3').innerHTML = new Date(new Date().getFullYear(), new Date().getMonth(), dia).toLocaleDateString();
+    let date = new Date(new Date().getFullYear(), new Date().getMonth(), dia);
 
-    gsap.to('#calendar-overlay',{
+    if(elem.parentNode.parentElement.id == 'week-5' && dia < new Date().getDate() || elem.parentNode.parentElement.id == 'week-6' && dia < new Date().getDate()) {
+        date.setMonth(date.getMonth() + 1)
+    }
+
+    document.querySelector('#calendar-overlay').querySelector('h3').innerHTML = date.toLocaleDateString();
+
+    gsap.to('#calendar-overlay', {
         display: 'flex',
         opacity: 1
     })
 }
 
-function closeOverlay(){
-    gsap.to('#calendar-overlay',{
+function closeOverlay() {
+    gsap.to('#calendar-overlay', {
         opacity: 0,
         onComplete: () => {
             document.querySelector('#calendar-overlay').style.display = 'none'
         }
     });
-    
+
 }
