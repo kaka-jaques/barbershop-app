@@ -17,14 +17,667 @@
     <link rel='stylesheet'
         href='https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css'>
     <!-- My CSS -->
-    <link rel="stylesheet" href="assets/main.css">
+    <link rel="stylesheet" href="assets/book.css">
 </head>
 
 <body>
 
     <div class="content">
         <div id="main-booking">
-
+            <div id="calendar-overlay">
+                <div class="row">
+                    <div class="col">
+                        <h3>Nan</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <select class="form-select form-select-sm" name="service" id="service">
+                            <option>Selecione uma opção</option>
+                            <option value="1">Cabelo</option>
+                            <option value="2">Barba</option>
+                            <option value="3">Cabelo e Barba</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input type="time" name="" id="service-time" min="08:00" max="19:00" aria-required="true" aria-valuemax="18:00" aria-valuemin="08:00" required value="08:00" >
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-danger" onclick="closeOverlay()">Cancelar</button>
+                        <button class="btn btn-primary">Agendar!</button>
+                    </div>
+                </div>
+            </div>
+            <div id="loading-screen">
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+            </div>
+            <div id="calendar">
+                <h2 id="month"></h2>
+                <table class="table">
+                    <thead>
+                        <th>Dom</th>
+                        <th>Seg</th>
+                        <th>Ter</th>
+                        <th>Qua</th>
+                        <th>Qui</th>
+                        <th>Sex</th>
+                        <th>Sab</th>
+                    </thead>
+                    <tbody>
+                        <tr id="week-1">
+                            <td class="day-1">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-2">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-3">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-4">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-5">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-6">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-7">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr id="week-2">
+                            <td class="day-1">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-2">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-3">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-4">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-5">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-6">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-7">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr id="week-3">
+                            <td class="day-1">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-2">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-3">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-4">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-5">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-6">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-7">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr id="week-4">
+                            <td class="day-1">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-2">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-3">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-4">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-5">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-6">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-7">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr id="week-5">
+                            <td class="day-1">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-2">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-3">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-4">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-5">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-6">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-7">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr id="week-6">
+                            <td class="day-1">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-2">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-3">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-4">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-5">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-6">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                            <td class="day-7">
+                                <button onclick="openOverlay(this)">
+                                    <div class="col">
+                                        <div class="row">
+                                            <h3>1</h3>
+                                        </div>
+                                        <div class="row">
+                                            <i class="fa-solid fa-circle text-success"></i>
+                                            <i class="fa-solid fa-circle text-danger"></i>
+                                            <i class="fa-solid fa-circle text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="col">
+                    <i class="fa-solid fa-circle text-success"></i> Disponível
+                    <i class="fa-solid fa-circle text-danger"></i>
+                    Indisponível
+                    <i class="fa-solid fa-circle text-secondary"></i>
+                    Fechado
+                </div>
+            </div>
         </div>
     </div>
 
@@ -35,6 +688,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <!-- My JS -->
     <script src="assets/main.js"></script>
 </body>

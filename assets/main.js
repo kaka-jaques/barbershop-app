@@ -29,6 +29,9 @@ fetch('http://localhost:8080/auth', {
                 else if (window.location.pathname == '/register.html') {
                     window.location.href = '/login.html';
                 }
+                else if(window.location.pathname == '/booking.html'){
+                    constructCalendar();
+                }
             })
         }else{
             if(window.location.pathname == '/booking.html'){
@@ -252,4 +255,126 @@ function changingWindow(elem){
         backgroundImage: 'linear-gradient('+position+')'
     })
 
+}
+
+const months = {
+    0: 'Janeiro',
+    1: 'Fevereiro',
+    2: 'Março',
+    3: 'Abril',
+    4: 'Maio',
+    5: 'Junho',
+    6: 'Julho',
+    7: 'Agosto',
+    8: 'Setembro',
+    9: 'Outubro',
+    10: 'Novembro',
+    11: 'Dezembro'
+}
+
+const maxDaysOfMonth = {
+    0: 31,
+    1: 28,
+    2: 31,
+    3: 30,
+    4: 31,
+    5: 30,
+    6: 31,
+    7: 31,
+    8: 30,
+    9: 31,
+    10: 30,
+    11: 31
+}
+
+function constructCalendar(){
+
+    document.getElementById('month').innerHTML = months[new Date().getMonth()];
+
+    if(window.screen.width < 380 || window.screen.height < 785){
+        for(let i=1;i<=7;i++){
+            gsap.to($('.day-'+i).find('h3'), {
+                duration: 0,
+                fontSize: 18
+            });
+            gsap.to($('.day-'+i).find('svg'), {
+                duration: 0,
+                width: 7
+            });
+            gsap.to('#month',{
+                duration: 0,
+                fontSize: 20
+            });
+            gsap.to('#calendar', {
+                duration: 0,
+                height: '85%'
+            })
+        }
+    }
+
+    let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
+    let dia = 1;
+
+    if(firstDayOfMonth.getDay() > 0){
+        for(let j = 1; j <= 7; j++){
+            document.getElementById('week-1').querySelector('.day-'+j).querySelector('h3').innerHTML = (maxDaysOfMonth[new Date().getMonth()-1] - firstDayOfMonth.getDay()+j)
+            if(j >= firstDayOfMonth.getDay()+1){
+                document.getElementById('week-1').querySelector('.day-'+j).querySelector('h3').innerHTML = dia;
+                dia++;
+            }
+            if(j == 1){
+                document.getElementById('week-1').querySelector('.day-1').querySelector('.text-success').style.display = 'none'
+                document.getElementById('week-1').querySelector('.day-1').querySelector('.text-danger').style.display = 'none'
+                document.getElementById('week-1').querySelector('.day-1').querySelector('button').disabled = true
+            }
+        }
+    }
+
+    for(let i = 2; i <= 6; i++){
+
+        for(let j=1; j <= 7; j++){
+            document.getElementById('week-'+i).querySelector('.day-'+j).querySelector('h3').innerHTML = dia;
+            dia++;
+            if(dia>maxDaysOfMonth[new Date().getMonth()]){
+                dia = 1;
+            }
+            if(j == 1){
+                document.getElementById('week-'+i).querySelector('.day-1').querySelector('.text-success').style.display = 'none'
+                document.getElementById('week-'+i).querySelector('.day-1').querySelector('.text-danger').style.display = 'none'
+                document.getElementById('week-'+i).querySelector('.day-1').querySelector('button').disabled = true
+            }
+        }
+
+    }
+
+    gsap.to('#loading-screen', {
+        opacity: 0,
+        onComplete: () => {
+            document.querySelector('#loading-screen').style.display = 'none'
+        }
+    })
+
+}
+
+function openOverlay(elem){
+
+    dia = elem.querySelector('h3').textContent
+
+    document.querySelector('#calendar-overlay').querySelector('h3').innerHTML = new Date(new Date().getFullYear(), new Date().getMonth(), dia).toLocaleDateString();
+
+    gsap.to('#calendar-overlay',{
+        display: 'flex',
+        opacity: 1
+    })
+}
+
+function closeOverlay(){
+    gsap.to('#calendar-overlay',{
+        opacity: 0,
+        onComplete: () => {
+            document.querySelector('#calendar-overlay').style.display = 'none'
+        }
+    });
+    
 }
