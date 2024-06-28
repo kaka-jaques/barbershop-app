@@ -20,12 +20,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.kjf.barbershop.classes.JwtUtil;
 import br.com.kjf.barbershop.repository.BookingRepository;
+import br.com.kjf.barbershop.repository.ClientRepository;
+import br.com.kjf.barbershop.repository.ServicesRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.BookingVO;
 import br.com.kjf.barbershop.vo.UserVO;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5500", allowCredentials = "true")
 @RequestMapping("/book")
 public class BookingController {
 
@@ -33,28 +35,22 @@ public class BookingController {
 	private BookingRepository bookingRepository;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private ClientRepository clientRepository;
 	
 	@Autowired
-	private JwtUtil jwtUtil;
+	private ServicesRepository servicesRepository;
 	
 	ObjectMapper objMapper = new ObjectMapper();
 	
 	@PostMapping
-	public ResponseEntity<?> registerBook(@RequestBody BookingVO book, @RequestHeader(name = "Cookie")String auth) throws JsonMappingException, JsonProcessingException{
+	public ResponseEntity<?> registerBook(@RequestBody BookingVO book, @RequestHeader(name = "Cookie", required = false)String authToken, @RequestHeader(name = "Auth")Boolean auth) throws JsonMappingException, JsonProcessingException{
 		
-		UserVO user = null;
+		book.setServices(servicesRepository.getServiceById(book.getServices().getId()));
 		
-		try {
-			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(6, (auth.indexOf(";") == -1?auth.length():auth.indexOf(";")))));
-		}catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(objMapper.readTree(("{"
-					+ "\"error\": \"user_not_found\","
-					+ "\"message\": \"The authentication token return an invalid user.\""
-					+ "}")));
+		if(!auth) {
+			clientRepository.save(book.getClient());
 		}
 		
-		book.setClient(user.getClient());
 		bookingRepository.save(book);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(objMapper.readTree(("{"

@@ -402,7 +402,7 @@ function constructCalendar(data) {
             });
             gsap.to($('.day-' + i).find('svg'), {
                 duration: 0,
-                width: 7
+                width: 10
             });
             gsap.to('#month', {
                 duration: 0,
@@ -419,6 +419,86 @@ function constructCalendar(data) {
         opacity: 0,
         onComplete: () => {
             document.querySelector('#loading-screen').style.display = 'none'
+        }
+    })
+
+}
+
+function sendBook(){
+
+    fetch('http://localhost:8080/auth', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => {
+            if(response.status == 302){
+                response.json().then(data => {
+                    booking(data);
+                    gsap.to('#calendar-overlay',{
+                        opacity: 0,
+                        onComplete: () => {
+                            document.querySelector('#calendar-overlay').style.display = 'none'
+                        }
+                    })
+                })
+            }else{
+                gsap.to('#calendar-user',{
+                    display: 'flex',
+                    opacity: 1
+                })
+            }
+        })
+
+}
+
+function booking(user){
+
+    let date = document.querySelector('#calendar-overlay').querySelector('h3').textContent.split('/');
+    let bookDate = new Date(parseInt(date[2], 10), parseInt(date[1], 10) - 1, parseInt(date[0], 10));
+
+    let auth = false;
+
+    let body = {
+        bookingDate: bookDate,
+        services: {
+            id: document.querySelector('#service').value
+        },
+        client: user.client
+    }
+
+    if(user.client.active == true){
+        auth = true;
+    }
+
+    fetch('http://localhost:8080/book', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Auth': auth
+        },
+        body: JSON.stringify(body)
+    })
+    .then(response => {
+        if(response.status == 201){
+            gsap.to('#calendar-overlay',{
+                opacity: 0,
+                onComplete: () => {
+                    document.querySelector('#calendar-overlay').style.display = 'none'
+                }
+            });
+            gsap.to('#calendar-user',{
+                opacity: 0,
+                onComplete: () => {
+                    document.querySelector('#calendar-user').style.display = 'none'
+                }
+            })
+            alert('Reserva efetuada com sucesso!')
+        }else{
+            alert('Erro ao efetuar reserva!')
         }
     })
 
@@ -449,5 +529,4 @@ function closeOverlay() {
             document.querySelector('#calendar-overlay').style.display = 'none'
         }
     });
-
 }

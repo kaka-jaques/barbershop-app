@@ -54,7 +54,7 @@ public class SecurityConfig {
         httpSec.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/auth/**", "/meta/**").permitAll()
+                                .requestMatchers("/auth/**", "/meta/**", "/book").permitAll()
                                 .requestMatchers("/book/all", "/book/admin").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )

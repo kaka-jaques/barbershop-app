@@ -33,6 +33,8 @@ public class ClientVO {
 	private LocalDate birthDate;
 	private String cpf;
 	@Column(nullable = false)
+	private String telephone;
+	@Column(nullable = false)
 	private Boolean active;
 	@ManyToOne
 	@JoinColumn(name = "planos_id", nullable = false)
@@ -44,6 +46,14 @@ public class ClientVO {
 	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BookingVO> bookings;
 	
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
 	public ClientVO() {
 		super();
 	}

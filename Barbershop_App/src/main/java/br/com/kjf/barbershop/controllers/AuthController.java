@@ -69,7 +69,7 @@ public class AuthController {
 		
 		HttpHeaders headers = new HttpHeaders();
 		
-		headers.set("Set-Cookie", "token='';Max-Age=0");
+		headers.set("Set-Cookie", "token='';Max-Age=0; path=/");
 		
 		return ResponseEntity.ok().headers(headers).build();
 		
@@ -144,7 +144,7 @@ public class AuthController {
 		
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUser());
 		final String token = jwtUtil.generateLoginToken(userDetails.getUsername(), keep);
-		headers.add("Set-Cookie", "token="+token+";Max-Age="+(keep?"1296000":"54000")+"; SameSite=Strict; HttpOnly;");
+		headers.add("Set-Cookie", "token="+token+";Max-Age="+(keep?"1296000":"54000")+"; SameSite=Strict; HttpOnly; path=/");
 		
 		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(
 				objMapper.readTree("{"

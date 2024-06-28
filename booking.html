@@ -25,6 +25,28 @@
     <div class="content">
         <div id="main-booking">
             <i class="fa-solid fa-xmark" onclick="window.location.href = '/'"></i>
+            <div id="calendar-user">
+                <div class="row">
+                    <div class="col">
+                        <h5 class="text-light">Dados</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input class="form-control" type="text" name="name" id="book-user" placeholder="Nome">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input class="form-control" type="tel" name="phone" id="book-tel" placeholder="Telefone">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-primary" onclick="booking({email: null, user: null, password: null, client: {name: document.getElementById('book-user').value, telephone: document.getElementById('book-tel').value, active: false, plano: {id: 1, name: 'Free', price: 0, description: 'Plano gratuito'}}})">Salvar!</button>
+                    </div>
+                </div>
+            </div>
             <div id="calendar-overlay">
                 <div class="row">
                     <div class="col">
@@ -51,7 +73,7 @@
                 <div class="row">
                     <div class="col">
                         <button class="btn btn-danger" onclick="closeOverlay()">Cancelar</button>
-                        <button class="btn btn-primary" onclick="alert('Agendado!')">Agendar!</button>
+                        <button class="btn btn-primary" onclick="sendBook()">Agendar!</button>
                     </div>
                 </div>
             </div>
@@ -674,9 +696,9 @@
                     </tbody>
                 </table>
                 <div class="col">
-                    <i class="fa-solid fa-circle text-success"></i> Disponível
+                    <i class="fa-solid fa-circle text-success"></i> Disponível &nbsp;
                     <i class="fa-solid fa-circle text-danger"></i>
-                    Indisponível
+                    Indisponível &nbsp;
                     <i class="fa-solid fa-circle text-secondary"></i>
                     Fechado
                 </div>

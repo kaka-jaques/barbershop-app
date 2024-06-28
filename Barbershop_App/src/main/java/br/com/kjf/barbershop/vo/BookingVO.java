@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -21,7 +22,7 @@ public class BookingVO {
 	private Integer id;
 	@Column(nullable = false)
 	private GregorianCalendar bookingDate;
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "services_id", nullable = false)
 	private ServicesVO services;
 	@ManyToOne
