@@ -1,44 +1,60 @@
-var user = null;
-var name = null;
-var email = null;
-var profile_image = null;
 
-fetch('http://localhost:8080/auth', {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-        'Content-Type': 'application/json',
-    }
-})
-    .then(response => {
-        if (response.status == 302) {
+if (window.location.pathname == '/login.html' || window.location.pathname == '/register.html') {
+    auth();
+}
+else if (window.location.pathname == '/booking.html') {
+    bookAuth();
+}
 
-            response.json().then(data => {
-                user = data.user;
-                name = data.client.name;
-                email = data.email;
-                profile_image = data.client.image_url;
-                if (window.location.pathname == '/login.html') {
-                    document.getElementById('main-login').style.display = 'none';
-                    document.getElementById('main-profile').style.display = 'flex';
-                    document.getElementById('user').value = user;
-                    document.getElementById('profile-image').src = profile_image;
-                    document.getElementById('name').value = name;
-                    document.getElementById('email').value = email;
-                }
-                else if (window.location.pathname == '/register.html') {
-                    window.location.href = '/login.html';
-                }
-                else if (window.location.pathname == '/booking.html') {
-                    constructCalendar(data);
-                }
-            })
-        } else {
-            if (window.location.pathname == '/booking.html') {
-                window.location.href = '/login.html';
-            }
+function auth() {
+    fetch('http://localhost:8080/auth', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
         }
     })
+        .then(response => {
+            if (response.status == 302) {
+
+                response.json().then(data => {
+                    if (window.location.pathname == '/login.html') {
+                        document.getElementById('main-login').style.display = 'none';
+                        document.getElementById('main-profile').style.display = 'flex';
+                        document.getElementById('user').value = data.user;
+                        document.getElementById('profile-image').src = data.client.image_url;
+                        document.getElementById('name').value = data.client.name;
+                        document.getElementById('email').value = data.email;
+                    }
+                    else if (window.location.pathname == '/register.html') {
+                        window.location.href = '/login.html';
+                    }
+                })
+            }
+        })
+}
+
+function bookAuth() {
+
+    fetch('http://localhost:8080/auth', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => {
+            if(response.status == 302){
+                response.json().then(data => {
+                    if (window.location.pathname == '/booking.html') {
+                        constructCalendar(data);
+                    }
+                })
+            }else{
+                constructCalendar(null);
+            }
+        })
+}
 
 var planSwiper = new Swiper(".planSwiper", {
     centeredSlides: true,
@@ -222,6 +238,14 @@ function register() {
 
 var elemAtual = document.getElementsByClassName('profile-content')[0];
 
+function route(path){
+
+    setInterval(() => {
+        window.location.href = path;
+    }, 550);
+
+}
+
 function changingWindow(elem) {
 
     elemAtual.style.display = 'none';
@@ -290,28 +314,13 @@ const maxDaysOfMonth = {
 function constructCalendar(data) {
 
     document.getElementById('month').innerHTML = months[new Date().getMonth()];
+    
+    let plan;
 
-    let plan = data.client.plano;
-
-    if (window.screen.width < 380 || window.screen.height < 785) {
-        for (let i = 1; i <= 7; i++) {
-            gsap.to($('.day-' + i).find('h3'), {
-                duration: 0,
-                fontSize: 18
-            });
-            gsap.to($('.day-' + i).find('svg'), {
-                duration: 0,
-                width: 7
-            });
-            gsap.to('#month', {
-                duration: 0,
-                fontSize: 20
-            });
-            gsap.to('#calendar', {
-                duration: 0,
-                height: '85%'
-            })
-        }
+    if(data != null){
+        plan = data.client.plano;
+    }else{
+        plan = {price: 0};
     }
 
     let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -355,8 +364,8 @@ function constructCalendar(data) {
                 dia = 1;
                 nextMonth = true;
             }
-            if((dia + 7 > new Date().getDate() && nextMonth) || (nextMonth && dia > (new Date().getDate() + 8 - maxDaysOfMonth[new Date().getMonth()]))) {
-                if(plan.price > 0){
+            if ((dia + 7 > new Date().getDate() && nextMonth) || (nextMonth && dia > (new Date().getDate() + 8 - maxDaysOfMonth[new Date().getMonth()]))) {
+                if (plan.price > 0) {
                     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-success').style.display = 'none';
                     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
                     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-danger').style.display = 'block';
@@ -385,6 +394,27 @@ function constructCalendar(data) {
 
     }
 
+    if (window.screen.width < 380 || window.screen.height < 785) {
+        for (let i = 1; i <= 7; i++) {
+            gsap.to($('.day-' + i).find('h3'), {
+                duration: 0,
+                fontSize: 18
+            });
+            gsap.to($('.day-' + i).find('svg'), {
+                duration: 0,
+                width: 7
+            });
+            gsap.to('#month', {
+                duration: 0,
+                fontSize: 20
+            });
+            gsap.to('#calendar', {
+                duration: 0,
+                height: '85%'
+            })
+        }
+    }
+
     gsap.to('#loading-screen', {
         opacity: 0,
         onComplete: () => {
@@ -400,7 +430,7 @@ function openOverlay(elem) {
 
     let date = new Date(new Date().getFullYear(), new Date().getMonth(), dia);
 
-    if(elem.parentNode.parentElement.id == 'week-5' && dia < new Date().getDate() || elem.parentNode.parentElement.id == 'week-6' && dia < new Date().getDate()) {
+    if (elem.parentNode.parentElement.id == 'week-5' && dia < new Date().getDate() || elem.parentNode.parentElement.id == 'week-6' && dia < new Date().getDate()) {
         date.setMonth(date.getMonth() + 1)
     }
 

@@ -15,6 +15,15 @@
     justify-content: center;
 }
 
+#main-booking .fa-xmark{
+    position: fixed;
+    color: red;
+    cursor: pointer;
+    top: 2%;
+    left: 4%;
+    height: 25px;
+}
+
 #calendar{
     width: 90%;
     height: 70%;

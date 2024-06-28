@@ -58,8 +58,7 @@
                     <div class="row" id="mobile-home">
                         <div class="row">
                             <div class="col">
-                                <a href="https://api.whatsapp.com/send/?phone=554796803621&text=Olá! Gostaria de Agendar meu horário!&type=phone_number"
-                                    target="_blank">
+                                <a onclick="route('https://api.whatsapp.com/send/?phone=554796803621&text=Olá! Gostaria de Agendar meu horário!&type=phone_number')">
                                     <button class="btn btn-light" onmouseover="hoveredButton(this, this.querySelector('.fa-whatsapp'), true)" onmouseout="hoveredButton(this, this.querySelector('.fa-whatsapp'), false)">
                                         <i class="fa-brands fa-whatsapp"></i>
                                         Whatsapp
@@ -69,7 +68,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <a href="/booking.html">
+                                <a onclick="route('/booking.html')">
                                     <button class="btn btn-light" onmouseover="hoveredButton(this, this.querySelector('.fa-calendar-days'), true)" onmouseout="hoveredButton(this, this.querySelector('.fa-calendar-days'), false)">
                                         <i class="fa-solid fa-calendar-days"></i>
                                         Agendamento
@@ -79,7 +78,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <a href="">
+                                <a onclick="route('#plans')">
                                     <button class="btn btn-light" onmouseover="hoveredButton(this, this.querySelector('.fa-crown'), true)" onmouseout="hoveredButton(this, this.querySelector('.fa-crown'), false)">
                                         <i class="fa-solid fa-crown"></i>    
                                         Imperium's Club

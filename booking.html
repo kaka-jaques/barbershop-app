@@ -24,6 +24,7 @@
 
     <div class="content">
         <div id="main-booking">
+            <i class="fa-solid fa-xmark" onclick="window.location.href = '/'"></i>
             <div id="calendar-overlay">
                 <div class="row">
                     <div class="col">
@@ -32,7 +33,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <select class="form-select form-select-sm" name="service" id="service">
+                        <select class="form-select form-select" name="service" id="service">
                             <option>Selecione uma opção</option>
                             <option value="1">Cabelo</option>
                             <option value="2">Barba</option>
@@ -42,7 +43,9 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <input type="time" name="" id="service-time" required value="08:00" >
+                        <select class="form-select form-select" name="time" id="service-time">
+                            <option>Selecione um horário</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
