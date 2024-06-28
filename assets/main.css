@@ -64,7 +64,7 @@ header #mobile-header{
 }
 
 header #mobile-header img{
-    width: 60%;
+    width: 100%;
 }
 
 header #mobile-header .col{
@@ -187,7 +187,7 @@ main #plans .planSwiper .swiper-slide .swiper-card .btn h4{
 }
 
 
-main #booking .container{
+main #partners .container{
     background-color: rgb(34, 34, 34);
     height: 500px;
 }
@@ -233,7 +233,7 @@ footer{
 }
 
 #login-card img{
-    width: 40%;
+    width: 110%;
     margin-bottom: 20px;
 }
 
@@ -251,4 +251,112 @@ footer{
 
 #login-card .col button{
     width: 100%;
+}
+
+#main-profile{
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: #3e3e3e;
+    align-items: center;
+    position: absolute;
+    /* background-image: linear-gradient(165deg,#38383893 30%,#3c3c3c9b 100%), url('imgs/barber-model.jpg');
+    background-repeat: no-repeat;
+    background-size: cover; */
+}
+
+#main-profile .nav-bar{
+    background-color: white;
+    height: 100%;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    background-image: linear-gradient(190deg, transparent 10%, black 10%, black 31%, transparent 31%);
+}
+
+#main-profile .nav-bar .row{
+    height: 20%;
+    align-items: center;
+    margin: 0;
+}
+
+#main-profile .nav-bar svg{
+    padding: 0;
+    height: 30px;
+    cursor: pointer;
+}
+
+#main-profile .nav-bar .fa-user{
+    color: white;
+}
+
+#main-profile .nav-bar .fa-right-from-bracket, .fa-xmark{
+    color: red;
+}
+
+#main-profile .profile-content, .profile-credentials, .profile-plans{
+    height: 100%;
+    width: 80%;
+    display: flex;
+    background-image: linear-gradient(165deg,#38383893 30%,#3c3c3c9b 100%), url('/assets/imgs/background3.jpg');
+}
+
+#main-profile .profile-credentials, .profile-plans{
+    display: none;
+}
+
+#main-profile .profile-content img{
+    margin-top: 30px;
+    width: 180px;
+    height: 180px;
+    padding: 0;
+    border: 0.5px solid black;
+    border-radius: 100px;
+}
+
+#main-profile .profile-content .row, .profile-credentials .row, .profile-plans .row{
+    width: 100%;
+    margin: 0;
+    align-items: center;
+    flex-direction: column;
+}
+
+#main-profile .profile-content .btn-light{
+    width: fit-content;
+    height: fit-content;
+    color: rgb(9, 142, 237);
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+#main-profile .profile-content .btn-dark{
+    width: 80%;
+    background-color: rgb(67, 67, 67);
+    border-color: rgb(67, 67, 67);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+#main-profile .profile-content input, .profile-credentials input, .profile-plans input{
+    width: 80%;
+    border-radius: 10px;
+    height: 50px;
+    margin-bottom: 20px;
+    background-color: rgb(240, 240, 240);
+    font-size: 20px;
+}
+
+#main-profile .profile-plans .plan-card .row .col{
+    padding: 0;
+    margin: 0;
+}
+
+#main-profile .profile-plans .plan-card{
+    width: 80%;
+    height: 70%;
+    background-color: white;
+    margin-top: 30%;
+    padding: 20px;
+    border-radius: 15px;
 }

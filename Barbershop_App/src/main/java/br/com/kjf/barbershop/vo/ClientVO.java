@@ -1,13 +1,19 @@
 package br.com.kjf.barbershop.vo;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -21,33 +27,59 @@ public class ClientVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column(nullable = false)
 	private String name;
+	private String image_url;
 	@Temporal(TemporalType.DATE)
 	private LocalDate birthDate;
-	@Column(nullable = false)
 	private String cpf;
 	@Column(nullable = false)
+	private String telephone;
+	@Column(nullable = false)
 	private Boolean active;
+	@ManyToOne
+	@JoinColumn(name = "planos_id", nullable = false)
+	private PlansVO plano;
+	private Date renovation;
 	@OneToOne(mappedBy = "client")
+	@JsonIgnore
 	private UserVO user;
 	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BookingVO> bookings;
 	
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
 	public ClientVO() {
 		super();
 	}
+	
+	public String getImage_url() {
+		return image_url;
+	}
 
-	public ClientVO(Integer id, String name, LocalDate birthDate, String cpf, Boolean active, UserVO user,
-			List<BookingVO> bookings) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.birthDate = birthDate;
-		this.cpf = cpf;
-		this.active = active;
-		this.user = user;
-		this.bookings = bookings;
+	public void setImage_url(String image_url) {
+		this.image_url = image_url;
+	}
+
+	public PlansVO getPlano() {
+		return plano;
+	}
+
+	public void setPlano(PlansVO plano) {
+		this.plano = plano;
+	}
+
+	public Date getRenovation() {
+		return renovation;
+	}
+
+	public void setRenovation(Date renovation) {
+		this.renovation = renovation;
 	}
 
 	public Integer getId() {
