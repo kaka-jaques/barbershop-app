@@ -72,8 +72,11 @@
                     <button class="btn btn-light" onclick="document.getElementById('new-profile-img').click()">Atualizar
                         Imagem</button>
                     <input type="file" name="file" id="new-profile-img" hidden accept="image/*">
-                    <input class="mt-5" type="text" name="name" id="name" placeholder="Nome">
+                    <p class="text-light mb-0" style="padding-left: 12%;">Nome Completo</p>
+                    <input type="text" name="name" id="name" placeholder="Nome">
+                    <p class="text-light mb-0" style="padding-left: 12%;">Username</p>
                     <input type="text" name="User" id="user" placeholder="User">
+                    <p class="text-light mb-0" style="padding-left: 12%;">Email</p>
                     <input type="email" name="email" id="email" placeholder="Email" disabled>
                     <button class="btn btn-light" onclick="alert('clicado!')">Alterar Senha?</button>
                     <button class="btn btn-dark mt-5">Salvar</button>
@@ -81,7 +84,13 @@
             </div>
             <div class="profile-credentials">
                 <div class="row">
-                    <input class="mt-5" type="date" name="birthday" id="birth">
+                    <p class="text-light mb-0 mt-5" style="padding-left: 12%;">Data de Aniversário</p>
+                    <input type="date" name="birthday" id="birth">
+                    <p class="text-light mb-0" style="padding-left: 12%;">Celular/Whatsapp</p>
+                    <input type="tel" name="phone" id="phone" placeholder="Telefone" inputmode="numeric" onchange="phoneCase(this)">
+                    <p class="text-light mb-0" style="padding-left: 12%;">CPF</p>
+                    <input type="text" name="cpf" id="cpf" placeholder="CPF">
+                    <button class="btn btn-dark mt-5">Salvar</button>
                 </div>
             </div>
             <div class="profile-plans">
@@ -89,7 +98,7 @@
                     <div class="plan-card">
                         <div class="row">
                             <div class="col">
-                                <h2 id="plan-title">Plano</h2>
+                                <h1 id="plan-title">Plano</h1>
                             </div>
                         </div>
                         <div class="row">
@@ -97,9 +106,14 @@
                                 <h4 id="plan-price">R$0,00/mês</h4>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col">
+                                <h5 id="plan-description">Description</h5>
+                            </div>
+                        </div>
                         <div class="row mt-5">
                             <div class="col">
-                                <button class="btn btn-dark" onclick="window.location.href = '/#plans'">Alterar Plano</button>
+                                <button class="btn btn-dark" onclick="window.location.href = '/#plans'">Alterar</button>
                             </div>
                         </div>
                     </div>

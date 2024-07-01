@@ -137,7 +137,7 @@
     box-shadow: none;
 }
 
-#main-profile .profile-content .btn-dark{
+#main-profile .profile-content .btn-dark, .profile-credentials .btn-dark{
     width: 80%;
     background-color: rgb(67, 67, 67);
     border-color: rgb(67, 67, 67);
@@ -149,7 +149,7 @@
     width: 80%;
     border-radius: 10px;
     height: 50px;
-    margin-bottom: 20px;
+    margin-bottom: 6px;
     background-color: rgb(240, 240, 240);
     font-size: 20px;
 }
@@ -166,4 +166,18 @@
     margin-top: 30%;
     padding: 20px;
     border-radius: 15px;
+}
+
+#main-profile .profile-plans #plan-title{
+    font-size: 33px;
+}
+
+#main-profile .profile-plans .mt-5{
+    text-align: center;
+}
+
+#main-profile .profile-plans button{
+    width: 90%;
+    height: 70px;
+    font-size: 30px;
 }

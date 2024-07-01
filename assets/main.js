@@ -18,6 +18,7 @@ function auth() {
             if (response.status == 302) {
 
                 response.json().then(data => {
+                    console.log(data.client.birthDate);
                     if (window.location.pathname == '/login.html') {
                         document.getElementById('main-login').style.display = 'none';
                         document.getElementById('main-profile').style.display = 'flex';
@@ -25,6 +26,11 @@ function auth() {
                         document.getElementById('profile-image').src = data.client.image_url;
                         document.getElementById('name').value = data.client.name;
                         document.getElementById('email').value = data.email;
+                        document.getElementById('birth').value = new Date(data.client.birthDate[0], data.client.birthDate[1] - 1, data.client.birthDate[2]).toISOString().split('T')[0];
+                        document.getElementById('phone').value = data.client.telephone;
+                        document.getElementById('plan-title').innerHTML = data.client.plano.name;
+                        document.getElementById('plan-price').innerHTML = 'R$' + data.client.plano.price;
+                        document.getElementById('plan-description').innerHTML = data.client.plano.description.replace(/\*/g, '<br>*');
                     }
                     else if (window.location.pathname == '/register.html') {
                         window.location.href = '/login.html';
@@ -32,13 +38,15 @@ function auth() {
                     gsap.to('#loading-screen', {
                         opacity: 0,
                         duration: 1,
-                        onComplete: ()=>{
-                            document.getElementById('loading-screen').style.display = 'none';   
+                        onComplete: () => {
+                            if (window.location.pathname == '/login.html') {
+                                document.getElementById('loading-screen').style.display = 'none';
+                            }
                         }
                     })
                 })
             }
-            else{
+            else {
                 throw new Error('Sem token')
             }
         })
@@ -47,12 +55,19 @@ function auth() {
             gsap.to('#loading-screen', {
                 opacity: 0,
                 duration: 1,
-                onComplete: ()=>{
-                    document.getElementById('loading-screen').style.display = 'none';   
+                onComplete: () => {
+                    if (window.location.pathname == '/login.html') {
+                        document.getElementById('loading-screen').style.display = 'none';
+                    }
                 }
             })
         })
 }
+
+function phoneCase(e) {
+    // Remove caracteres não numéricos
+    e.target.value = e.target.value.replace(/\D/g, '');
+};
 
 function bookAuth() {
 
@@ -76,7 +91,15 @@ function bookAuth() {
             }
         })
         .catch(error => {
-            console.log(error);
+            gsap.to('.fa-circle-notch', {
+                opacity: 0,
+                onComplete: () => {
+                    gsap.to('#erro-api-screen',{
+                        opacity: 1,
+                        display: 'flex',
+                    })
+                }
+            })
         })
 }
 
@@ -100,7 +123,6 @@ window.addEventListener('scroll', function () {
         gsap.to("header", {
             duration: 0.7,
             height: 85,
-
         })
         gsap.to(".mobile-header-img", {
             duration: 0.7,
@@ -113,15 +135,18 @@ window.addEventListener('scroll', function () {
     } else {
         gsap.to("header", {
             duration: 0.5,
-            height: 200
+            height: 200,
+            delay: 0.2
         })
         gsap.to(".mobile-header-img", {
             duration: 0.5,
-            width: 375
+            width: 375,
+            delay: 0.2
         })
         gsap.to(".fa-user", {
             duration: 0.5,
-            top: 210
+            top: 210,
+            delay: 0.2
         })
     }
 })
@@ -264,9 +289,9 @@ var elemAtual = document.getElementsByClassName('profile-content')[0];
 
 function route(path) {
 
-    setInterval(() => {
+    setTimeout(() => {
         window.location.href = path;
-    }, 550);
+    }, 500);
 
 }
 
@@ -303,409 +328,4 @@ function changingWindow(elem) {
         backgroundImage: 'linear-gradient(' + position + ')'
     })
 
-}
-
-const months = {
-    0: 'Janeiro',
-    1: 'Fevereiro',
-    2: 'Março',
-    3: 'Abril',
-    4: 'Maio',
-    5: 'Junho',
-    6: 'Julho',
-    7: 'Agosto',
-    8: 'Setembro',
-    9: 'Outubro',
-    10: 'Novembro',
-    11: 'Dezembro'
-}
-
-const maxDaysOfMonth = {
-    0: 31,
-    1: 28,
-    2: 31,
-    3: 30,
-    4: 31,
-    5: 30,
-    6: 31,
-    7: 31,
-    8: 30,
-    9: 31,
-    10: 30,
-    11: 31
-}
-
-const hoursService = {
-    1: '08:00',
-    2: '08:30',
-    3: '09:00',
-    4: '09:30',
-    5: '10:00',
-    6: '10:30',
-    7: '11:00',
-    8: '11:30',
-    9: '12:00',
-    10: '12:30',
-    11: '13:00',
-    12: '13:30',
-    13: '14:00',
-    14: '14:30',
-    15: '15:00',
-    16: '15:30',
-    17: '16:00',
-    18: '16:30',
-    19: '17:00',
-    20: '17:30',
-    21: '18:00',
-    22: '18:30',
-    23: '19:00'
-}
-
-var bookings = null;
-
-async function constructCalendar(data) {
-
-    const books = await getBooks();
-    bookings = books;
-
-    document.getElementById('month').innerHTML = months[new Date().getMonth()];
-
-    let plan;
-
-    if (data != null) {
-        plan = data.client.plano;
-    } else {
-        plan = { price: 0 };
-    }
-
-    let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-
-    let dia = 1;
-    let nextMonth = false;
-
-    if (firstDayOfMonth.getDay() > 0) {
-        for (let j = 1; j <= 7; j++) {
-            document.getElementById('week-1').querySelector('.day-' + j).querySelector('h3').innerHTML = (maxDaysOfMonth[new Date().getMonth() - 1] - firstDayOfMonth.getDay() + j);
-            if (j < firstDayOfMonth.getDay() + 1) {
-                document.getElementById('week-1').querySelector('.day-' + j).querySelector('.text-success').style.display = 'none'
-                document.getElementById('week-1').querySelector('.day-' + j).querySelector('.text-danger').style.display = 'none'
-                document.getElementById('week-1').querySelector('.day-' + j).querySelector('button').disabled = true
-            }
-            if (j >= firstDayOfMonth.getDay() + 1) {
-                document.getElementById('week-1').querySelector('.day-' + j).querySelector('h3').innerHTML = dia;
-                await verifyDate(document.getElementById('week-1').querySelector('.day-' + j).querySelector('button'));
-                if (dia < new Date().getDate()) {
-                    document.getElementById('week-1').querySelector('.day-' + j).querySelector('.text-success').style.display = 'none';
-                    document.getElementById('week-1').querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
-                    document.getElementById('week-1').querySelector('.day-' + j).querySelector('.text-danger').style.display = 'block';
-                    document.getElementById('week-1').querySelector('.day-' + j).querySelector('button').disabled = true
-                }
-                dia++;
-            }
-            if (j == 1) {
-                document.getElementById('week-1').querySelector('.day-1').querySelector('.text-success').style.display = 'none'
-                document.getElementById('week-1').querySelector('.day-1').querySelector('.text-danger').style.display = 'none'
-                document.getElementById('week-1').querySelector('.day-1').querySelector('button').disabled = true
-            }
-            
-        }
-    }
-
-    for (let i = 2; i <= 6; i++) {
-
-        for (let j = 1; j <= 7; j++) {
-            document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('h3').innerHTML = dia;
-            document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-danger').style.display = 'none';
-            document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
-
-            dia++;
-            if (dia > maxDaysOfMonth[new Date().getMonth()]) {
-                dia = 1;
-                nextMonth = true;
-            }
-            if ((dia + 7 > new Date().getDate() && nextMonth) || (nextMonth && dia > (new Date().getDate() + 8 - maxDaysOfMonth[new Date().getMonth()]))) {
-                if (plan.price > 0) {
-                    document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-success').style.display = 'none';
-                    document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
-                    document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-danger').style.display = 'block';
-                    document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('button').disabled = true
-                }
-            }
-            if ((dia <= new Date().getDate() && j != 1 && !nextMonth)) {
-                document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-success').style.display = 'none';
-                document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
-                document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-danger').style.display = 'block';
-                document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('button').disabled = true
-            }
-            if (j == 1) {
-                document.getElementById('week-' + i).querySelector('.day-1').querySelector('.text-success').style.display = 'none'
-                document.getElementById('week-' + i).querySelector('.day-1').querySelector('.text-danger').style.display = 'none'
-                document.getElementById('week-' + i).querySelector('.day-1').querySelector('.text-secondary').style.display = 'block'
-                document.getElementById('week-' + i).querySelector('.day-1').querySelector('button').disabled = true
-            }
-            if((dia > new Date().getDate() & !nextMonth) || (dia < new Date().getDate() && nextMonth) || dia == new Date().getDate()) {
-                await verifyDate(document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('button'));
-            }
-        }
-
-    }
-
-    if (window.screen.width < 380 || window.screen.height < 785) {
-        for (let i = 1; i <= 7; i++) {
-            gsap.to($('.day-' + i).find('h3'), {
-                duration: 0,
-                fontSize: 18
-            });
-            gsap.to($('.day-' + i).find('svg'), {
-                duration: 0,
-                width: 10
-            });
-            gsap.to('#month', {
-                duration: 0,
-                fontSize: 20
-            });
-            gsap.to('#calendar', {
-                duration: 0,
-                height: '85%'
-            })
-        }
-    }
-
-    gsap.to('#loading-screen', {
-        opacity: 0,
-        onComplete: () => {
-            document.querySelector('#loading-screen').style.display = 'none'
-        }
-    })
-
-}
-
-function extractTimestamp(timestamp) {
-    const date = new Date(timestamp);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear().toString();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${day}/${month}/${year} ${hours}:${minutes}`;
-}
-
-async function getBooks() {
-    try {
-        const response = await fetch('http://localhost:8080/book/client', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-
-        if (response.status === 200) {
-            const data = await response.json();
-            return data;
-        } else {
-            //TODO - Criar info de erro
-            throw new Error('Failed to fetch books');
-        }
-    } catch (error) {
-        console.error('Error fetching books:', error);
-        // Handle the error appropriately here
-        return null;
-    }
-}
-
-
-function sendBook() {
-
-    fetch('http://localhost:8080/auth', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    })
-        .then(response => {
-            if (response.status == 302) {
-                response.json().then(data => {
-                    booking(data);
-                    gsap.to('#calendar-overlay', {
-                        opacity: 0,
-                        onComplete: () => {
-                            document.querySelector('#calendar-overlay').style.display = 'none'
-                        }
-                    })
-                })
-            } else {
-                gsap.to('#calendar-user', {
-                    display: 'flex',
-                    opacity: 1
-                })
-            }
-        })
-
-}
-
-function booking(user) {
-
-    let date = document.querySelector('#calendar-overlay').querySelector('h3').textContent.split('/');
-    let hour = hoursService[document.querySelector('#service-time').value].split(':');
-    let bookDate = new Date(Date.UTC(parseInt(date[2], 10), parseInt(date[1], 10) - 1, parseInt(date[0], 10), parseInt(hour[0], 10), parseInt(hour[1], 10)));
-
-    let auth = false;
-
-    let body = {
-        bookingDate: bookDate,
-        services: {
-            id: document.querySelector('#service').value
-        },
-        client: user.client
-    }
-
-    if (user.client.active == true) {
-        auth = true;
-    }
-
-    fetch('http://localhost:8080/book', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Auth': auth
-        },
-        body: JSON.stringify(body)
-    })
-        .then(response => {
-            if (response.status == 201) {
-                gsap.to('#calendar-overlay', {
-                    opacity: 0,
-                    onComplete: () => {
-                        document.querySelector('#calendar-overlay').style.display = 'none'
-                    }
-                });
-                gsap.to('#calendar-user', {
-                    opacity: 0,
-                    onComplete: () => {
-                        document.querySelector('#calendar-user').style.display = 'none'
-                    }
-                })
-                alert('Reserva efetuada com sucesso!')
-            } else {
-                alert('Erro ao efetuar reserva!')
-            }
-        })
-
-}
-
-async function verifyDate(elem){
-    document.getElementById('service-time').innerHTML = '<option value="0">Selecione o horário</option>';
-    document.getElementById('service').value = 0;
-
-    const books = bookings;
-    const dateTimeToRemove = books.map(book => extractTimestamp(book.bookingDate));
-
-    let nextMonth = false;
-
-    dia = elem.querySelector('h3').textContent;
-
-    let date = new Date(new Date().getFullYear(), new Date().getMonth(), dia);
-
-    if (elem.parentNode.parentElement.id == 'week-5' && dia < new Date().getDate() || elem.parentNode.parentElement.id == 'week-6' && dia < new Date().getDate()) {
-        date.setMonth(date.getMonth() + 1)
-        nextMonth = true;
-    }
-
-    for (const key in hoursService) {
-        let currentTime = new Date();
-        let serviceTime = hoursService[key];
-
-        if (dia === currentTime.getDate().toString()) {
-            if (!dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + hoursService[key]) && serviceTime > (currentTime.getHours() + ':' + currentTime.getMinutes())) {
-                if (!dateTimeToRemove.includes(serviceTime)) {
-                    const option = document.createElement('option');
-                    option.value = key;
-                    option.text = serviceTime;
-                    document.getElementById('service-time').appendChild(option);
-                }
-            }
-        } else if (dia > currentTime.getDate() || (dia < currentTime.getDate() && nextMonth)) {
-            if (!dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + hoursService[key])) {
-                const option = document.createElement('option');
-                option.value = key;
-                option.text = serviceTime;
-                document.getElementById('service-time').appendChild(option);
-            }
-        }
-    }
-
-    if (document.getElementById('service-time').getElementsByTagName('option').length == 1) {
-        elem.querySelector('.text-success').style.display = 'none';
-        elem.querySelector('.text-danger').style.display = 'block';
-        elem.disabled = true;
-    }
-}
-
-async function openOverlay(elem) {
-
-    document.getElementById('service-time').innerHTML = '<option value="0">Selecione o horário</option>';
-    document.getElementById('service').value = 0;
-
-    const books = bookings;
-    const dateTimeToRemove = books.map(book => extractTimestamp(book.bookingDate));
-
-    let nextMonth = false;
-
-    dia = elem.querySelector('h3').textContent
-
-    let date = new Date(new Date().getFullYear(), new Date().getMonth(), dia);
-
-    if (elem.parentNode.parentElement.id == 'week-5' && dia < new Date().getDate() || elem.parentNode.parentElement.id == 'week-6' && dia < new Date().getDate()) {
-        date.setMonth(date.getMonth() + 1)
-        nextMonth = true;
-    }
-
-    for (const key in hoursService) {
-        let currentTime = new Date();
-        let serviceTime = hoursService[key];
-
-        if (dia === currentTime.getDate().toString()) {
-            if (!dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + hoursService[key]) && serviceTime > (currentTime.getHours() + ':' + currentTime.getMinutes())) {
-                if (!dateTimeToRemove.includes(serviceTime)) {
-                    const option = document.createElement('option');
-                    option.value = key;
-                    option.text = serviceTime;
-                    document.getElementById('service-time').appendChild(option);
-                }
-            }
-        } else if (dia > currentTime.getDate() || (dia < currentTime.getDate() && nextMonth)) {
-            if (!dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + hoursService[key])) {
-                const option = document.createElement('option');
-                option.value = key;
-                option.text = serviceTime;
-                document.getElementById('service-time').appendChild(option);
-            }
-        }
-    }
-
-    if (document.getElementById('service-time').getElementsByTagName('option').length == 1) {
-        elem.querySelector('.text-success').style.display = 'none';
-        elem.querySelector('.text-danger').style.display = 'block';
-        elem.disabled = true;
-    } else {
-        document.querySelector('#calendar-overlay').querySelector('h3').innerHTML = date.toLocaleDateString();
-
-        gsap.to('#calendar-overlay', {
-            display: 'flex',
-            opacity: 1
-        })
-    }
-
-
-}
-
-function closeOverlay() {
-    gsap.to('#calendar-overlay', {
-        opacity: 0,
-        onComplete: () => {
-            document.querySelector('#calendar-overlay').style.display = 'none'
-        }
-    });
 }

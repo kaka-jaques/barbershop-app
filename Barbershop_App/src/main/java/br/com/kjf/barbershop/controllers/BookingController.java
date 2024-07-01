@@ -27,7 +27,7 @@ import br.com.kjf.barbershop.vo.BookingVO;
 import br.com.kjf.barbershop.vo.UserVO;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5500"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5500", "http://192.168.1.67:5500"}, allowCredentials = "true")
 @RequestMapping("/book")
 public class BookingController {
 
