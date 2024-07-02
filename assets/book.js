@@ -76,7 +76,7 @@ async function constructCalendar(data) {
     let dia = 1;
     let nextMonth = false;
 
-    if (firstDayOfMonth.getDay() > 0) {
+    //if (firstDayOfMonth.getDay() > 0) {
         for (let j = 1; j <= 7; j++) {
             document.getElementById('week-1').querySelector('.day-' + j).querySelector('h3').innerHTML = (maxDaysOfMonth[new Date().getMonth() - 1] - firstDayOfMonth.getDay() + j);
             if (j < firstDayOfMonth.getDay() + 1) {
@@ -102,7 +102,7 @@ async function constructCalendar(data) {
             }
 
         }
-    }
+    //}
 
     for (let i = 2; i <= 6; i++) {
 
@@ -116,12 +116,16 @@ async function constructCalendar(data) {
                 dia = 1;
                 nextMonth = true;
             }
-            if ((dia + 7 > new Date().getDate() && nextMonth) || (nextMonth && dia > (new Date().getDate() + 8 - maxDaysOfMonth[new Date().getMonth()]))) {
+            if ((!nextMonth && dia > new Date().getDate()+8) || (nextMonth && (maxDaysOfMonth[new Date().getMonth()] - new Date().getDate() + dia) > 8)) {
                 if (plan.price > 0) {
                     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-success').style.display = 'none';
                     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-secondary').style.display = 'none';
                     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('.text-danger').style.display = 'block';
                     document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('button').disabled = true
+                }else{
+                    if ((dia > new Date().getDate() & !nextMonth) || (dia < new Date().getDate() && nextMonth) || dia == new Date().getDate()) {
+                        await verifyDate(document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('button'));
+                    }
                 }
             }
             if ((dia <= new Date().getDate() && j != 1 && !nextMonth)) {
@@ -135,9 +139,6 @@ async function constructCalendar(data) {
                 document.getElementById('week-' + i).querySelector('.day-1').querySelector('.text-danger').style.display = 'none'
                 document.getElementById('week-' + i).querySelector('.day-1').querySelector('.text-secondary').style.display = 'block'
                 document.getElementById('week-' + i).querySelector('.day-1').querySelector('button').disabled = true
-            }
-            if ((dia > new Date().getDate() & !nextMonth) || (dia < new Date().getDate() && nextMonth) || dia == new Date().getDate()) {
-                await verifyDate(document.getElementById('week-' + i).querySelector('.day-' + j).querySelector('button'));
             }
         }
 
@@ -260,8 +261,12 @@ document.getElementById('book-tel').addEventListener('input', function (e) {
 
 function booking(user) {
 
-    if(user.client.name == null || document.querySelector('#service').value == 0){
-        document.querySelector('#alert').innerHTML = 'Por favor, preencha todos os campos';
+    if(user.client.name == null || document.querySelector('#service').value == 0 || user.client.telephone == ''){
+        if(user.client.telephone == ''){
+            document.querySelector('#alert').innerHTML = 'Por favor, informe seu telefone! Se você já tem login, <a href="/login.html">atualize no seu perfil aqui</a>';
+        }else{
+            document.querySelector('#alert').innerHTML = 'Por favor, preencha todos os campos';
+        }
         gsap.to('#alert', {
             display: 'flex',
             opacity: 1,
@@ -273,24 +278,25 @@ function booking(user) {
                     document.querySelector('#alert').style.display = 'none'
                 }
             })
-        }, 5000)
-        return;
-    }else if(document.querySelector('#book-user') == null || document.querySelector('book-tel') == null){
-        document.querySelector('#alert').innerHTML = 'Por favor, preencha todos os campos';
-        gsap.to('#alert', {
-            display: 'flex',
-            opacity: 1,
-        })
-        setTimeout(() => {
-            gsap.to('#alert', {
-                opacity: 0,
-                onComplete: () => {
-                    document.querySelector('#alert').style.display = 'none'
-                }
-            })
-        }, 5000)
+        }, 8000)
         return;
     }
+    // else if(document.querySelector('#book-user') == null || document.querySelector('book-tel') == null){
+    //     document.querySelector('#alert').innerHTML = 'Por favor, preencha todos os campos';
+    //     gsap.to('#alert', {
+    //         display: 'flex',
+    //         opacity: 1,
+    //     })
+    //     setTimeout(() => {
+    //         gsap.to('#alert', {
+    //             opacity: 0,
+    //             onComplete: () => {
+    //                 document.querySelector('#alert').style.display = 'none'
+    //             }
+    //         })
+    //     }, 5000)
+    //     return;
+    // }
 
     let date = document.querySelector('#calendar-overlay').querySelector('h3').textContent.split('/');
     let hour = hoursService[document.querySelector('#service-time').value].split(':');
@@ -369,6 +375,10 @@ function booking(user) {
 
 }
 
+function padnum(num){
+    return num.toString().padStart(2,'0')
+}
+
 async function verifyDate(elem) {
     document.getElementById('service-time').innerHTML = '<option value="0">Selecione o horário</option>';
     document.getElementById('service').value = 0;
@@ -389,15 +399,19 @@ async function verifyDate(elem) {
 
     for (const key in hoursService) {
         let currentTime = new Date();
+        let currentTimeFormatted = padnum(currentTime.getHours()) + ':' + padnum(currentTime.getMinutes());
         let serviceTime = hoursService[key];
 
         if (dia === currentTime.getDate().toString()) {
-            if (!dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + hoursService[key]) && serviceTime > (currentTime.getHours() + ':' + currentTime.getMinutes())) {
+            if (!dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + serviceTime) && serviceTime > currentTimeFormatted) {
                 if (!dateTimeToRemove.includes(serviceTime)) {
                     const option = document.createElement('option');
                     option.value = key;
                     option.text = serviceTime;
                     document.getElementById('service-time').appendChild(option);
+                    elem.querySelector('.text-success').style.display = 'block';
+                    elem.querySelector('.text-danger').style.display = 'none';
+                    elem.querySelector('.text-secondary').style.display = 'none';
                 }
             }
         } else if (dia > currentTime.getDate() || (dia < currentTime.getDate() && nextMonth)) {
@@ -406,6 +420,9 @@ async function verifyDate(elem) {
                 option.value = key;
                 option.text = serviceTime;
                 document.getElementById('service-time').appendChild(option);
+                elem.querySelector('.text-success').style.display = 'block';
+                elem.querySelector('.text-danger').style.display = 'none';
+                elem.querySelector('.text-secondary').style.display = 'none';
             }
         }
     }

@@ -26,7 +26,11 @@ function auth() {
                         document.getElementById('profile-image').src = data.client.image_url;
                         document.getElementById('name').value = data.client.name;
                         document.getElementById('email').value = data.email;
-                        document.getElementById('birth').value = new Date(data.client.birthDate[0], data.client.birthDate[1] - 1, data.client.birthDate[2]).toISOString().split('T')[0];
+                        try {
+                            document.getElementById('birth').value = new Date(data.client.birthDate[0], data.client.birthDate[1] - 1, data.client.birthDate[2]).toISOString().split('T')[0];
+                        } catch (error) {
+                            console.log(error);
+                        }
                         document.getElementById('phone').value = data.client.telephone;
                         document.getElementById('plan-title').innerHTML = data.client.plano.name;
                         document.getElementById('plan-price').innerHTML = 'R$' + data.client.plano.price;

@@ -141,5 +141,6 @@ body{
     top: 3%;
     width: 80%;
     display: none;
+    flex-direction: column;
     opacity: 0;
 }
