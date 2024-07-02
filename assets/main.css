@@ -190,6 +190,31 @@ main #plans .planSwiper .swiper-slide .swiper-card .btn h4{
 main #partners .container{
     background-color: rgb(34, 34, 34);
     height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+main #partners .container h1{
+    font-size: 50px !important;
+}
+
+main #partners .partner-swiper{
+    width: 100%;
+    height: 20%;
+}
+
+main #partners .partner-swiper .swiper-slide{
+    text-align: center;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main #partners .partner-swiper .swiper-slide img{
+    width: 100%;
 }
 
 main #contact .container{

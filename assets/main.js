@@ -31,22 +31,23 @@ function auth() {
                         document.getElementById('plan-title').innerHTML = data.client.plano.name;
                         document.getElementById('plan-price').innerHTML = 'R$' + data.client.plano.price;
                         document.getElementById('plan-description').innerHTML = data.client.plano.description.replace(/\*/g, '<br>*');
-                    }
-                    else if (window.location.pathname == '/register.html') {
-                        window.location.href = '/login.html';
-                    }
-                    gsap.to('#loading-screen', {
-                        opacity: 0,
-                        duration: 1,
-                        onComplete: () => {
-                            if (window.location.pathname == '/login.html') {
+                        gsap.to('#loading-screen', {
+                            opacity: 0,
+                            duration: 1,
+                            onComplete: () => {
+
                                 document.getElementById('loading-screen').style.display = 'none';
                             }
-                        }
-                    })
+                        })
+                    } else if (window.location.pathname == '/register.html') {
+                        window.location.href = '/login.html';
+                    }else if(window.location.pathname == '/index.html' || window.location.pathname == '/'){
+                        alert('Indo para página de assinaturas')
+                    }
                 })
-            }
-            else {
+            } else if (window.location.pathname == '/index.html' || window.location.pathname == '/') {
+                window.location.href = '/register.html';
+            } else {
                 throw new Error('Sem token')
             }
         })
@@ -94,7 +95,7 @@ function bookAuth() {
             gsap.to('.fa-circle-notch', {
                 opacity: 0,
                 onComplete: () => {
-                    gsap.to('#erro-api-screen',{
+                    gsap.to('#erro-api-screen', {
                         opacity: 1,
                         display: 'flex',
                     })
@@ -116,6 +117,12 @@ var planSwiper = new Swiper(".planSwiper", {
         el: '.swiper-pagination',
         dynamicBullets: true
     }
+})
+
+var partnerSwiper = new Swiper(".partner-swiper", {
+    centeredSlides: true,
+    slidesPerView: 3,
+    spaceBetween: 25,
 })
 
 window.addEventListener('scroll', function () {
