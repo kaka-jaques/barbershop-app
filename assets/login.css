@@ -5,6 +5,7 @@
     display: flex;
     background-color: #3e3e3e;
     align-items: center;
+    justify-content: center;
     position: absolute;
     background-image: linear-gradient(165deg,#38383893 30%,#3c3c3c9b 100%), url('imgs/barber-model.jpg');
     background-repeat: no-repeat;
@@ -180,4 +181,11 @@
     width: 90%;
     height: 70px;
     font-size: 30px;
+}
+
+.alert{
+    opacity: 0;
+    position: fixed;
+    width: 75%;
+    top: 5%
 }

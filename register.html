@@ -23,12 +23,16 @@
 <body>
     <div class="content">
         <div id="main-login">
+            <div class="alert alert-danger" role="alert" id="alert">Erro! Por favor, contate o administrador do sistema.</div>
             <div id="login-card">
                 <div class="col">
                     <img src="assets/imgs/logo.jpeg">
                 </div>
                 <div class="col">
-                    <input type="text" name="User" id="register-user" placeholder="User" required>
+                    <input type="text" name="Name" id="register-name" placeholder="Nome Completo" required>
+                </div>
+                <div class="col">
+                    <input type="tel" name="phone" id="register-phone" placeholder="(DDD) Telefone">
                 </div>
                 <div class="col">
                     <input type="email" type="text" autocomplete="email" placeholder="Email" name="email" id="register-email" required>

@@ -45,7 +45,7 @@ function auth() {
                         })
                     } else if (window.location.pathname == '/register.html') {
                         window.location.href = '/login.html';
-                    }else if(window.location.pathname == '/index.html' || window.location.pathname == '/'){
+                    } else if (window.location.pathname == '/index.html' || window.location.pathname == '/') {
                         alert('Indo para página de assinaturas')
                     }
                 })
@@ -232,35 +232,73 @@ function login(user, password, keep) {
                 document.getElementById('login-button').style.cursor = 'pointer';
                 document.getElementById('login-email').style.border = '1px solid rgb(63, 63, 63)';
                 document.getElementById('login-password').style.border = '1px solid rgb(63, 63, 63)';
-                alert('Login ou senha inválidos!');
+                document.querySelector('.alert').innerHTML = 'Login ou senha inválidos!'
+                gsap.to('.alert', {
+                    opacity: 1,
+                    onComplete: () => {
+                        setTimeout(() => {
+                            gsap.to('.alert', {
+                                opacity: 0
+                            })
+                        }, 4000);
+                    }
+                })
             } else {
-                console.log(response.json());
-                alert('Erro! Por favor contate o administrador do sistema.');
+                document.querySelector('.alert').innerHTML = 'Erro! Por favor, contate o administrador do sistema.'
+                document.querySelector('button').disabled = false;
+                document.querySelector('button').style.cursor = 'pointer'
+                gsap.to('.alert', {
+                    opacity: 1,
+                    onComplete: () => {
+                        setTimeout(() => {
+                            gsap.to('.alert', {
+                                opacity: 0
+                            })
+                        }, 4000);
+                    }
+                })
             }
 
+        })
+        .catch(error => {
+            document.querySelector('.alert').innerHTML = 'Erro! Por favor, contate o administrador do sistema.'
+            document.querySelector('button').disabled = false;
+            document.querySelector('button').style.cursor = 'pointer'
+            gsap.to('.alert', {
+                opacity: 1,
+                onComplete: () => {
+                    setTimeout(() => {
+                        gsap.to('.alert', {
+                            opacity: 0
+                        })
+                    }, 4000);
+                }
+            })
         })
 }
 
 function sendRegister() {
-    if (document.getElementById('register-email').value != '' && document.getElementById('register-password').value != '' && document.getElementById('register-user').value != '') {
+    if (document.getElementById('register-phone').value != '' && document.getElementById('register-password').value != '' && document.getElementById('register-name').value != '') {
         document.getElementById('register-button').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
         document.getElementById('register-button').disabled = true;
         document.getElementById('register-button').style.cursor = 'not-allowed';
-        document.getElementById('register-email').style.border = '1px solid rgb(63, 63, 63)';
         document.getElementById('register-password').style.border = '1px solid rgb(63, 63, 63)';
-        document.getElementById('register-user').style.border = '1px solid rgb(63, 63, 63)';
+        document.getElementById('register-name').style.border = '1px solid rgb(63, 63, 63)';
         register();
     } else {
-        if (document.getElementById('register-email').value === '') {
-            document.getElementById('register-email').style.border = '1px solid red';
+        if (document.getElementById('register-name').value === '') {
+            document.getElementById('register-name').style.border = '1px solid red';
+        } else {
+            document.getElementById('register-name').style.border = '1px solid rgb(63,63,63)'
         }
-        else {
-            document.getElementById('register-email').style.border = '1px solid rgb(63, 63, 63)';
+        if (document.getElementById('register-phone').value === '') {
+            document.getElementById('register-phone').style.border = '1px solid red';
+        } else {
+            document.getElementById('register-phone').style.border = '1px solid rgb(63, 63, 63)';
         }
         if (document.getElementById('register-password').value === '') {
             document.getElementById('register-password').style.border = '1px solid red';
-        }
-        else {
+        } else {
             document.getElementById('register-password').style.border = '1px solid rgb(63, 63, 63)';
         }
     }
@@ -269,9 +307,12 @@ function sendRegister() {
 function register() {
 
     const body = {
-        user: document.getElementById('register-user').value,
         email: document.getElementById('register-email').value,
-        password: document.getElementById('register-password').value
+        password: document.getElementById('register-password').value,
+        client: {
+            name: document.getElementById('register-name').value,
+            telephone: document.getElementById('register-phone').value
+        }
     }
 
     console.log(body.json);
@@ -289,9 +330,36 @@ function register() {
                     console.log(data);
                 })
             } else {
-                console.log(response.json());
-                alert('Erro! Por favor contate o administrador do sistema.');
+                document.querySelector('.alert').innerHTML = 'Erro! Por favor, contate o administrador do sistema.'
+                document.querySelector('button').disabled = false;
+                document.querySelector('button').style.cursor = 'pointer'
+                gsap.to('.alert', {
+                    opacity: 1,
+                    onComplete: () => {
+                        setTimeout(() => {
+                            gsap.to('.alert', {
+                                opacity: 0
+                            })
+                        }, 4000);
+                    }
+                })
             }
+        })
+        .catch(error => {
+            console.log(error);
+            document.querySelector('.alert').innerHTML = 'Erro! Por favor, contate o administrador do sistema.'
+            document.querySelector('button').disabled = false;
+            document.querySelector('button').style.cursor = 'pointer'
+            gsap.to('.alert', {
+                opacity: 1,
+                onComplete: () => {
+                    setTimeout(() => {
+                        gsap.to('.alert', {
+                            opacity: 0
+                        })
+                    }, 4000);
+                }
+            })
         })
 
 }
