@@ -18,31 +18,9 @@ function auth() {
             if (response.status == 302) {
 
                 response.json().then(data => {
-                    console.log(data.client.birthDate);
+                    console.log(data);
                     if (window.location.pathname == '/login.html') {
-                        document.getElementById('main-login').style.display = 'none';
-                        document.getElementById('main-profile').style.display = 'flex';
-                        document.getElementById('user').value = data.user;
-                        document.getElementById('profile-image').src = data.client.image_url;
-                        document.getElementById('name').value = data.client.name;
-                        document.getElementById('email').value = data.email;
-                        try {
-                            document.getElementById('birth').value = new Date(data.client.birthDate[0], data.client.birthDate[1] - 1, data.client.birthDate[2]).toISOString().split('T')[0];
-                        } catch (error) {
-                            console.log(error);
-                        }
-                        document.getElementById('phone').value = data.client.telephone;
-                        document.getElementById('plan-title').innerHTML = data.client.plano.name;
-                        document.getElementById('plan-price').innerHTML = 'R$' + data.client.plano.price;
-                        document.getElementById('plan-description').innerHTML = data.client.plano.description.replace(/\*/g, '<br>*');
-                        gsap.to('#loading-screen', {
-                            opacity: 0,
-                            duration: 1,
-                            onComplete: () => {
-
-                                document.getElementById('loading-screen').style.display = 'none';
-                            }
-                        })
+                        constructProfile(data);
                     } else if (window.location.pathname == '/register.html') {
                         window.location.href = '/login.html';
                     } else if (window.location.pathname == '/index.html' || window.location.pathname == '/') {
