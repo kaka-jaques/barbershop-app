@@ -22,11 +22,11 @@
 
 <body>
     <div class="content">
+        <div class="alert alert-danger" role="alert" id="alert">Erro! Por favor, contate o administrador do sistema.</div>
         <div id="loading-screen">
             <i class="fa-solid fa-circle-notch fa-spin"></i>
         </div>
         <div id="main-login">
-            <div class="alert alert-danger" role="alert" id="alert">Erro! Por favor, contate o administrador do sistema.</div>
             <div id="login-card">
                 <div class="col">
                     <img src="assets/imgs/logo.jpeg">
@@ -79,8 +79,8 @@
                     <input type="text" name="User" id="user" placeholder="User">
                     <p class="text-light mb-0" style="padding-left: 12%;">Email</p>
                     <input type="email" name="email" id="email" placeholder="Email">
-                    <button class="btn btn-light" onclick="alert('clicado!')">Alterar Senha?</button>
-                    <button class="btn btn-dark mt-5">Salvar</button>
+                    <button class="btn btn-light" onclick="alert('clicado!')">Alterar Usuário e/ou Senha?</button>
+                    <button class="btn btn-dark mt-5" onclick="updateProfile(this)">Salvar</button>
                 </div>
             </div>
             <div class="profile-credentials">
@@ -91,7 +91,8 @@
                     <input type="tel" name="phone" id="phone" placeholder="Telefone" inputmode="numeric" onchange="phoneCase(this)">
                     <p class="text-light mb-0" style="padding-left: 12%;">CPF</p>
                     <input type="text" name="cpf" id="cpf" placeholder="CPF">
-                    <button class="btn btn-dark mt-5">Salvar</button>
+                    <button class="btn btn-light" onclick="alert('clicado!')">Alterar Credenciais?</button>
+                    <button class="btn btn-dark mt-5" onclick="updateProfile(this)">Salvar</button>
                 </div>
             </div>
             <div class="profile-plans">

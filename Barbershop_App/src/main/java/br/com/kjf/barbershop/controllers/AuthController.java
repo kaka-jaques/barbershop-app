@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -140,13 +143,21 @@ public class AuthController {
 		
 	}
 	
+	@PostMapping(consumes = "multipart/form-data")
+	public ResponseEntity<?> imageUpdate(@RequestPart("file")MultipartFile file, @RequestParam("image_url")String image_url){
+	
+		return null;
+		
+	}
+	
 	@PutMapping("/update")
 	public ResponseEntity<?> profileUpdate(@RequestBody UserVO user) throws JsonMappingException, JsonProcessingException{
 		
 		try {
+			user.setPassword(userRepository.findById(user.getId()).get().getPassword());
 			userRepository.save(user);
-			clientRepository.save(user.getClient());
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(objMapper.readTree(("{"
 					+ "\"error\": \"user_already_in_user\","
 					+ "\"message\": \"The user already exist!\""

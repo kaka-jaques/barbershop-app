@@ -1,8 +1,73 @@
 var body = {};
 
-function updateProfile() {
+function updateProfile(btnElem) {
 
     body.client.name = document.getElementById('name').value;
+    let date = document.getElementById('birth').value.split('-');
+    body.client.birthDate = new Date(date[0], date[1] - 1, date[2]);
+
+    btnElem.disabled = true;
+    btnElem.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>'
+
+    fetch('http://localhost:8080/auth/update', {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    })
+    .then(response =>{
+        if(response.status === 202){
+            document.getElementById('alert').classList.remove('alert-danger');
+            document.getElementById('alert').classList.add('alert-success');
+            document.getElementById('alert').innerHTML = 'Dados atualizados com sucesso!';
+            btnElem.disabled = false;
+            btnElem.innerHTML = 'Salvar';
+            gsap.to('#alert', {
+                opacity: 1,
+                onComplete: () => {
+                    setTimeout(() => {
+                        gsap.to('#alert', {
+                            opacity: 0,
+                            onComplete: () => {
+                                document.getElementById('alert').classList.remove('alert-success');
+                                document.getElementById('alert').classList.add('alert-danger');
+                            }
+                        })
+                    }, 5000)
+                }
+            })
+        }else if(response.status === 406){
+            document.getElementById('alert').innerHTML = 'Erro ao atualizar dados!';
+            btnElem.disabled = false
+            gsap.to('#alert',{
+                opacity: 1,
+                onComplete: () => {
+                    setTimeout(() => {
+                        gsap.to('#alert', {
+                            opacity: 0
+                        })
+                    }, 5000)
+                }
+            })
+        } else {
+            document.getElementById('alert').innerHTML = 'Erro ao atualizar dados!';
+            btnElem.disabled = false
+            gsap.to('#alert',{
+                opacity: 1,
+                onComplete: () => {
+                    setTimeout(() => {
+                        gsap.to('#alert', {
+                            opacity: 0
+                        })
+                    }, 5000)
+                }
+            })
+        }
+    })
+
+
 
 }
 

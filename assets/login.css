@@ -1,3 +1,8 @@
+.content{
+    display: flex;
+    justify-content: center;
+}
+
 #main-login{
     width: 100%;
     height: 100%;
@@ -129,7 +134,7 @@
     flex-direction: column;
 }
 
-#main-profile .profile-content .btn-light{
+#main-profile .profile-content .btn-light, .profile-credentials .btn-light{
     width: fit-content;
     height: fit-content;
     color: rgb(9, 142, 237);
@@ -187,5 +192,6 @@
     opacity: 0;
     position: fixed;
     width: 75%;
-    top: 5%
+    top: 5%;
+    z-index: 99;
 }
