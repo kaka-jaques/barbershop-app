@@ -114,6 +114,32 @@ public class AuthController {
 		
 	}
 	
+	public ResponseEntity<?> credentialsUpdate(@RequestHeader(name = "Cookie")String auth) throws JsonMappingException, JsonProcessingException{
+		
+		UserVO user = null;
+		
+		try {
+			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(6, (auth.indexOf(";") == -1?auth.length():auth.indexOf(";")))));
+		}catch(ExpiredJwtException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(objMapper.readTree(("{"
+						+ "\"error\": \"token_expired\","
+						+ "\"message\": \"The authentication token is expired.\""
+						+ "}")));
+		}catch(AuthenticationException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(objMapper.readTree(("{"
+					+ "\"error\": \"user_not_found\","
+					+ "\"message\": \"The authentication token return an invalid user.\""
+					+ "}")));
+		}
+		
+		if(user.getEmail() != null) {
+			
+		}
+		
+		return null;
+		
+	}
+	
 	@PutMapping("/update")
 	public ResponseEntity<?> profileUpdate(@RequestBody UserVO user) throws JsonMappingException, JsonProcessingException{
 		

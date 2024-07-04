@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import br.com.kjf.barbershop.vo.UserVO;
@@ -19,10 +20,12 @@ import jakarta.annotation.PostConstruct;
 public class JwtUtil {
 
 	private Key key;
+	@Value("${jwt.base64-secret}")
+	private String base64key;
 	
 	@PostConstruct
 	public void init() {
-		byte[] keyBytes = Decoders.BASE64.decode("mX+M1z9W2Y8pQxWh6fFgNcOvV2/JnO0+WJq3fTFLPeE=\r\n");
+		byte[] keyBytes = Decoders.BASE64.decode(base64key);
 		key = Keys.hmacShaKeyFor(keyBytes);
 	}
 	
