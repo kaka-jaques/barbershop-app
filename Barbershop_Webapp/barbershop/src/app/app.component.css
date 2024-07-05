@@ -63,8 +63,30 @@ header .fa-bars{
     margin-bottom: 10px;
 }
 
-#lateral-nav .nav-option .fa-house, .fa-chart-line, .fa-book, .fa-users{
+#lateral-nav .nav-option .fa-house, .fa-chart-line, .fa-book{
     color: white;
     height: 25px;
     margin-right: 20px
+}
+
+#lateral-nav .nav-option .fa-users{
+    color: white;
+    height: 20px;
+    margin-right: 20px;
+}
+
+#lateral-nav .nav-option .fa-dollar-sign{
+    color: white;
+    height: 30px;
+    margin-right: 25px;
+}
+
+#lateral-nav #logout{
+    margin-top: auto;
+}
+
+#lateral-nav .nav-option .fa-right-from-bracket{
+    color: red;
+    height: 25px;
+    margin-right: 20px;
 }

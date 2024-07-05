@@ -5,13 +5,15 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { BookComponent } from './book/book.component';
 import { UserComponent } from './user/user.component';
+import { BillComponent } from './bill/bill.component';
 
 const routes: Routes = [
   {path: '', component: LoginComponent},
   {path: 'dashboard', component: DashboardComponent},
   {path: 'home', component: HomeComponent},
   {path: 'book', component: BookComponent},
-  {path: 'user', component: UserComponent}
+  {path: 'user', component: UserComponent},
+  {path: 'bill', component: BillComponent}
 ];
 
 @NgModule({

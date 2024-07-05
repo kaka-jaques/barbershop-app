@@ -1,26 +1,34 @@
 <body>
-    <header>
+    <header [hidden]="!authService.isAuthenticated">
         <a (click)="navMenu()">
             <i class="fa-solid fa-bars"></i>
         </a>
-        <h2 class="text-light">nav-title</h2>
+        <h2 class="text-light">{{navTitle}}</h2>
     </header>
-    <nav id="lateral-nav">
-        <div class="nav-option" routerLink="home" (click)="postCloseMenu()">
+    <nav id="lateral-nav" [hidden]="!authService.isAuthenticated">
+        <div class="nav-option" routerLink="home" (click)="postCloseMenu('Home')">
             <i class="fa-solid fa-house"></i>
             <div class="text">Home</div>
         </div>
-        <div class="nav-option" routerLink="dashboard" (click)="postCloseMenu()">
+        <div class="nav-option" routerLink="dashboard" (click)="postCloseMenu('Dashboard')">
             <i class="fa-solid fa-chart-line"></i>
             <div class="text">Dashboard</div>
         </div>
-        <div class="nav-option" routerLink="book" (click)="postCloseMenu()">
+        <div class="nav-option" routerLink="bill" (click)="postCloseMenu('Financeiro')">
+            <i class="fa-solid fa-dollar-sign"></i>
+            <div class="text">Financeiro</div>
+        </div>
+        <div class="nav-option" routerLink="book" (click)="postCloseMenu('Agendamentos')">
             <i class="fa-solid fa-book"></i>
             <div class="text">Agendamentos</div>
         </div>
-        <div class="nav-option" routerLink="user" (click)="postCloseMenu()">
+        <div class="nav-option" routerLink="user" (click)="postCloseMenu('Usuários')">
             <i class="fa-solid fa-users"></i>
             <div class="text">Usuários</div>
+        </div>
+        <div class="nav-option" id="logout" (click)="authService.logout()" routerLink="">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <div class="text text-danger">Sair</div>
         </div>
     </nav>
     <main>

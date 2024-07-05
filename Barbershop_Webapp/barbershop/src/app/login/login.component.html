@@ -1,1 +1,8 @@
-<p>login works!</p>
+<div class="content">
+    <div class="login-card">
+        <img src="../../assets/logo.jpeg" alt="">
+        <input [(ngModel)]="user" class="form-control" type="text" name="username" id="user" placeholder="User, Email ou Telefone">
+        <input [(ngModel)]="password" class="form-control" type="password" name="password" id="password" placeholder="Senha">
+        <button class="btn btn-dark" (click)="login(user, password)">Login</button>
+    </div>
+</div>

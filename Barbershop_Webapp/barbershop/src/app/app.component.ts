@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { gsap } from 'gsap';
 import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
+import { NgModule } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -8,19 +10,23 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 
-
-
 export class AppComponent {
   title = 'barbershop';
+
+  navTitle:string = 'Home';
 
   lateralPos:number = 0;
   navPos:number = 0;
   textOpacity:number = 1;
   mainOpacity:string = 'rgba(63, 63, 63, 0.7)';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, public authService: AuthService) {}
 
   ngOnInit() {
+    const main = document.querySelector('main');
+    if(main && !this.authService.isAuthenticated) {
+      main.style.padding = '0';
+    }
     gsap.to('#lateral-nav',{
       x: -160
     })
@@ -66,11 +72,13 @@ export class AppComponent {
 
   }
 
-  postCloseMenu(){
+  postCloseMenu(title:string){
 
     if(this.lateralPos == -160) {
       this.navMenu();
     }
+
+    this.navTitle = title;
 
   }
 
