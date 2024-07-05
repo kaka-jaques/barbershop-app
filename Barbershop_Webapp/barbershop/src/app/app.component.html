@@ -1,0 +1,29 @@
+<body>
+    <header>
+        <a (click)="navMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </a>
+        <h2 class="text-light">nav-title</h2>
+    </header>
+    <nav id="lateral-nav">
+        <div class="nav-option" routerLink="home" (click)="postCloseMenu()">
+            <i class="fa-solid fa-house"></i>
+            <div class="text">Home</div>
+        </div>
+        <div class="nav-option" routerLink="dashboard" (click)="postCloseMenu()">
+            <i class="fa-solid fa-chart-line"></i>
+            <div class="text">Dashboard</div>
+        </div>
+        <div class="nav-option" routerLink="book" (click)="postCloseMenu()">
+            <i class="fa-solid fa-book"></i>
+            <div class="text">Agendamentos</div>
+        </div>
+        <div class="nav-option" routerLink="user" (click)="postCloseMenu()">
+            <i class="fa-solid fa-users"></i>
+            <div class="text">Usuários</div>
+        </div>
+    </nav>
+    <main>
+        <router-outlet></router-outlet>
+    </main>
+</body>
