@@ -2,8 +2,13 @@ package br.com.kjf.barbershop.classes;
 
 import java.io.IOException;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -12,7 +17,9 @@ import com.jcraft.jsch.SftpException;
 
 public class NetworkUtil {
 
-	public void ftpUpload(MultipartFile file, String filename, String oldFilename) {
+	private ObjectMapper objMapper = new ObjectMapper();
+	
+	public ResponseEntity<?> ftpUpload(MultipartFile file, String filename, String oldFilename) throws JsonMappingException, JsonProcessingException {
 		
 		try {
 			
@@ -31,16 +38,30 @@ public class NetworkUtil {
 			session.disconnect();
 			sftp.disconnect();
 			
-			
 		}catch(JSchException e) {
-			
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(objMapper.readTree("{"
+					+ "\"error\": \"internal_server_error\","
+					+ "\"message\": \"Failed to upload the image to File Server.\","
+					+ "\"stacktrace\": \""+e.getMessage()+"\""
+					+ "}"));
 		} catch (SftpException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(objMapper.readTree("{"
+					+ "\"error\": \"internal_server_error\","
+					+ "\"message\": \"Failed to upload the image to File Server\","
+					+ "\"stacktrace\": \""+e.getMessage()+"\""
+					+ "}"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(objMapper.readTree("{"
+					+ "\"error\": \"internal_server_error\","
+					+ "\"message\": \"Failed to upload the image to File Server.\","
+					+ "\"stacktrace\": \""+e.getMessage()+"\""
+					+ "}"));
 		}
+		
+		return ResponseEntity.ok(objMapper.readTree("{"
+				+ "\"status\": \"image_uploaded\","
+				+ "\"message\": \"Profile Image successfully uploaded.\""
+				+ "}"));
 		
 	}
 	

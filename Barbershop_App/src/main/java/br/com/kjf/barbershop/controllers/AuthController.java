@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.kjf.barbershop.classes.JwtUtil;
+import br.com.kjf.barbershop.classes.NetworkUtil;
 import br.com.kjf.barbershop.repository.ClientRepository;
 import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.RoleRepository;
@@ -65,6 +66,9 @@ public class AuthController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private NetworkUtil networkUtil;
 	
 	@Autowired
 	private JwtUtil jwtUtil;
@@ -117,6 +121,8 @@ public class AuthController {
 		
 	}
 	
+	//TODO - FINISH CREDENTIALS UPDATE
+	@PutMapping("/credentials")
 	public ResponseEntity<?> credentialsUpdate(@RequestHeader(name = "Cookie")String auth) throws JsonMappingException, JsonProcessingException{
 		
 		UserVO user = null;
@@ -143,10 +149,12 @@ public class AuthController {
 		
 	}
 	
-	@PostMapping(consumes = "multipart/form-data")
-	public ResponseEntity<?> imageUpdate(@RequestPart("file")MultipartFile file, @RequestParam("image_url")String image_url){
+	@PostMapping(consumes = "multipart/form-data", path = "/update")
+	public ResponseEntity<?> imageUpdate(@RequestHeader("Cookie")String auth, @RequestPart("file")MultipartFile file, @RequestParam("filename")String filename, @RequestParam("image_url")String image_url) throws JsonMappingException, JsonProcessingException{
 	
-		return null;
+		String oldFilename = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(6, (auth.indexOf(";") == -1?auth.length():auth.indexOf(";"))))).getClient().getImage_url().replace("/assets/imgs/", "");
+		
+		return networkUtil.ftpUpload(file, filename, oldFilename);
 		
 	}
 	
@@ -166,7 +174,7 @@ public class AuthController {
 		
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(objMapper.readTree(("{"
 				+ "\"status\": \"profile_updated\","
-				+ "\"message\": \"Your profile was sucessful updated!\""
+				+ "\"message\": \"Your profile was successful updated!\""
 				+ "}")));
 		
 	}

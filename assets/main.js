@@ -18,7 +18,6 @@ function auth() {
             if (response.status == 302) {
 
                 response.json().then(data => {
-                    console.log(data);
                     if (window.location.pathname == '/login.html') {
                         constructProfile(data);
                     } else if (window.location.pathname == '/register.html') {
