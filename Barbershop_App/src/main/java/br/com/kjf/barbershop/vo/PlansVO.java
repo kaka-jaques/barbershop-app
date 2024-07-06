@@ -10,6 +10,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -26,17 +29,16 @@ public class PlansVO {
 	private String description;
 	@Column(nullable = false)
 	private Double price;
+	@ManyToMany
+	@JoinTable(name = "plans_service")
+	private List<ServicesVO> services_include;
 	
-	public PlansVO() {
-		super();
+	public List<ServicesVO> getServices_include() {
+		return services_include;
 	}
 
-	public PlansVO(Integer id, String name, String description, Double price, List<ClientVO> clients) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.price = price;
+	public void setServices_include(List<ServicesVO> services_include) {
+		this.services_include = services_include;
 	}
 
 	public Integer getId() {

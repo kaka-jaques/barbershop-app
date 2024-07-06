@@ -25,6 +25,7 @@
     <div class="content">
         <div id="main-booking">
             <i class="fa-solid fa-xmark" onclick="window.location.href = '/'"></i>
+            <div class="alert alert-danger" role="alert" id="alert">Alert</div>
             <div id="calendar-user">
                 <div class="row">
                     <div class="col">
@@ -46,6 +47,11 @@
                         <button class="btn btn-primary" onclick="booking({email: null, user: null, password: null, client: {name: document.getElementById('book-user').value, telephone: document.getElementById('book-tel').value, active: false, plano: {id: 1, name: 'Free', price: 0, description: 'Plano gratuito'}}})">Salvar!</button>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col">
+                        <a href="/login.html">Tem cadastro? Faça o Login</a>
+                    </div>
+                </div>
             </div>
             <div id="calendar-overlay">
                 <div class="row">
@@ -56,17 +62,19 @@
                 <div class="row">
                     <div class="col">
                         <select class="form-select form-select" name="service" id="service">
-                            <option>Selecione uma opção</option>
+                            <option value="0" selected disabled hidden>Selecione uma opção</option>
                             <option value="1">Cabelo</option>
                             <option value="2">Barba</option>
                             <option value="3">Cabelo e Barba</option>
+                            <option value="4">Cabelo Degradê</option>
+                            <option value="5">Sombrancelhas</option>
                         </select>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <select class="form-select form-select" name="time" id="service-time">
-                            <option>Selecione um horário</option>
+                            <option value="0">Selecione um horário</option>
                         </select>
                     </div>
                 </div>
@@ -79,6 +87,13 @@
             </div>
             <div id="loading-screen">
                 <i class="fa-solid fa-circle-notch fa-spin"></i>
+                <div id="erro-api-screen" class="text-center">
+                    <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+                    <h1 class="fw-bold">Agendamento temporariamente indisponível!</h1>
+                    <a href="/">Volte para o ínicio</a>
+                    <p class="mb-0">ou</p>
+                    <a href="https://api.whatsapp.com/send/?phone=554796803621&text=Olá! Gostaria de Agendar meu horário!&type=phone_number">Reserve pelo whatsapp!</a>
+                </div>
             </div>
             <div id="calendar">
                 <h2 id="month"></h2>
@@ -717,6 +732,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <!-- My JS -->
     <script src="assets/main.js"></script>
+    <!-- Book JS -->
+    <script src="assets/book.js"></script>
 </body>
 
 </html>

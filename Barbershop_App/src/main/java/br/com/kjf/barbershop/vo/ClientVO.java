@@ -39,6 +39,7 @@ public class ClientVO {
 	@ManyToOne
 	@JoinColumn(name = "planos_id", nullable = false)
 	private PlansVO plano;
+	private Boolean anualBonus = false;
 	private Date renovation;
 	@OneToOne(mappedBy = "client")
 	@JsonIgnore
@@ -46,6 +47,14 @@ public class ClientVO {
 	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BookingVO> bookings;
 	
+	public Boolean getAnualBonus() {
+		return anualBonus;
+	}
+
+	public void setAnualBonus(Boolean anualBonus) {
+		this.anualBonus = anualBonus;
+	}
+
 	public String getTelephone() {
 		return telephone;
 	}

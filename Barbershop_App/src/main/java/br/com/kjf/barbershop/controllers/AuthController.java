@@ -21,13 +21,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.kjf.barbershop.classes.JwtUtil;
+import br.com.kjf.barbershop.classes.NetworkUtil;
+import br.com.kjf.barbershop.repository.ClientRepository;
 import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.RoleRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
@@ -37,12 +42,15 @@ import br.com.kjf.barbershop.vo.UserVO;
 import io.jsonwebtoken.ExpiredJwtException;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5500"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5500", "http://192.168.1.67:5500"}, allowCredentials = "true")
 @RequestMapping("/auth")
 public class AuthController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ClientRepository clientRepository;
 	
 	@Autowired
 	private PlansRepository plansRepository;
@@ -58,6 +66,9 @@ public class AuthController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private NetworkUtil networkUtil;
 	
 	@Autowired
 	private JwtUtil jwtUtil;
@@ -110,12 +121,51 @@ public class AuthController {
 		
 	}
 	
+	//TODO - FINISH CREDENTIALS UPDATE
+	@PutMapping("/credentials")
+	public ResponseEntity<?> credentialsUpdate(@RequestHeader(name = "Cookie")String auth) throws JsonMappingException, JsonProcessingException{
+		
+		UserVO user = null;
+		
+		try {
+			user = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(6, (auth.indexOf(";") == -1?auth.length():auth.indexOf(";")))));
+		}catch(ExpiredJwtException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(objMapper.readTree(("{"
+						+ "\"error\": \"token_expired\","
+						+ "\"message\": \"The authentication token is expired.\""
+						+ "}")));
+		}catch(AuthenticationException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(objMapper.readTree(("{"
+					+ "\"error\": \"user_not_found\","
+					+ "\"message\": \"The authentication token return an invalid user.\""
+					+ "}")));
+		}
+		
+		if(user.getEmail() != null) {
+			
+		}
+		
+		return null;
+		
+	}
+	
+	@PostMapping(consumes = "multipart/form-data", path = "/update")
+	public ResponseEntity<?> imageUpdate(@RequestHeader("Cookie")String auth, @RequestPart("file")MultipartFile file, @RequestParam("filename")String filename, @RequestParam("image_url")String image_url) throws JsonMappingException, JsonProcessingException{
+	
+		String oldFilename = userRepository.findByUsernameOrEmail(jwtUtil.extractUsername(auth.substring(6, (auth.indexOf(";") == -1?auth.length():auth.indexOf(";"))))).getClient().getImage_url().replace("/assets/imgs/", "");
+		
+		return networkUtil.ftpUpload(file, filename, oldFilename);
+		
+	}
+	
 	@PutMapping("/update")
 	public ResponseEntity<?> profileUpdate(@RequestBody UserVO user) throws JsonMappingException, JsonProcessingException{
 		
 		try {
+			user.setPassword(userRepository.findById(user.getId()).get().getPassword());
 			userRepository.save(user);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(objMapper.readTree(("{"
 					+ "\"error\": \"user_already_in_user\","
 					+ "\"message\": \"The user already exist!\""
@@ -124,7 +174,7 @@ public class AuthController {
 		
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(objMapper.readTree(("{"
 				+ "\"status\": \"profile_updated\","
-				+ "\"message\": \"Your profile was sucessful updated!\""
+				+ "\"message\": \"Your profile was successful updated!\""
 				+ "}")));
 		
 	}

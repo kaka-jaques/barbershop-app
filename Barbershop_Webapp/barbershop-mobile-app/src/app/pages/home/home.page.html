@@ -1,0 +1,36 @@
+<app-header></app-header>
+<main>
+    <div class="welcome-container">
+        <h1>Bem-vindo</h1>
+        <h2>Nome</h2>
+    </div>
+    <div class="intro-card">
+        <h3>Notificações</h3>
+        <ion-list>
+            <ion-item routerLink="/book">
+                <ion-label>Agendamentos para Hoje</ion-label>
+                <ion-badge color="success">10</ion-badge>
+            </ion-item>
+            <ion-item routerLink="/bill">
+                <ion-label>Contas vencidas</ion-label>
+                <ion-badge color="danger">1</ion-badge>
+            </ion-item>
+            <ion-item routerLink="/bill">
+                <ion-label>Contas a pagar(Hoje)</ion-label>
+                <ion-badge color="warning">2</ion-badge>
+            </ion-item>
+            <ion-item routerLink="/bill">
+                <ion-label>Contas a pagar(Mês)</ion-label>
+                <ion-badge color="primary">5</ion-badge>
+            </ion-item>
+            <ion-item routerLink="/users">
+                <ion-label>Aniversariantes(Mês)</ion-label>
+                <ion-badge color="warning">10</ion-badge>
+            </ion-item>
+            <ion-item routerLink="/users">
+                <ion-label>Aniversariantes(Hoje)</ion-label>
+                <ion-badge color="tertiary">2</ion-badge>
+            </ion-item>
+        </ion-list>
+    </div>
+</main>
