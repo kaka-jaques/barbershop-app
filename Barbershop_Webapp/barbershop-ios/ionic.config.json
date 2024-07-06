@@ -1,7 +1,0 @@
-{
-  "name": "barbershop-ios",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
