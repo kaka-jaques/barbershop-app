@@ -2,6 +2,8 @@ package br.com.kjf.barbershop.vo;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +34,9 @@ public class UserVO {
 	private ClientVO client;
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<RoleVO> role;
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private NotificationConfigVO notificationConfig;
 	
 	public UserVO() {
 		super();
