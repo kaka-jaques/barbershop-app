@@ -14,15 +14,15 @@ export class AuthService {
   constructor(private http:HttpClient) { }
 
   auth(){
-
+    this.isAuth = true;
   }
 
-  login(){
-
+  login(user:string, password:string){
+    this.isAuth = true;
   }
 
   logout(){
-
+    this.isAuth = false;
   }
 
   getToken():string{

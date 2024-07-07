@@ -8,11 +8,17 @@ import { Router } from '@angular/router';
 })
 export class HomePage implements OnInit {
 
+  public notifysData: any = {1: 'item 1'};
+  public notifysCont:string = this.notifysData.length;
+
   constructor(private route: Router) { }
 
   ngOnInit() {
+
+    if(this.notifysData.length == 0){
+      console.log("init home");
+    }
+
   }
-
-
 
 }

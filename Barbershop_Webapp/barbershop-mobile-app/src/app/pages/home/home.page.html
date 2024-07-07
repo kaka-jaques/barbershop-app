@@ -2,35 +2,42 @@
 <main>
     <div class="welcome-container">
         <h1>Bem-vindo</h1>
-        <h2>Nome</h2>
+        <h2>Cliente</h2>
     </div>
-    <div class="intro-card">
-        <h3>Notificações</h3>
-        <ion-list>
-            <ion-item routerLink="/book">
-                <ion-label>Agendamentos para Hoje</ion-label>
-                <ion-badge color="success">10</ion-badge>
-            </ion-item>
-            <ion-item routerLink="/bill">
-                <ion-label>Contas vencidas</ion-label>
-                <ion-badge color="danger">1</ion-badge>
-            </ion-item>
-            <ion-item routerLink="/bill">
-                <ion-label>Contas a pagar(Hoje)</ion-label>
-                <ion-badge color="warning">2</ion-badge>
-            </ion-item>
-            <ion-item routerLink="/bill">
-                <ion-label>Contas a pagar(Mês)</ion-label>
-                <ion-badge color="primary">5</ion-badge>
-            </ion-item>
-            <ion-item routerLink="/users">
-                <ion-label>Aniversariantes(Mês)</ion-label>
-                <ion-badge color="warning">10</ion-badge>
-            </ion-item>
-            <ion-item routerLink="/users">
-                <ion-label>Aniversariantes(Hoje)</ion-label>
-                <ion-badge color="tertiary">2</ion-badge>
-            </ion-item>
-        </ion-list>
-    </div>
+    <ion-card class="intro-card" color="light">
+        <ion-header>
+            <ion-toolbar color="light">
+                <ion-title>Notificações</ion-title>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content color="light">
+            <ion-list color="light">
+                <ion-item [button]="true" color="light" routerLink="/book">
+                    <ion-icon color="success" slot="start" name="calendar"></ion-icon>
+                    <ion-label>Agendamentos para Hoje</ion-label>
+                    <ion-badge color="success">10</ion-badge>
+                </ion-item>
+                <ion-item [button]="true" color="light" routerLink="/bill">
+                    <ion-icon color="danger" slot="start" name="logo-usd"></ion-icon>
+                    <ion-label>Faturas vencidas</ion-label>
+                    <ion-badge color="danger">1</ion-badge>
+                </ion-item>
+                <ion-item [button]="true" color="light" routerLink="/bill">
+                    <ion-icon color="warning" slot="start" name="logo-usd"></ion-icon>
+                    <ion-label>Faturas a vencer</ion-label>
+                    <ion-badge color="warning">2</ion-badge>
+                </ion-item>
+                <ion-item [button]="true" color="light" routerLink="/users">
+                    <ion-icon color="warning" slot="start" name="people"></ion-icon>
+                    <ion-label>Aniversariantes de hoje</ion-label>
+                    <ion-badge color="warning">10</ion-badge>
+                </ion-item>
+                <ion-item [button]="true" color="light" routerLink="/users">
+                    <ion-icon color="success" slot="start" name="people"></ion-icon>
+                    <ion-label>Aniversariantes no mês</ion-label>
+                    <ion-badge color="success">10</ion-badge>
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-card>
 </main>
