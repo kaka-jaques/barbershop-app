@@ -56,6 +56,7 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/auth/**", "/meta/**", "/book", "/book/client").permitAll()
                                 .requestMatchers("/book/all", "/book/admin").hasRole("ADMIN")
+                                .requestMatchers("/notify", "/notify/**").hasAnyRole("ADMIN", "EMPLOYEE")
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->

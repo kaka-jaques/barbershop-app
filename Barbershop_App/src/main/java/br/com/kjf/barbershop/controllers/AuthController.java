@@ -37,6 +37,7 @@ import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.RoleRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.ClientVO;
+import br.com.kjf.barbershop.vo.NotificationConfigVO;
 import br.com.kjf.barbershop.vo.RoleVO;
 import br.com.kjf.barbershop.vo.UserVO;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -222,6 +223,7 @@ public class AuthController {
 		client.setPlano(plansRepository.findById(1));
 		
 		user.setClient(client);
+		user.setNotificationConfig(new NotificationConfigVO());
 		
 		userRepository.save(user);
 		

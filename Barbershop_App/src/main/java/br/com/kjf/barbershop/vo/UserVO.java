@@ -37,9 +37,13 @@ public class UserVO {
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private NotificationConfigVO notificationConfig;
-	
-	public UserVO() {
-		super();
+
+	public NotificationConfigVO getNotificationConfig() {
+		return notificationConfig;
+	}
+
+	public void setNotificationConfig(NotificationConfigVO notificationConfig) {
+		this.notificationConfig = notificationConfig;
 	}
 
 	public String getEmail() {
