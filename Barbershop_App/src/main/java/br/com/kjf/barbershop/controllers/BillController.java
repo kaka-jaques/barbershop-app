@@ -1,6 +1,7 @@
 package br.com.kjf.barbershop.controllers;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +37,24 @@ public class BillController {
 		return ResponseEntity.ok(billRepository.getMonthBills(month, year));
 	}
 	
-	@SuppressWarnings("null")
 	@PostMapping
 	public ResponseEntity<?> createBill(@RequestBody BillVO bill) throws JsonMappingException, JsonProcessingException{
 		
 		if(bill.getRecurrency().getDays() != 0) {
 			BillVO nextBill = bill;
-			List<BillVO> nextBills = null;
-			for(LocalDate now = LocalDate.now();now.isBefore(bill.getLast_pay());now.plusDays(bill.getRecurrency().getDays())) {
+			List<BillVO> nextBills = new ArrayList<>();
+			for(LocalDate now = LocalDate.now();now.isBefore(bill.getLast_pay());) {
 				LocalDate nextPay = now;
 				nextPay.plusDays(bill.getRecurrency().getDays());
 				nextBill.setDay((byte) nextPay.getDayOfMonth());
 				nextBill.setMonth((byte) nextPay.getMonthValue());
 				nextBills.add(nextBill);
+				now.plusDays(bill.getRecurrency().getDays());
+				if(bill.getRecurrency().getDays() >= 30) {
+					now.plusMonths(bill.getRecurrency().getDays() / 30);
+				}else if(bill.getRecurrency().getDays() == 365) {
+					now.plusYears(1);
+				}
 			}
 			billRepository.saveAll(nextBills);
 			return ResponseEntity.status(HttpStatus.CREATED).body(objMapper.readTree("{\"status\": \"bills successful created!\""));
