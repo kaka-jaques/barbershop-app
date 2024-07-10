@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -62,8 +64,8 @@ public class BillVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@OneToOne
-	@JoinColumn(name = "billType_id")
+	@ManyToOne
+	@JoinColumn(name = "bill_type_id")
 	private BillTypeVO bill_type;
 	private String description;
 	@Column(nullable = false)
@@ -79,6 +81,25 @@ public class BillVO {
 	private Boolean paid = false;
 	@Enumerated(EnumType.STRING)
 	private RecType recurrency;
+	
+	public BillVO() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public BillVO(BillVO bill) {
+		super();
+		this.id = bill.getId();
+		this.bill_type = bill.getBill_type();
+		this.description = bill.getDescription();
+		this.value = bill.getValue();
+		this.day = bill.getDay();
+		this.month = bill.getMonth();
+		this.year = bill.getYear();
+		this.last_pay = bill.getLast_pay();
+		this.paid = bill.getPaid();
+		this.recurrency = bill.getRecurrency();
+	}
 
 	public RecType getRecurrency() {
 		return recurrency;

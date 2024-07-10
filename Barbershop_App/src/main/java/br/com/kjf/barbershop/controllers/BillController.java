@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,7 @@ public class BillController {
 	private ObjectMapper objMapper = new ObjectMapper();
 	
 	@GetMapping("/{month}/{year}")
-	public ResponseEntity<?> getMonthBills(@RequestParam("month")int month, @RequestParam("year")int year){
+	public ResponseEntity<?> getMonthBills(@PathVariable int month, @PathVariable int year){
 		return ResponseEntity.ok(billRepository.getMonthBills(month, year));
 	}
 	
@@ -41,26 +42,27 @@ public class BillController {
 	public ResponseEntity<?> createBill(@RequestBody BillVO bill) throws JsonMappingException, JsonProcessingException{
 		
 		if(bill.getRecurrency().getDays() != 0) {
-			BillVO nextBill = bill;
 			List<BillVO> nextBills = new ArrayList<>();
-			for(LocalDate now = LocalDate.now();now.isBefore(bill.getLast_pay());) {
-				LocalDate nextPay = now;
-				nextPay.plusDays(bill.getRecurrency().getDays());
-				nextBill.setDay((byte) nextPay.getDayOfMonth());
-				nextBill.setMonth((byte) nextPay.getMonthValue());
+			LocalDate now = LocalDate.of(bill.getYear(), bill.getMonth(), bill.getDay());
+			while(now.isBefore(bill.getLast_pay())) {
+				BillVO nextBill = new BillVO(bill);
+				nextBill.setDay((byte) now.getDayOfMonth());
+				nextBill.setMonth((byte) now.getMonthValue());
+				nextBill.setYear(now.getYear());
 				nextBills.add(nextBill);
-				now.plusDays(bill.getRecurrency().getDays());
 				if(bill.getRecurrency().getDays() >= 30) {
-					now.plusMonths(bill.getRecurrency().getDays() / 30);
+					now = now.plusMonths(bill.getRecurrency().getDays() / 30);
 				}else if(bill.getRecurrency().getDays() == 365) {
-					now.plusYears(1);
+					now = now.plusYears(1);
+				}else {
+					now = now.plusDays(bill.getRecurrency().getDays());
 				}
 			}
 			billRepository.saveAll(nextBills);
-			return ResponseEntity.status(HttpStatus.CREATED).body(objMapper.readTree("{\"status\": \"bills successful created!\""));
+			return ResponseEntity.status(HttpStatus.CREATED).body(objMapper.readTree("{\"status\": \"bills successful created!\"}"));
 		}else {
 			billRepository.save(bill);
-			return ResponseEntity.status(HttpStatus.CREATED).body(objMapper.readTree("{\"status\": \"bill successful created!\""));
+			return ResponseEntity.status(HttpStatus.CREATED).body(objMapper.readTree("{\"status\": \"bill successful created!\"}"));
 		}
 		
 	}
