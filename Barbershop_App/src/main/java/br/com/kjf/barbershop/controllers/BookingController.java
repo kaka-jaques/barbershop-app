@@ -1,5 +1,10 @@
 package br.com.kjf.barbershop.controllers;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +85,22 @@ public class BookingController {
 		books.forEach(book -> {
 			book.getClient().setBookings(null);
 		});
+		
+		return ResponseEntity.ok(books);
+		
+	}
+	
+	public ResponseEntity<?> getBooksForToday(){
+		
+		Date dateTomorrow = Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+		Calendar calendarTomorrow = Calendar.getInstance();
+		calendarTomorrow.setTime(dateTomorrow);
+		
+		List<BookingVO> books = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow);
+		
+		for(BookingVO book : books) {
+			book.setClient(null);
+		}
 		
 		return ResponseEntity.ok(books);
 		

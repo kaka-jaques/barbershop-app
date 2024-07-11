@@ -26,23 +26,31 @@ export class HomePage implements OnInit {
     birthsToday: false,
     birthsMonth: false
   }
-  public notificationError:boolean = false;
+  public notificationError: boolean = false;
 
   constructor(private route: Router, private home: HomeService) { }
 
   async ngOnInit() {
 
-    await this.home.getNotificationsConfig().subscribe((response:HttpResponse<any>) => {
-      if(response.ok){
+    await this.home.getNotificationsConfig().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
         this.notificationConfig = response.body;
-      }else{
+      } else {
         this.notificationError = true
       }
     }), (error: HttpErrorResponse) => {
       this.notificationError = true
     };
 
-    this.notificationData = await this.home.getNotifications();
+    await this.home.getNotifications().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.notificationData = response.body;
+      } else {
+        this.notificationError = true
+      }
+    }), (error: HttpErrorResponse) => {
+      this.notificationError = true
+    };
 
     gsap.to('#notification-loader', {
       display: 'none'
@@ -50,15 +58,21 @@ export class HomePage implements OnInit {
 
   }
 
-  async refreshNotification(event:any){
+  async refreshNotification(event: any) {
 
     console.log("notificações atualizadas");
-    this.notificationData = await this.home.getNotifications();
-    setTimeout(() => {
-      this.notificationData.billExpired = 3;
-      this.notificationData.serviceToday = 31;
+    await this.home.getNotifications().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.notificationData = response.body;
+        event.target.complete();
+      } else {
+        this.notificationError = true
+        event.target.complete();
+      }
+    }), (error: HttpErrorResponse) => {
+      this.notificationError = true
       event.target.complete();
-    }, 700)
+    };
 
   }
 

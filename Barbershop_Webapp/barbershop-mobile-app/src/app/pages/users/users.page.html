@@ -1,1 +1,9 @@
 <app-header></app-header>
+<ion-content [fullscreen]="true">
+    <ion-searchbar color="light" (ionInput)="searchUser($event)"></ion-searchbar>
+    <ion-list>
+        <ion-item color="light" *ngFor="let user of userQuery">
+            <ion-label>{{ user.client.name }}</ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>

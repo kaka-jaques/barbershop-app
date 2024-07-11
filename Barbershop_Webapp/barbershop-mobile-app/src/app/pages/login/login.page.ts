@@ -18,9 +18,12 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
 
-    if(this.auth.auth()){
-      this.router.navigateByUrl('/home');
-    }
+    this.auth.auth().subscribe((response:HttpResponse<any>) => {
+      if(response.ok){
+        this.auth.isAuth = true;
+        this.router.navigateByUrl('/home');
+      }
+    })
 
   }
 
@@ -29,15 +32,6 @@ export class LoginPage implements OnInit {
     this.auth.login(user, password).subscribe((response:HttpResponse<any>) => {
       if(response.ok){
         this.auth.isAuth = true;
-        // this.home.setUserData({
-        //   user: response.body.user, 
-        //   name: response.body.client.name,
-        //   email: response.body.email,
-        //   phone: response.body.client.telephone,
-        //   image_url: response.body.client.image_url,
-        //   birthdate: response.body.client.birthDate,
-        //   cpf: response.body.client.cpf
-        // });
         this.router.navigateByUrl('/home');
       }else{
         alert("Usuário ou senha inválidos");

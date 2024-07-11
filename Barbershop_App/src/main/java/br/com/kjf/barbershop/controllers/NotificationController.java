@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -99,7 +100,7 @@ public class NotificationController {
 		calendarToday.setTime(dateToday);
 		calendarTomorrow.setTime(dateTomorrow);
 		
-		int serviceToday = bookingRepository.getBooksForToday(calendarToday, calendarTomorrow).size();
+		int serviceToday = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow).size();
 		int billPending = billRepository.getPendingMonthBills().size();
 		int billExpired = billRepository.getExpiredBills().size();
 		int birthsToday = clientRepository.getTodayBirths().size();

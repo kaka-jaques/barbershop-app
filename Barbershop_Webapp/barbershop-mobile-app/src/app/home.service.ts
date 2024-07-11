@@ -42,13 +42,7 @@ export class HomeService {
   }
 
   getNotifications():any{
-    return {
-      serviceToday: 6,
-      billExpired: 5,
-      billPending: 4,
-      birthsToday: 3,
-      birthsMonth: 20
-    }
+    return this.http.get(this.url + 'notify/get', {observe: 'response'});
   }
 
   getNotificationsConfig():Observable<HttpResponse<any>>{

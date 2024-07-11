@@ -23,7 +23,9 @@ export class AuthService {
   }
 
   logout(){
+    this.http.get(this.url + 'auth/logout', {observe: 'response'}).subscribe();
     this.isAuth = false;
+    
   }
 
   getToken():string{

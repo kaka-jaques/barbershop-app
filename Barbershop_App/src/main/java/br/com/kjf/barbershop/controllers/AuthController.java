@@ -168,7 +168,7 @@ public class AuthController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(objMapper.readTree(("{"
-					+ "\"error\": \"user_already_in_user\","
+					+ "\"error\": \"user_already_in_use\","
 					+ "\"message\": \"The user already exist!\""
 					+ "}")));
 		}
