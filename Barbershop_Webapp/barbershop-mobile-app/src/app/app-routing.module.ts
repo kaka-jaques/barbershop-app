@@ -34,6 +34,10 @@ const routes: Routes = [
   {
     path: 'config',
     loadChildren: () => import('./pages/config/config.module').then( m => m.ConfigPageModule)
+  },
+  {
+    path: 'app-config',
+    loadChildren: () => import('./pages/app-config/app-config.module').then( m => m.AppConfigPageModule)
   }
 ];
 
