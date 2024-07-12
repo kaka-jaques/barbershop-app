@@ -46,6 +46,8 @@ public class ClientVO {
 	private UserVO user;
 	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BookingVO> bookings;
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<BonusVO> bonus;
 	
 	public Boolean getAnualBonus() {
 		return anualBonus;

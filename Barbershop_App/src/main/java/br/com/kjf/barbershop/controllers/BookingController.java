@@ -1,5 +1,9 @@
 package br.com.kjf.barbershop.controllers;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -7,27 +11,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.kjf.barbershop.classes.JwtUtil;
 import br.com.kjf.barbershop.repository.BookingRepository;
 import br.com.kjf.barbershop.repository.ClientRepository;
 import br.com.kjf.barbershop.repository.ServicesRepository;
-import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.BookingVO;
-import br.com.kjf.barbershop.vo.UserVO;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5500", "http://192.168.1.67:5500"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
 @RequestMapping("/book")
 public class BookingController {
 
@@ -76,7 +80,7 @@ public class BookingController {
 	@GetMapping("/admin")
 	public ResponseEntity<?> getNextBooksToAdmin(){
 		
-		List<BookingVO> books = bookingRepository.findNextBooks(new GregorianCalendar());
+		List<BookingVO> books = bookingRepository.findNextBooks();
 		
 		books.forEach(book -> {
 			book.getClient().setBookings(null);
@@ -86,16 +90,49 @@ public class BookingController {
 		
 	}
 	
+	public ResponseEntity<?> getBooksForToday(){
+		
+		Date dateTomorrow = Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+		Calendar calendarTomorrow = Calendar.getInstance();
+		calendarTomorrow.setTime(dateTomorrow);
+		
+		List<BookingVO> books = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow);
+		
+		for(BookingVO book : books) {
+			book.setClient(null);
+		}
+		
+		return ResponseEntity.ok(books);
+		
+	}
+	
 	@GetMapping("/client")
 	public ResponseEntity<?> getNextBooksToClient(){
 		
-		List<BookingVO> bookWithoutCredentials = bookingRepository.findNextBooks(new GregorianCalendar());
+		List<BookingVO> bookWithoutCredentials = bookingRepository.findNextBooks();
 		
 		for(BookingVO book : bookWithoutCredentials) {
 			book.setClient(null);
 		}
 		
 		return ResponseEntity.ok(bookWithoutCredentials);
+		
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<?> deleteBook(@RequestParam("id")int id) throws JsonMappingException, JsonProcessingException{
+		try {
+			bookingRepository.deleteById(id);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(objMapper.readTree("{"
+					+ "\"error\": \""+e.getCause()+"\""
+					+ "\"message\": \""+e.getMessage()+"\""
+					+ "}"));
+		}
+		
+		return ResponseEntity.ok(objMapper.readTree("{"
+				+ "\"status\": \"book:"+id+" successful deleted!\""
+				+ "}"));
 		
 	}
 	

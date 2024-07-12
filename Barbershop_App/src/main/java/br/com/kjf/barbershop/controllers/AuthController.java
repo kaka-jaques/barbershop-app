@@ -37,12 +37,13 @@ import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.RoleRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.ClientVO;
+import br.com.kjf.barbershop.vo.NotificationConfigVO;
 import br.com.kjf.barbershop.vo.RoleVO;
 import br.com.kjf.barbershop.vo.UserVO;
 import io.jsonwebtoken.ExpiredJwtException;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5500", "http://192.168.1.67:5500"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -167,7 +168,7 @@ public class AuthController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(objMapper.readTree(("{"
-					+ "\"error\": \"user_already_in_user\","
+					+ "\"error\": \"user_already_in_use\","
 					+ "\"message\": \"The user already exist!\""
 					+ "}")));
 		}
@@ -222,6 +223,7 @@ public class AuthController {
 		client.setPlano(plansRepository.findById(1));
 		
 		user.setClient(client);
+		user.setNotificationConfig(new NotificationConfigVO());
 		
 		userRepository.save(user);
 		

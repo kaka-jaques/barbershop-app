@@ -2,6 +2,8 @@ package br.com.kjf.barbershop.classes;
 
 import java.util.Properties;
 
+import org.springframework.stereotype.Component;
+
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -12,6 +14,7 @@ import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
+@Component
 public class MessagingUtil {
 
 	final private String SENDER_EMAIL = "kjfakhouri@gmail.com";

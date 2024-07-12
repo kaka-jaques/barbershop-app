@@ -471,10 +471,8 @@ async function openOverlay(elem) {
 
     document.getElementById('service-time').innerHTML = '<option value="0" selected disabled hidden>Selecione o horário</option>';
     document.getElementById('service').value = 0;
-    console.log(bookings);
     const books = bookings;
     const dateTimeToRemove = books.map(book => extractTimestamp(book.bookingDate));
-    console.log(dateTimeToRemove);
     let nextMonth = false;
 
     dia = elem.querySelector('h3').textContent
@@ -501,31 +499,31 @@ async function openOverlay(elem) {
         let serviceTime = hoursService[key];
 
         if (dia === currentTime.getDate().toString()) {
-            if (!dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + hoursService[key]) && serviceTime > (padnum(currentTime.getHours()) + ':' + padnum(currentTime.getMinutes()))) {
+            if (!dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + serviceTime) && serviceTime > (padnum(currentTime.getHours()) + ':' + padnum(currentTime.getMinutes()))) {
                 if (!dateTimeToRemove.includes(serviceTime)) {
                     const option = document.createElement('option');
                     option.value = key;
                     option.text = serviceTime;
                     document.getElementById('service-time').appendChild(option);
                 }
-            } else {
+            } else if (dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + serviceTime) && serviceTime < (padnum(currentTime.getHours()) + ':' + padnum(currentTime.getMinutes()))) {
                 let bookIndex = bookings.findIndex(book => extractTimestamp(book.bookingDate) == date.toLocaleDateString() + ' ' + serviceTime);
-                if (bookings[bookIndex].services.id == 1 && (bookIndex<dateTimeToRemove.length?dateTimeToRemove[bookIndex+1]:true)) {
+                if (books[bookIndex].services.id == 1 && (bookIndex<dateTimeToRemove.length?dateTimeToRemove[bookIndex+1]:true)) {
                     nextKey += 2;
                 }
-                if (bookings[bookIndex].services.id == 2) {
+                if (books[bookIndex].services.id == 2) {
                     nextKey += 2;
                 }
-                if (bookings[bookIndex].services.id == 3) {
+                if (books[bookIndex].services.id == 3) {
                     nextKey += 2;
                 }
-                if (bookings[bookIndex].services.id == 4) {
+                if (books[bookIndex].services.id == 4) {
                     nextKey += 3;
                 }
-                if(bookings[bookIndex].services.id == 5) {
+                if(books[bookIndex].services.id == 5) {
                     nextKey += 2;
                 }
-                interHoursService(serviceTime, bookings[bookIndex].services.id, key);
+                interHoursService(serviceTime, books[bookIndex].services.id, key);
             }
         } else if (dia > currentTime.getDate() || (dia < currentTime.getDate() && nextMonth)) {
             if (!dateTimeToRemove.includes(date.toLocaleDateString() + ' ' + hoursService[key])) {

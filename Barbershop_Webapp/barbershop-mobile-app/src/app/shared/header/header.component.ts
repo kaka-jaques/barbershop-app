@@ -13,7 +13,8 @@ export class HeaderComponent  implements OnInit {
     '/home': 'Home',
     '/book': 'Agendamentos',
     '/dashboard': 'Dashboard',
-    '/bill': 'Financeiro'
+    '/bill': 'Financeiro',
+    '/users': 'Usuários'
   }
 
   constructor() { }

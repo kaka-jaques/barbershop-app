@@ -1,5 +1,10 @@
 <div class="content">
   <div class="login-card">
-    
+    <img src="../../assets/logo.jpeg" alt="">
+    <ion-input type="text" label="ID" placeholder="User, Email ou Telefone" [(ngModel)]="user"></ion-input>
+    <ion-input type="password" label="Senha" placeholder="Senha" [(ngModel)]="password">
+      <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+    </ion-input>
+    <ion-button fill="clear" expand="full" (click)="login(user, password)">Login</ion-button>
   </div>
 </div>

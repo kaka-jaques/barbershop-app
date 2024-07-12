@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth.service';
+import { Router } from '@angular/router';
+import { HttpResponse } from '@angular/common/http';
+import { HomeService } from 'src/app/home.service';
 
 @Component({
   selector: 'app-login',
@@ -8,11 +11,32 @@ import { AuthService } from 'src/app/auth.service';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private auth:AuthService) { }
+  public user!:string
+  public password!:string
+
+  constructor(private auth:AuthService, private router:Router, private home:HomeService) { }
 
   ngOnInit() {
 
+    this.auth.auth().subscribe((response:HttpResponse<any>) => {
+      if(response.ok){
+        this.auth.isAuth = true;
+        this.router.navigateByUrl('/home');
+      }
+    })
+
+  }
+
+  login(user:string, password:string){
     
+    this.auth.login(user, password).subscribe((response:HttpResponse<any>) => {
+      if(response.ok){
+        this.auth.isAuth = true;
+        this.router.navigateByUrl('/home');
+      }else{
+        alert("Usuário ou senha inválidos");
+      }
+    })
 
   }
 

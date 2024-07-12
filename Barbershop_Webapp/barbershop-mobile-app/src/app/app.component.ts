@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -12,8 +13,13 @@ export class AppComponent {
     { title: 'Dashboard', url: '/dashboard', icon: 'stats-chart' },
     { title: 'Financeiro', url: '/bill', icon: 'cash' },
     { title: 'Agendamentos', url: '/book', icon: 'book' },
-    { title: 'Usuários', url: '/folder/trash', icon: 'people' }
+    { title: 'Usuários', url: '/users', icon: 'people' }
   ];
-  constructor(public auth:AuthService) {}
+  constructor(public auth:AuthService, private router:Router) {}
+
+  async logout(){
+    await this.auth.logout();
+    this.router.navigateByUrl('');
+  }
 
 }

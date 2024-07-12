@@ -9,7 +9,7 @@ export const myInterceptor: HttpInterceptorFn = (req, next) => {
   const token = authService.getToken();
 
   const cloneReq = req.clone({
-    headers: req.headers.set('Cookie', `token=${token}`)
+    withCredentials: true,
   })
 
   return next(cloneReq);
