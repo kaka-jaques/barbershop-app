@@ -15,4 +15,7 @@ public interface ClientRepository extends JpaRepository<ClientVO, Integer> {
 	@Query("FROM ClientVO WHERE FUNCTION('MONTH', birthDate) = FUNCTION('MONTH', CURRENT_DATE)")
 	public List<ClientVO> getMonthBirths();
 	
+	@Query("FROM ClientVO WHERE active = false")
+	public List<ClientVO> getTempClients();
+	
 }

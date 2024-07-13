@@ -26,7 +26,7 @@ public class BookingVO {
 	@JoinColumn(name = "services_id", nullable = false)
 	private ServicesVO services;
 	@ManyToOne
-	@JoinColumn(name = "client_id", nullable = false)
+	@JoinColumn(name = "client_id")
 	private ClientVO client;
 	
 	public ServicesVO getServices() {

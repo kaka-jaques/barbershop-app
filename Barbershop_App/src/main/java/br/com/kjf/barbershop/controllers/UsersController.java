@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.kjf.barbershop.repository.ClientRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.BonusVO;
+import br.com.kjf.barbershop.vo.BookingVO;
 import br.com.kjf.barbershop.vo.UserVO;
 
 @RestController
@@ -23,6 +25,9 @@ public class UsersController {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private ClientRepository clientRepository;
+	
 	@GetMapping
 	public ResponseEntity<?> getAllUsers() {
 		
@@ -30,15 +35,18 @@ public class UsersController {
 		
 		for(UserVO user : users) {
 			user.setPassword(null);
-			user.getClient().setBookings(null);
+			if(user.getClient().getBookings() != null) {
+				for(BookingVO book : user.getClient().getBookings()) {
+					book.setClient(null);
+				}
+			}
 		}
-		
 		return ResponseEntity.ok(users);
 	}
 	
-	@GetMapping("/active")
-	public ResponseEntity<?> getAllActiveUsers(){
-		return ResponseEntity.ok(userRepository.getAllActiveUsers());
+	@GetMapping("/temp")
+	public ResponseEntity<?> getTempClient(){
+		return ResponseEntity.ok(clientRepository.getTempClients());
 	}
 	
 	@PostMapping

@@ -12,6 +12,9 @@ export class UsersPage implements OnInit {
   public usersList: any[] = [];
   public userQuery: any[] = [];
 
+  public tempClientList: any[] = [];
+  public tempClientQuery: any[] = [];
+
   //PARAMETROS PARA FITLRO
   public user!: string;
   public email!: string;
@@ -23,12 +26,22 @@ export class UsersPage implements OnInit {
   public plan!: number;
   public cpf!: string;
 
+  public selectedClient: any = {
+    client: {
+      name: 'Nan'
+    }
+  };
+
   public selectedUser: any = {
     client: {
       name: 'Nan'
     }
   };
   public birthDate!: string;
+  public saveUserButton: Boolean = false;
+  public isToastOpen: Boolean = false;
+  public toastMessage!: string;
+  public toastColor: string = 'light';
 
   constructor(private users: UsersService) { }
 
@@ -37,6 +50,7 @@ export class UsersPage implements OnInit {
       if (response.ok) {
         this.usersList = response.body;
         this.userQuery = [...this.usersList];
+        this.userQuery.push
         this.alphabeticalOrder();
         setTimeout(() => {
           document.querySelector('ion-item-sliding')?.open('end');
@@ -48,6 +62,8 @@ export class UsersPage implements OnInit {
     }, (error: HttpErrorResponse) => {
       console.log(error);
     });
+    
+    //capturar clientes temporarios
 
   }
 
@@ -77,22 +93,57 @@ export class UsersPage implements OnInit {
     });
   }
 
-  applyFilter(){
-    
+  applyFilter() {
+
   }
 
-  resetFilter(modal: any){
+  resetFilter(modal: any) {
     modal.dismiss();
   }
 
-  openUser(user: any, modal: any){
+  openUser(user: any, modal: any) {
     this.selectedUser = user;
-    if(user.client.birthDate != null){
+    if (user.client.birthDate != null) {
       this.birthDate = new Date(this.selectedUser.client.birthDate[0], this.selectedUser.client.birthDate[1] - 1, this.selectedUser.client.birthDate[2]).toISOString();
-    }else{
+    } else {
       this.birthDate = '';
     }
     modal.present();
+  }
+
+  openClient(client: any, modal: any) {
+
+  }
+
+  saveUser(modal: any, button: any) {
+    button.disabled = true;
+    this.saveUserButton = true;
+    this.users.updateUser(this.selectedUser).subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        modal.dismiss();
+        this.isToastOpen = true;
+        this.toastColor = 'success';
+        this.toastMessage = 'Usuário atualizado com sucesso!';
+        button.disabled = false;
+        this.saveUserButton = false;
+      } else {
+        this.isToastOpen = true;
+        this.toastColor = 'danger';
+        this.toastMessage = 'Erro ao atualizar o usuário!';
+        button.disabled = false;
+        this.saveUserButton = false;
+      }
+    }, (error: HttpErrorResponse) => {
+      this.isToastOpen = true;
+      this.toastColor = 'danger';
+      this.toastMessage = 'Erro ao atualizar o usuário!';
+      button.disabled = false;
+      this.saveUserButton = false;
+    })
+  }
+
+  setToastOpen(isOpen: boolean) {
+    this.isToastOpen = isOpen;
   }
 
 }

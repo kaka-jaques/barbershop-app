@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth.service';
 import { Router } from '@angular/router';
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { HomeService } from 'src/app/home.service';
 
 @Component({
@@ -19,7 +19,12 @@ export class LoginPage implements OnInit {
   ngOnInit() {
 
     this.auth.auth().subscribe((response:HttpResponse<any>) => {
-      if(response.ok){
+      if(response.status == 302){
+        this.auth.isAuth = true;
+        this.router.navigateByUrl('/home');
+      }
+    }, (error:HttpErrorResponse) => {
+      if(error.status == 302){
         this.auth.isAuth = true;
         this.router.navigateByUrl('/home');
       }
