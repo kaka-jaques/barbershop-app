@@ -2,6 +2,7 @@ package br.com.kjf.barbershop.vo;
 
 import java.util.GregorianCalendar;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.persistence.Entity;
@@ -60,6 +61,7 @@ public class BonusVO {
 	private String other_reason;
 	@ManyToOne
 	@JoinColumn(name = "client_id")
+	@JsonIgnore
 	private ClientVO client;
 	
 	public ClientVO getClient() {

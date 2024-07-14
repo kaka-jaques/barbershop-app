@@ -5,6 +5,7 @@ function updateProfile(btnElem) {
     body.client.name = document.getElementById('name').value;
     let date = document.getElementById('birth').value.split('-');
     body.client.birthDate = new Date(date[0], date[1] - 1, date[2]);
+    body.client.telephone = document.getElementById('phone').value;
 
     btnElem.disabled = true;
     btnElem.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>'

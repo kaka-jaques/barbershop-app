@@ -2,6 +2,7 @@ package br.com.kjf.barbershop.vo;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -46,9 +47,18 @@ public class ClientVO {
 	private UserVO user;
 	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BookingVO> bookings;
-	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<BonusVO> bonus;
-	
+	@ManyToOne
+	@JoinColumn(name = "bonus_id", nullable = true)
+	private BonusVO bonus;
+
+	public BonusVO getBonus() {
+		return bonus;
+	}
+
+	public void setBonus(BonusVO bonus) {
+		this.bonus = bonus;
+	}
+
 	public Boolean getAnualBonus() {
 		return anualBonus;
 	}

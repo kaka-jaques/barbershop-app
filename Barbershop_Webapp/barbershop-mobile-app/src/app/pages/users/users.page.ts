@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ActionSheetController } from '@ionic/angular';
 import { UsersService } from 'src/app/users.service';
 
 @Component({
@@ -12,6 +13,9 @@ export class UsersPage implements OnInit {
   public usersList: any[] = [];
   public userQuery: any[] = [];
 
+  public tempClientList: any[] = [];
+  public tempClientQuery: any[] = [];
+
   //PARAMETROS PARA FITLRO
   public user!: string;
   public email!: string;
@@ -23,20 +27,39 @@ export class UsersPage implements OnInit {
   public plan!: number;
   public cpf!: string;
 
+  public roles: any = [
+    { id: 1, name: 'ROLE_ADMIN' },
+    { id: 2, name: 'ROLE_EMPLOYEE' },
+    { id: 3, name: 'ROLE_MEMBER' }
+  ];
+
+  public selectedClient: any = {
+    client: {
+      name: 'Nan'
+    }
+  };
+
   public selectedUser: any = {
     client: {
       name: 'Nan'
     }
   };
   public birthDate!: string;
+  public saveUserButton: Boolean = false;
+  public isToastOpen: Boolean = false;
+  public toastMessage!: string;
+  public toastColor: string = 'light';
 
-  constructor(private users: UsersService) { }
+  public currentRole!: any;
+
+  constructor(private users: UsersService, private actSheetCtrl: ActionSheetController) { }
 
   async ngOnInit() {
     await this.users.getAllUsers().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.usersList = response.body;
         this.userQuery = [...this.usersList];
+        this.userQuery.push
         this.alphabeticalOrder();
         setTimeout(() => {
           document.querySelector('ion-item-sliding')?.open('end');
@@ -47,7 +70,13 @@ export class UsersPage implements OnInit {
       }
     }, (error: HttpErrorResponse) => {
       console.log(error);
+      this.isToastOpen = true;
+      this.toastColor = 'danger';
+      this.toastMessage = 'Erro ao buscar os usuários!';
+      this.saveUserButton = false;
     });
+
+    //capturar clientes temporarios
 
   }
 
@@ -66,6 +95,11 @@ export class UsersPage implements OnInit {
       }
     }, (error: HttpErrorResponse) => {
       console.log(error);
+      this.isToastOpen = true;
+      this.toastColor = 'danger';
+      this.toastMessage = 'Erro ao buscar os usuários!';
+      this.saveUserButton = false;
+      event.target.complete();
     });
   }
 
@@ -77,22 +111,96 @@ export class UsersPage implements OnInit {
     });
   }
 
-  applyFilter(){
-    
+  applyFilter() {
+
   }
 
-  resetFilter(modal: any){
+  applyRole(role: number, modal: any) {
+    this.selectedUser.role[0] = this.roles[role];
     modal.dismiss();
   }
 
-  openUser(user: any, modal: any){
+  resetFilter(modal: any) {
+    modal.dismiss();
+  }
+
+  openUser(user: any, modal: any) {
     this.selectedUser = user;
-    if(user.client.birthDate != null){
+    if (user.client.birthDate != null) {
       this.birthDate = new Date(this.selectedUser.client.birthDate[0], this.selectedUser.client.birthDate[1] - 1, this.selectedUser.client.birthDate[2]).toISOString();
-    }else{
+    } else {
       this.birthDate = '';
     }
     modal.present();
+  }
+
+  async deleteUser(user: any) {
+    
+    let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
+      const sheet = await this.actSheetCtrl.create({
+        header: 'Tem certeza?',
+        subHeader: 'Esta operação não pode ser desfeita',
+        buttons: [
+          {
+            text: 'Excluir',
+            role: 'destructive',
+          },
+          {
+            text: 'Cancelar',
+            role: 'cancel'
+          }
+        ]
+      });
+
+      sheet.present();
+
+      const { role } = await sheet.onDidDismiss();
+      return role === 'destructive';
+
+    }
+    
+    if(await deleteConfirmation()){
+      console.log('User deleted');
+      
+    }
+  }
+
+  openClient(client: any, modal: any) {
+
+  }
+
+  saveUser(modal: any, button: any) {
+    button.disabled = true;
+    this.saveUserButton = true;
+    this.users.updateUser(this.selectedUser).subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        modal.dismiss();
+        this.isToastOpen = true;
+        this.toastColor = 'success';
+        this.toastMessage = 'Usuário atualizado com sucesso!';
+        button.disabled = false;
+        this.saveUserButton = false;
+      } else {
+        this.isToastOpen = true;
+        this.toastColor = 'danger';
+        this.toastMessage = 'Erro ao atualizar o usuário!';
+        button.disabled = false;
+        this.saveUserButton = false;
+      }
+    }, (error: HttpErrorResponse) => {
+      this.isToastOpen = true;
+      this.toastColor = 'danger';
+      this.toastMessage = 'Erro ao atualizar o usuário!';
+      button.disabled = false;
+      this.saveUserButton = false;
+    })
+
+    this.refreshUsers(null);
+
+  }
+
+  setToastOpen(isOpen: boolean) {
+    this.isToastOpen = isOpen;
   }
 
 }

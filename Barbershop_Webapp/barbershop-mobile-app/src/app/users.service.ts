@@ -13,4 +13,16 @@ export class UsersService {
     return this.http.get<any>('http://localhost:8080/users', {observe: 'response'});
   }
 
+  getTempClients(): Observable<HttpResponse<any>> {
+    return this.http.get<any>('http://localhost:8080/users/temp', {observe: 'response'});
+  }
+
+  updateUser(user:any): Observable<HttpResponse<any>> {
+    return this.http.put<any>('http://localhost:8080/auth/update', user, {observe: 'response'});
+  }
+
+  deleteUser(user:any): Observable<HttpResponse<any>> {
+    return this.http.delete<any>('http://localhost:8080/users/' + user.id, {observe: 'response'});
+  }
+
 }

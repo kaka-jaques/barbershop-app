@@ -1,5 +1,6 @@
 package br.com.kjf.barbershop.controllers;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ import br.com.kjf.barbershop.repository.ClientRepository;
 import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.RoleRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
+import br.com.kjf.barbershop.vo.BookingVO;
 import br.com.kjf.barbershop.vo.ClientVO;
 import br.com.kjf.barbershop.vo.NotificationConfigVO;
 import br.com.kjf.barbershop.vo.RoleVO;
@@ -163,6 +165,11 @@ public class AuthController {
 	public ResponseEntity<?> profileUpdate(@RequestBody UserVO user) throws JsonMappingException, JsonProcessingException{
 		
 		try {
+			if(user.getClient().getBookings() != null) {
+				for(BookingVO book : user.getClient().getBookings()) {
+					book.setClient(user.getClient());
+				}
+			}
 			user.setPassword(userRepository.findById(user.getId()).get().getPassword());
 			userRepository.save(user);
 		} catch (Exception e) {
