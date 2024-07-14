@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ActionSheetController } from '@ionic/angular';
 import { UsersService } from 'src/app/users.service';
 
 @Component({
@@ -26,6 +27,12 @@ export class UsersPage implements OnInit {
   public plan!: number;
   public cpf!: string;
 
+  public roles: any = [
+    { id: 1, name: 'ROLE_ADMIN' },
+    { id: 2, name: 'ROLE_EMPLOYEE' },
+    { id: 3, name: 'ROLE_MEMBER' }
+  ];
+
   public selectedClient: any = {
     client: {
       name: 'Nan'
@@ -43,7 +50,9 @@ export class UsersPage implements OnInit {
   public toastMessage!: string;
   public toastColor: string = 'light';
 
-  constructor(private users: UsersService) { }
+  public currentRole!: any;
+
+  constructor(private users: UsersService, private actSheetCtrl: ActionSheetController) { }
 
   async ngOnInit() {
     await this.users.getAllUsers().subscribe((response: HttpResponse<any>) => {
@@ -61,8 +70,12 @@ export class UsersPage implements OnInit {
       }
     }, (error: HttpErrorResponse) => {
       console.log(error);
+      this.isToastOpen = true;
+      this.toastColor = 'danger';
+      this.toastMessage = 'Erro ao buscar os usuários!';
+      this.saveUserButton = false;
     });
-    
+
     //capturar clientes temporarios
 
   }
@@ -82,6 +95,11 @@ export class UsersPage implements OnInit {
       }
     }, (error: HttpErrorResponse) => {
       console.log(error);
+      this.isToastOpen = true;
+      this.toastColor = 'danger';
+      this.toastMessage = 'Erro ao buscar os usuários!';
+      this.saveUserButton = false;
+      event.target.complete();
     });
   }
 
@@ -97,6 +115,11 @@ export class UsersPage implements OnInit {
 
   }
 
+  applyRole(role: number, modal: any) {
+    this.selectedUser.role[0] = this.roles[role];
+    modal.dismiss();
+  }
+
   resetFilter(modal: any) {
     modal.dismiss();
   }
@@ -109,6 +132,37 @@ export class UsersPage implements OnInit {
       this.birthDate = '';
     }
     modal.present();
+  }
+
+  async deleteUser(user: any) {
+    
+    let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
+      const sheet = await this.actSheetCtrl.create({
+        header: 'Tem certeza?',
+        subHeader: 'Esta operação não pode ser desfeita',
+        buttons: [
+          {
+            text: 'Excluir',
+            role: 'destructive',
+          },
+          {
+            text: 'Cancelar',
+            role: 'cancel'
+          }
+        ]
+      });
+
+      sheet.present();
+
+      const { role } = await sheet.onDidDismiss();
+      return role === 'destructive';
+
+    }
+    
+    if(await deleteConfirmation()){
+      console.log('User deleted');
+      
+    }
   }
 
   openClient(client: any, modal: any) {
@@ -140,6 +194,9 @@ export class UsersPage implements OnInit {
       button.disabled = false;
       this.saveUserButton = false;
     })
+
+    this.refreshUsers(null);
+
   }
 
   setToastOpen(isOpen: boolean) {

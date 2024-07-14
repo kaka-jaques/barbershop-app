@@ -44,6 +44,118 @@
                 </ion-item-options>
             </ion-item-sliding>
         </ion-list>
+        <ion-list *ngIf="!userQuery.length && !tempClientQuery.length">
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+            <ion-item-sliding color="light">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                    </ion-avatar>
+                    <ion-label>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+        </ion-list>
         <ion-modal #clientModal trigger="open-client-modal" [presentingElement]="presentingElement">
             <ng-template>
                 <ion-header>
@@ -56,7 +168,7 @@
                 </ion-header>
                 <ion-content>
                     <ion-list>
-
+                        
                     </ion-list>
                 </ion-content>
             </ng-template>
@@ -116,7 +228,40 @@
                         <ion-item color="light">
                             <ion-input label="CPF" [(ngModel)]="selectedUser.client.cpf" disabled></ion-input>
                         </ion-item>
+                        <ion-item color="light">
+                            <ion-label slot="start">Cargo: </ion-label>
+                            <ion-button id="open-role-modal" fill="clear">{{ selectedUser.role[0].name }}</ion-button>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-button fill="clear">Dar Bonus</ion-button>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-button fill="clear" (click)="deleteUser(selectedUser)" color="danger">Excluir</ion-button>
+                        </ion-item>
                     </ion-list>
+                    <ion-modal [initialBreakpoint]="0.35" [breakpoints]="[0, 0.35]" #roleModal trigger="open-role-modal"
+                        (didDismiss)="applyRole(currentRole, roleModal)">
+                        <ng-template>
+                            <ion-content color="light">
+                                <ion-toolbar>
+                                    <ion-buttons slot="start">
+                                        <ion-button (click)="roleModal.dismiss()">Cancelar</ion-button>
+                                    </ion-buttons>
+                                    <ion-buttons slot="end">
+                                        <ion-button (click)="applyRole(currentRole, roleModal)">Aplicar</ion-button>
+                                    </ion-buttons>
+                                </ion-toolbar>
+                                <ion-picker>
+                                    <ion-picker-column [value]="currentRole"
+                                        (ionChange)="currentRole = $event.detail.value">
+                                        <ion-picker-column-option value="0">Administrador</ion-picker-column-option>
+                                        <ion-picker-column-option value="1">Funcionário</ion-picker-column-option>
+                                        <ion-picker-column-option value="2">Membro</ion-picker-column-option>
+                                    </ion-picker-column>
+                                </ion-picker>
+                            </ion-content>
+                        </ng-template>
+                    </ion-modal>
                     <ion-modal [keepContentsMounted]="true">
                         <ng-template>
                             <ion-datetime id="datetime" presentation="date" [(ngModel)]="birthDate" [formatOptions]="{
