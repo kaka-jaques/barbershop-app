@@ -9,6 +9,15 @@
             <ion-refresher-content pullingIcon="chevron-down" refreshingSpinner="dots"></ion-refresher-content>
         </ion-refresher>
         <ion-list>
+            <ion-item>
+                <ion-button id="open-add-modal" style="margin: auto;" fill="clear">
+                    <ion-icon name="person-add"></ion-icon>
+                    Criar Usuário
+                </ion-button>
+            </ion-item>
+            <ion-item-divider *ngIf="userQuery.length > 0">
+                <ion-label>Clientes com cadastro</ion-label>
+            </ion-item-divider>
             <ion-item-sliding color="light" *ngFor="let user of userQuery">
                 <ion-item [button]="true" (click)="openUser(user, userModal)" id="open-user-modal">
                     <ion-avatar slot="start">
@@ -27,6 +36,9 @@
             </ion-item-sliding>
         </ion-list>
         <ion-list>
+            <ion-item-divider *ngIf="tempClientQuery.length > 0">
+                <ion-label>Clientes sem cadastro</ion-label>
+            </ion-item-divider>
             <ion-item-sliding color="light" *ngFor="let client of tempClientQuery">
                 <ion-item [button]="true" (click)="openClient(client, clientModal)" id="open-client-modal">
                     <ion-avatar slot="start">
@@ -273,6 +285,23 @@
                             }"></ion-datetime>
                         </ng-template>
                     </ion-modal>
+                </ion-content>
+            </ng-template>
+        </ion-modal>
+        <ion-modal #addModal trigger="open-add-modal" [presentingElement]="presentingElement">
+            <ng-template>
+                <ion-content>
+                    <ion-header>
+                        <ion-toolbar>
+                            <ion-buttons slot="start">
+                                <ion-button (click)="addModal.dismiss()">Sair</ion-button>
+                            </ion-buttons>
+                            <ion-title>Criar Usuário</ion-title>
+                            <ion-buttons slot="end">
+                                <ion-button (click)="createUser(addModal)">Criar</ion-button>
+                            </ion-buttons>
+                        </ion-toolbar>
+                    </ion-header>
                 </ion-content>
             </ng-template>
         </ion-modal>

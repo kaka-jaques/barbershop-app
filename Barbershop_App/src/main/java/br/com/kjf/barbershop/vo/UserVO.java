@@ -23,9 +23,9 @@ public class UserVO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column(nullable = false, unique = true)
+	@Column(nullable = true, unique = true)
 	private String email;
-	@Column(nullable = false, unique = true)
+	@Column(nullable = true, unique = true)
 	private String user;
 	@Column(nullable = false)
 	private String password;

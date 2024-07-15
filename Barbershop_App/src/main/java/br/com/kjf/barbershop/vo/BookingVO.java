@@ -2,6 +2,8 @@ package br.com.kjf.barbershop.vo;
 
 import java.util.GregorianCalendar;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +29,7 @@ public class BookingVO {
 	private ServicesVO services;
 	@ManyToOne
 	@JoinColumn(name = "client_id")
+	@JsonIgnore
 	private ClientVO client;
 	
 	public ServicesVO getServices() {
