@@ -29,7 +29,7 @@ public class ClientVO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String name;
-	private String image_url;
+	private String image_url = "https://ionicframework.com/docs/img/demos/avatar.svg";
 	@Temporal(TemporalType.DATE)
 	private LocalDate birthDate;
 	private String cpf;

@@ -399,7 +399,63 @@ function booking(user) {
             })
 
     } else {
-        alert('auth em dev')
+        fetch('http://localhost:8080/book', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Auth': false
+            },
+            body: JSON.stringify(body)
+        })
+            .then(response => {
+                if (response.status == 201) {
+                    gsap.to('#calendar-overlay', {
+                        opacity: 0,
+                        onComplete: () => {
+                            document.querySelector('#calendar-overlay').style.display = 'none'
+                        }
+                    });
+                    gsap.to('#calendar-user', {
+                        opacity: 0,
+                        onComplete: () => {
+                            document.querySelector('#calendar-user').style.display = 'none'
+                        }
+                    })
+                    document.querySelector('#alert').innerHTML = 'Reserva efetuada com sucesso!';
+                    document.querySelector('#alert').classList.remove('alert-danger');
+                    document.querySelector('#alert').classList.add('alert-success');
+                    gsap.to('#alert', {
+                        display: 'flex',
+                        opacity: 1,
+                    })
+                    setTimeout(() => {
+                        gsap.to('#alert', {
+                            opacity: 0,
+                            onComplete: () => {
+                                document.querySelector('#alert').style.display = 'none'
+                                document.querySelector('#alert').classList.remove('alert-success');
+                                document.querySelector('#alert').classList.add('alert-danger');
+                                window.location.href = '/index.html'
+                            }
+                        })
+                    }, 2250)
+                } else {
+                    document.querySelector('#alert').innerHTML = 'Erro ao efetuar reserva!';
+                    gsap.to('#alert', {
+                        display: 'flex',
+                        opacity: 1,
+                    })
+                    setTimeout(() => {
+                        gsap.to('#alert', {
+                            opacity: 0,
+                            onComplete: () => {
+                                document.querySelector('#alert').style.display = 'none'
+                            }
+                        })
+                    }, 5000)
+                }
+            })
     }
 
 }

@@ -59,7 +59,6 @@ export class UsersPage implements OnInit {
       if (response.ok) {
         this.usersList = response.body;
         this.userQuery = [...this.usersList];
-        this.userQuery.push
         this.alphabeticalOrder();
         setTimeout(() => {
           document.querySelector('ion-item-sliding')?.open('end');
@@ -76,7 +75,19 @@ export class UsersPage implements OnInit {
       this.saveUserButton = false;
     });
 
-    //capturar clientes temporarios
+    await this.users.getTempClients().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.tempClientList = response.body;
+        this.tempClientQuery = [...this.tempClientList];
+        this.alphabeticalOrderTempClients();
+      }
+    }, (error: HttpErrorResponse) => {
+      console.log(error);
+      this.isToastOpen = true;
+      this.toastColor = 'danger';
+      this.toastMessage = 'Erro ao buscar os clientes!';
+      this.saveUserButton = false;
+    });
 
   }
 
@@ -101,12 +112,35 @@ export class UsersPage implements OnInit {
       this.saveUserButton = false;
       event.target.complete();
     });
+    await this.users.getTempClients().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.tempClientList = response.body;
+        this.tempClientQuery = [...this.tempClientList];
+        this.alphabeticalOrderTempClients();
+        event.target.complete();
+      }
+    }, (error: HttpErrorResponse) => {
+      console.log(error);
+      this.isToastOpen = true;
+      this.toastColor = 'danger';
+      this.toastMessage = 'Erro ao buscar os clientes!';
+      this.saveUserButton = false;
+      event.target.complete();
+    });
   }
 
   alphabeticalOrder() {
     this.userQuery.sort((a, b) => {
       if (a.client.name < b.client.name) return -1;
       if (a.client.name > b.client.name) return 1;
+      return 0;
+    });
+  }
+
+  alphabeticalOrderTempClients() {
+    this.tempClientQuery.sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
       return 0;
     });
   }
@@ -166,7 +200,8 @@ export class UsersPage implements OnInit {
   }
 
   openClient(client: any, modal: any) {
-
+    this.selectedClient = client;
+    modal.present();
   }
 
   saveUser(modal: any, button: any) {
@@ -197,6 +232,10 @@ export class UsersPage implements OnInit {
 
     this.refreshUsers(null);
 
+  }
+
+  createUser(modal: any) {
+    
   }
 
   setToastOpen(isOpen: boolean) {

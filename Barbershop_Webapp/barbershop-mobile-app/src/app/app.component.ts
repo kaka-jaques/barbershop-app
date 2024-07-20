@@ -13,7 +13,8 @@ export class AppComponent {
     { title: 'Dashboard', url: '/dashboard', icon: 'stats-chart' },
     { title: 'Financeiro', url: '/bill', icon: 'cash' },
     { title: 'Agendamentos', url: '/book', icon: 'book' },
-    { title: 'Usuários', url: '/users', icon: 'people' }
+    { title: 'Usuários', url: '/users', icon: 'people' },
+    { title: 'Configurações', url: '/config', icon: 'construct' },
   ];
   constructor(public auth:AuthService, private router:Router) {}
 

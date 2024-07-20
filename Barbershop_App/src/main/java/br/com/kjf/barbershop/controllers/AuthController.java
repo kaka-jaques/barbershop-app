@@ -217,6 +217,7 @@ public class AuthController {
 	public ResponseEntity<?> websiteRegister(@RequestBody UserVO user) throws JsonMappingException, JsonProcessingException{
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setUser("user-"+userRepository.findAll().get((int)userRepository.count()-1).getId()+1);
 		
 		RoleVO role = roleRepository.findById(3);
 		
@@ -224,12 +225,9 @@ public class AuthController {
 		roles.add(role);
 		user.setRole(roles);
 		
-		ClientVO client = new ClientVO();
-		client.setImage_url("/assets/imgs/default_profile.png");
-		client.setActive(true);
-		client.setPlano(plansRepository.findById(1));
-		
-		user.setClient(client);
+		user.getClient().setImage_url("https://ionicframework.com/docs/img/demos/avatar.svg");
+		user.getClient().setActive(true);
+		user.getClient().setPlano(plansRepository.findById(1));
 		user.setNotificationConfig(new NotificationConfigVO());
 		
 		userRepository.save(user);
