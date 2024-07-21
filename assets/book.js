@@ -332,32 +332,13 @@ function booking(user) {
 
     let body;
 
-    if(user.client.active){
-        body = {
-            bookingDate: bookDate,
-            services: {
-                id: document.querySelector('#service').value
-            },
-            client: user.client
-        }
-    }else{
-        body = {
-            bookingDate: bookDate,
-            services: {
-                id: document.querySelector('#service').value
-            },
-            client: {
-                name: document.querySelector('#book-user').value,
-                telephone: document.querySelector('#book-tel').value,
-                active: false,
-                plano: {
-                    id: 1
-                }
-            }
-        }
+    body = {
+        bookingDate: bookDate,
+        services: {
+            id: document.querySelector('#service').value
+        },
+        client: user.client
     }
-
-    
 
     if (user.client.active) {
 
@@ -423,6 +404,7 @@ function booking(user) {
         console.log(body);
         fetch('http://localhost:8080/book', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'Auth': false

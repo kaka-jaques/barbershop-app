@@ -29,7 +29,6 @@ public class BookingVO {
 	private ServicesVO services;
 	@ManyToOne
 	@JoinColumn(name = "client_id")
-	@JsonIgnore
 	private ClientVO client;
 	
 	public ServicesVO getServices() {

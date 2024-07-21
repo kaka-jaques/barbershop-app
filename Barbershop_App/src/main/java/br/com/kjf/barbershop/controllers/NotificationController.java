@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import br.com.kjf.barbershop.repository.BookingRepository;
 import br.com.kjf.barbershop.repository.ClientRepository;
 import br.com.kjf.barbershop.repository.NotificationConfigRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
+import br.com.kjf.barbershop.vo.BookingVO;
 import br.com.kjf.barbershop.vo.NotificationConfigVO;
 import br.com.kjf.barbershop.vo.UserVO;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -100,7 +102,13 @@ public class NotificationController {
 		calendarToday.setTime(dateToday);
 		calendarTomorrow.setTime(dateTomorrow);
 		
-		int serviceToday = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow).size();
+		List<BookingVO> services = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow);
+		
+		for(BookingVO book : services) {
+			book.setClient(null);
+		}
+		
+		int serviceToday = services.size();
 		int billPending = billRepository.getPendingMonthBills().size();
 		int billExpired = billRepository.getExpiredBills().size();
 		int birthsToday = clientRepository.getTodayBirths().size();
