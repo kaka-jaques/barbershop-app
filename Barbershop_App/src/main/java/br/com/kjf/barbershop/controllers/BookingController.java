@@ -27,11 +27,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.kjf.barbershop.repository.BookingRepository;
 import br.com.kjf.barbershop.repository.ClientRepository;
+import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.ServicesRepository;
 import br.com.kjf.barbershop.vo.BookingVO;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
+@CrossOrigin(origins = {"127.0.0.1:5500", "http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
 @RequestMapping("/book")
 public class BookingController {
 
@@ -40,6 +41,9 @@ public class BookingController {
 	
 	@Autowired
 	private ClientRepository clientRepository;
+	
+	@Autowired
+	private PlansRepository plansRepository;
 	
 	@Autowired
 	private ServicesRepository servicesRepository;
@@ -53,6 +57,7 @@ public class BookingController {
 		
 		if(!auth) {
 			clientRepository.save(book.getClient());
+			book.getClient().setPlano(plansRepository.findById(book.getClient().getPlano().getId()).get());
 		}
 		
 		bookingRepository.save(book);

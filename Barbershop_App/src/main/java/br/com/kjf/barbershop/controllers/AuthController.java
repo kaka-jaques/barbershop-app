@@ -45,7 +45,7 @@ import br.com.kjf.barbershop.vo.UserVO;
 import io.jsonwebtoken.ExpiredJwtException;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
+@CrossOrigin(origins = {"127.0.0.1:5500", "http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
 @RequestMapping("/auth")
 public class AuthController {
 

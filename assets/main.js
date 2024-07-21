@@ -69,19 +69,23 @@ function bookAuth() {
                 })
             } else {
                 constructCalendar(null);
-                throw new Error('Sem token')
             }
         })
         .catch(error => {
-            gsap.to('.fa-circle-notch', {
-                opacity: 0,
-                onComplete: () => {
-                    gsap.to('#erro-api-screen', {
-                        opacity: 1,
-                        display: 'flex',
-                    })
-                }
-            })
+            console.log(error);
+            if(error.status == 403){
+                constructCalendar(data);
+            }else{
+                gsap.to('.fa-circle-notch', {
+                    opacity: 0,
+                    onComplete: () => {
+                        gsap.to('#erro-api-screen', {
+                            opacity: 1,
+                            display: 'flex',
+                        })
+                    }
+                })
+            }
         })
 }
 
