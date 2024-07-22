@@ -180,7 +180,18 @@
                 </ion-header>
                 <ion-content>
                     <ion-list>
-                        
+                        <ion-item color="light">
+                            <ion-input label="Nome" [(ngModel)]="selectedClient.name"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-input label="Telefone" [(ngModel)]="selectedClient.telephone"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-button fill="clear">Realizar Convite</ion-button>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-button fill="clear" (click)="deleteClient(selectedClient, clientModal)" color="danger">Excluir</ion-button>
+                        </ion-item>
                     </ion-list>
                 </ion-content>
             </ng-template>
@@ -248,7 +259,7 @@
                             <ion-button fill="clear">Dar Bonus</ion-button>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-button fill="clear" (click)="deleteUser(selectedUser)" color="danger">Excluir</ion-button>
+                            <ion-button fill="clear" (click)="deleteUser(selectedUser, userModal)" color="danger">Excluir</ion-button>
                         </ion-item>
                     </ion-list>
                     <ion-modal [initialBreakpoint]="0.35" [breakpoints]="[0, 0.35]" #roleModal trigger="open-role-modal"

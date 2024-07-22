@@ -217,7 +217,10 @@ public class AuthController {
 	public ResponseEntity<?> websiteRegister(@RequestBody UserVO user) throws JsonMappingException, JsonProcessingException{
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setUser("user-"+userRepository.findAll().get((int)userRepository.count()-1).getId()+1);
+		
+		if(user.getUser() == null) {
+			user.setUser("user-"+userRepository.findAll().get((int)userRepository.count()-1).getId()+1);
+		}
 		
 		RoleVO role = roleRepository.findById(3);
 		

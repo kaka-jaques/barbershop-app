@@ -70,4 +70,10 @@ public class UsersController {
 		return ResponseEntity.ok(null);
 	}
 	
+	@DeleteMapping("/temp/{id}")
+	public ResponseEntity<?> deleteClient(@PathVariable("id")int id) {
+		clientRepository.deleteById(id);
+		return ResponseEntity.ok(null);
+	}
+	
 }

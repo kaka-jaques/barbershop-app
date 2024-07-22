@@ -168,8 +168,8 @@ export class UsersPage implements OnInit {
     modal.present();
   }
 
-  async deleteUser(user: any) {
-    
+  async deleteUser(user: any, modal: any) {
+
     let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
       const sheet = await this.actSheetCtrl.create({
         header: 'Tem certeza?',
@@ -192,10 +192,64 @@ export class UsersPage implements OnInit {
       return role === 'destructive';
 
     }
-    
-    if(await deleteConfirmation()){
-      console.log('User deleted');
-      
+
+    if (await deleteConfirmation()) {
+      this.users.deleteUser(user).subscribe((response: HttpResponse<any>) => {
+        if (response.ok) {
+          this.isToastOpen = true;
+          this.toastColor = 'success';
+          this.toastMessage = 'cliente excluído com sucesso!';
+          this.refreshUsers(null);
+          modal.dismiss();
+        }else{
+          this.isToastOpen = true;
+          this.toastColor = 'danger';
+          this.toastMessage = 'Erro ao excluir o cliente!';
+          modal.dismiss();
+        }
+      })
+    }
+  }
+
+  async deleteClient(client: any, modal: any) {
+    let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
+      const sheet = await this.actSheetCtrl.create({
+        header: 'Tem certeza?',
+        subHeader: 'Esta operação não pode ser desfeita',
+        buttons: [
+          {
+            text: 'Excluir',
+            role: 'destructive',
+          },
+          {
+            text: 'Cancelar',
+            role: 'cancel'
+          }
+        ]
+      });
+
+      sheet.present();
+
+      const { role } = await sheet.onDidDismiss();
+      return role === 'destructive';
+
+    }
+
+    if (await deleteConfirmation()) {
+      this.users.deleteClient(client).subscribe((response: HttpResponse<any>) => {
+        if (response.ok) {
+          this.isToastOpen = true;
+          this.toastColor = 'success';
+          this.toastMessage = 'cliente excluído com sucesso!';
+          this.refreshUsers(null);
+          modal.dismiss();
+        }else{
+          this.isToastOpen = true;
+          this.toastColor = 'danger';
+          this.toastMessage = 'Erro ao excluir o cliente!';
+          modal.dismiss();
+        }
+      })
     }
   }
 
@@ -235,7 +289,7 @@ export class UsersPage implements OnInit {
   }
 
   createUser(modal: any) {
-    
+
   }
 
   setToastOpen(isOpen: boolean) {

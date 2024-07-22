@@ -25,4 +25,8 @@ export class UsersService {
     return this.http.delete<any>('http://localhost:8080/users/' + user.id, {observe: 'response'});
   }
 
+  deleteClient(client:any): Observable<HttpResponse<any>> {
+    return this.http.delete<any>('http://localhost:8080/users/temp/' + client.id, {observe: 'response'});
+  }
+
 }
