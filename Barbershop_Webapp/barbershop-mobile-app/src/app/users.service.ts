@@ -29,4 +29,8 @@ export class UsersService {
     return this.http.delete<any>('http://localhost:8080/users/temp/' + client.id, {observe: 'response'});
   }
 
+  createUser(user:any): Observable<HttpResponse<any>> {
+    return this.http.post<any>('http://localhost:8080/auth/register', user, {observe: 'response', headers: {'Auth': 'true'}});
+  }
+
 }

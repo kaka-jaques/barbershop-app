@@ -313,6 +313,28 @@
                             </ion-buttons>
                         </ion-toolbar>
                     </ion-header>
+                    <ion-list>
+                        <ion-item color="light">
+                            <ion-input label="User" [(ngModel)]="newUser.user"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-input label="Nome" [(ngModel)]="newUser.client.name"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-input label="Email" [(ngModel)]="newUser.email"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-input label="Telefone" [(ngModel)]="newUser.client.telephone"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-input label="CPF" [(ngModel)]="newUser.client.cpf"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-label slot="start">Data de Nascimento</ion-label>
+                            <ion-datetime-button datetime="datetime"></ion-datetime-button>
+                            <input *ngIf="birthDate == ''" class="form-control" type="date" name="date">
+                        </ion-item>
+                    </ion-list>
                 </ion-content>
             </ng-template>
         </ion-modal>

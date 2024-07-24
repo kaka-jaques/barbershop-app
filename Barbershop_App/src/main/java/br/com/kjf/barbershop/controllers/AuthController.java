@@ -214,7 +214,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/register")
-	public ResponseEntity<?> websiteRegister(@RequestBody UserVO user) throws JsonMappingException, JsonProcessingException{
+	public ResponseEntity<?> websiteRegister(@RequestBody UserVO user, @RequestHeader("Auth")boolean auth) throws JsonMappingException, JsonProcessingException{
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		
@@ -222,11 +222,13 @@ public class AuthController {
 			user.setUser("user-"+userRepository.findAll().get((int)userRepository.count()-1).getId()+1);
 		}
 		
-		RoleVO role = roleRepository.findById(3);
-		
-		Set<RoleVO> roles = new HashSet<>();
-		roles.add(role);
-		user.setRole(roles);
+		if(user.getRole() == null) {
+			RoleVO role = roleRepository.findById(3);
+			
+			Set<RoleVO> roles = new HashSet<>();
+			roles.add(role);
+			user.setRole(roles);
+		}
 		
 		user.getClient().setImage_url("https://ionicframework.com/docs/img/demos/avatar.svg");
 		user.getClient().setActive(true);
@@ -235,11 +237,13 @@ public class AuthController {
 		
 		userRepository.save(user);
 		
-		final String token = jwtUtil.generateLoginToken(userDetailsService.loadUserByUsername(user.getUser()).getUsername(), false);
-		
 		HttpHeaders headers = new HttpHeaders();
 		
-		headers.set("Set-Cookie", "token="+token+";Max-Age=54000; SameSite=Strict; HttpOnly;");
+		final String token = jwtUtil.generateLoginToken(userDetailsService.loadUserByUsername(user.getUser()).getUsername(), false);
+		
+		if(!auth) {
+			headers.set("Set-Cookie", "token="+token+";Max-Age=54000; SameSite=Strict; HttpOnly;");
+		}
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(
 					objMapper.readTree("{"

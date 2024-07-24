@@ -44,6 +44,22 @@ export class UsersPage implements OnInit {
       name: 'Nan'
     }
   };
+  public newUser:any = {
+    user: '',
+    password: '',
+    email: '',
+    client:{
+      name: '',
+      birthDate: '',
+      phone: '',
+      anualBonus: false,
+      plano: {
+        id: 1
+      },
+      cpf: '',
+    }
+  };
+
   public birthDate!: string;
   public saveUserButton: Boolean = false;
   public isToastOpen: Boolean = false;
