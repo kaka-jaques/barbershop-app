@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { ActionSheetController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActionSheetController, IonSearchbar } from '@ionic/angular';
 import { UsersService } from 'src/app/users.service';
 
 @Component({
@@ -10,6 +10,8 @@ import { UsersService } from 'src/app/users.service';
 })
 export class UsersPage implements OnInit {
 
+  @ViewChild('searchbar', { static: false }) searchbar: IonSearchbar | undefined;
+
   public usersList: any[] = [];
   public userQuery: any[] = [];
 
@@ -17,15 +19,16 @@ export class UsersPage implements OnInit {
   public tempClientQuery: any[] = [];
 
   //PARAMETROS PARA FITLRO
-  public user!: string;
-  public email!: string;
-  public startBirthDate!: Date;
-  public endBirthDate!: Date;
-  public activeUser!: Boolean;
-  public phone!: string;
-  public anualBonus!: Boolean;
-  public plan!: number;
-  public cpf!: string;
+  public user: string | null = null;
+  public email: string | null = null;
+  public startBirthDate: Date | null = null;
+  public endBirthDate: Date | null = null;
+  public activeUser: Boolean | null = null;
+  public phone: string | null = null;
+  public anualBonus: Boolean | null = null;
+  public plan: number | null = null;
+  public role: number | null = null;
+  public cpf: string | null = null;
 
   public roles: any = [
     { id: 1, name: 'ROLE_ADMIN' },
@@ -44,11 +47,11 @@ export class UsersPage implements OnInit {
       name: 'Nan'
     }
   };
-  public newUser:any = {
+  public newUser: any = {
     user: '',
     password: '',
     email: '',
-    client:{
+    client: {
       name: '',
       birthDate: '',
       phone: '',
@@ -108,8 +111,37 @@ export class UsersPage implements OnInit {
   }
 
   searchUser(event: any) {
-    const query: string = event.target.value.toLowerCase();
-    this.userQuery = this.usersList.filter(user => user.client.name.toLowerCase().indexOf(query) > -1);
+    let query: string = ''
+    if (event != null) {
+      query = event.target.value.toLowerCase();
+    }
+
+    this.userQuery = this.usersList.filter(user => {
+      const nameMatch = user.client.name.toLowerCase().indexOf(query) > -1;
+      const phoneMatch = this.phone == null || user.client.telephone?.indexOf(this.phone) > -1;
+      const emailMatch = this.email == null || user.email?.indexOf(this.email) > -1;
+      const activeMatch = this.activeUser == null || user.client.active === this.activeUser;
+      const annualBonusMatch = this.anualBonus == null || user.client.anualBonus === this.anualBonus;
+      const birthDateMatch = this.startBirthDate == null || this.endBirthDate == null ||
+        (new Date(user.client.birthDate[0], user.client.birthDate[1] - 1, user.client.birthDate[2]) >= this.startBirthDate &&
+          new Date(user.client.birthDate[0], user.client.birthDate[1] - 1, user.client.birthDate[2]) <= this.endBirthDate);
+      const cpfMatch = this.cpf == null || user.client.cpf.indexOf(this.cpf) > -1;
+      const userMatch = this.user == null || user.user.indexOf(this.user) > -1;
+
+      return nameMatch && phoneMatch && emailMatch && activeMatch && annualBonusMatch && birthDateMatch && cpfMatch && userMatch;
+    });
+
+    this.tempClientQuery = this.tempClientList.filter(client => {
+      const nameMatch = client.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+      const phoneMatch = this.phone == null || client.telephone?.indexOf(this.phone) > -1;
+      const activeMatch = this.activeUser == null || client.active === this.activeUser;
+
+      return nameMatch && phoneMatch && activeMatch;
+    });
+
+    this.alphabeticalOrder();
+    this.alphabeticalOrderTempClients();
+
   }
 
   async refreshUsers(event: any) {
@@ -143,6 +175,10 @@ export class UsersPage implements OnInit {
       this.saveUserButton = false;
       event.target.complete();
     });
+
+
+    this.resetFilter(null);
+
   }
 
   alphabeticalOrder() {
@@ -161,8 +197,10 @@ export class UsersPage implements OnInit {
     });
   }
 
-  applyFilter() {
-
+  applyFilter(modal: any) {
+    //this.phone = this.phone?.replace(/[^0-9]/g, '');
+    this.searchUser(null)
+    modal.dismiss();
   }
 
   applyRole(role: number, modal: any) {
@@ -171,6 +209,12 @@ export class UsersPage implements OnInit {
   }
 
   resetFilter(modal: any) {
+    this.user = null;
+    this.email = null;
+    this.phone = null;
+    this.cpf = null;
+    this.anualBonus = null;
+    this.searchUser(null);
     modal.dismiss();
   }
 
@@ -217,7 +261,7 @@ export class UsersPage implements OnInit {
           this.toastMessage = 'cliente excluído com sucesso!';
           this.refreshUsers(null);
           modal.dismiss();
-        }else{
+        } else {
           this.isToastOpen = true;
           this.toastColor = 'danger';
           this.toastMessage = 'Erro ao excluir o cliente!';
@@ -259,7 +303,7 @@ export class UsersPage implements OnInit {
           this.toastMessage = 'cliente excluído com sucesso!';
           this.refreshUsers(null);
           modal.dismiss();
-        }else{
+        } else {
           this.isToastOpen = true;
           this.toastColor = 'danger';
           this.toastMessage = 'Erro ao excluir o cliente!';

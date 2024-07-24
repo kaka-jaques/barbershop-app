@@ -2,7 +2,7 @@
     <app-header></app-header>
     <ion-content [fullscreen]="true">
         <ion-item lines="none" style="padding: 0;">
-            <ion-searchbar style="padding: 0;" color="light" (ionInput)="searchUser($event)"></ion-searchbar>
+            <ion-searchbar #searchbar style="padding: 0;" color="light" (ionInput)="searchUser($event)"></ion-searchbar>
             <ion-button fill="clear" id="open-filter-modal">Filtrar</ion-button>
         </ion-item>
         <ion-refresher slot="fixed" color="light" (ionRefresh)="refreshUsers($event)">
@@ -205,12 +205,28 @@
                         </ion-buttons>
                         <ion-title>Filtrar Usuários</ion-title>
                         <ion-buttons slot="end">
-                            <ion-button (click)="applyFilter()">Aplicar</ion-button>
+                            <ion-button (click)="applyFilter(filterModal)">Aplicar</ion-button>
                         </ion-buttons>
                     </ion-toolbar>
                 </ion-header>
                 <ion-content>
+                    <ion-list>
+                        <ion-item color="light">
+                            <ion-input label="Usuário" [(ngModel)]="user"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-input label="Email" [(ngModel)]="email"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-input label="Telefone" [(ngModel)]="phone"></ion-input>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-input label="CPF" [(ngModel)]="cpf"></ion-input>
+                        </ion-item>
+                        <ion-item>
 
+                        </ion-item>
+                    </ion-list>
                 </ion-content>
             </ng-template>
         </ion-modal>
@@ -275,8 +291,7 @@
                                     </ion-buttons>
                                 </ion-toolbar>
                                 <ion-picker>
-                                    <ion-picker-column [value]="currentRole"
-                                        (ionChange)="currentRole = $event.detail.value">
+                                    <ion-picker-column [value]="currentRole">
                                         <ion-picker-column-option value="0">Administrador</ion-picker-column-option>
                                         <ion-picker-column-option value="1">Funcionário</ion-picker-column-option>
                                         <ion-picker-column-option value="2">Membro</ion-picker-column-option>
