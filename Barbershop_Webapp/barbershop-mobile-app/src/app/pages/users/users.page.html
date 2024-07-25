@@ -29,7 +29,7 @@
                     <ion-item-option color="medium" (click)="openUser(user, userModal)" id="open-user-modal">
                         <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
                     </ion-item-option>
-                    <ion-item-option color="danger">
+                    <ion-item-option color="danger" (click)="deleteUser(user, userModal)">
                         <ion-icon slot="icon-only" name="trash"></ion-icon>
                     </ion-item-option>
                 </ion-item-options>
@@ -50,7 +50,7 @@
                     <ion-item-option color="medium" (click)="openClient(client, clientModal)" id="open-client-modal">
                         <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
                     </ion-item-option>
-                    <ion-item-option color="danger">
+                    <ion-item-option color="danger" (click)="deleteClient(client, clientModal)">
                         <ion-icon slot="icon-only" name="trash"></ion-icon>
                     </ion-item-option>
                 </ion-item-options>
@@ -223,8 +223,17 @@
                         <ion-item color="light">
                             <ion-input label="CPF" [(ngModel)]="cpf"></ion-input>
                         </ion-item>
-                        <ion-item>
-
+                        <ion-item color="light">
+                            <ion-label slot="start">Aniversariante?</ion-label>
+                            <ion-toggle slot="end" [checked]="aniversary" [(ngModel)]="aniversary"></ion-toggle>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-label slot="start">Usuário Cadastrado?</ion-label>
+                            <ion-toggle slot="end" [checked]="activeUser" [(ngModel)]="activeUser"></ion-toggle>
+                        </ion-item>
+                        <ion-item color="light">
+                            <ion-label slot="start">Recebeu Bônus</ion-label>
+                            <ion-toggle slot="end" [checked]="anualBonus" [(ngModel)]="anualBonus"></ion-toggle>
                         </ion-item>
                     </ion-list>
                 </ion-content>
@@ -262,7 +271,7 @@
                         <ion-item color="light">
                             <ion-label slot="start">Data de Nascimento</ion-label>
                             <ion-datetime-button datetime="datetime"></ion-datetime-button>
-                            <input *ngIf="birthDate == ''" class="form-control" type="date" name="date">
+                            <input [(ngModel)]="birthDate" *ngIf="birthDate == ''" class="form-control" type="date" name="date">
                         </ion-item>
                         <ion-item color="light">
                             <ion-input label="CPF" [(ngModel)]="selectedUser.client.cpf" disabled></ion-input>
