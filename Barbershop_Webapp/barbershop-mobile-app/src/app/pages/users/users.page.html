@@ -19,14 +19,14 @@
                 <ion-label>Clientes com cadastro</ion-label>
             </ion-item-divider>
             <ion-item-sliding color="light" *ngFor="let user of userQuery">
-                <ion-item [button]="true" (click)="openUser(user, userModal)" id="open-user-modal">
+                <ion-item [button]="true" (click)="openUser(user, userModal)">
                     <ion-avatar slot="start">
                         <img src="{{ user.client.image_url }}" alt="">
                     </ion-avatar>
                     <ion-label>{{ user.client.name }}</ion-label>
                 </ion-item>
                 <ion-item-options slot="end">
-                    <ion-item-option color="medium" (click)="openUser(user, userModal)" id="open-user-modal">
+                    <ion-item-option color="medium" (click)="openUser(user, userModal)">
                         <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
                     </ion-item-option>
                     <ion-item-option color="danger" (click)="deleteUser(user, userModal)">
@@ -287,8 +287,7 @@
                             <ion-button fill="clear" (click)="deleteUser(selectedUser, userModal)" color="danger">Excluir</ion-button>
                         </ion-item>
                     </ion-list>
-                    <ion-modal [initialBreakpoint]="0.35" [breakpoints]="[0, 0.35]" #roleModal trigger="open-role-modal"
-                        (didDismiss)="applyRole(currentRole, roleModal)">
+                    <ion-modal [initialBreakpoint]="0.35" #roleModal trigger="open-role-modal">
                         <ng-template>
                             <ion-content color="light">
                                 <ion-toolbar>
@@ -300,7 +299,7 @@
                                     </ion-buttons>
                                 </ion-toolbar>
                                 <ion-picker>
-                                    <ion-picker-column [value]="currentRole">
+                                    <ion-picker-column value="currentRole" [(ngModel)]="currentRole">
                                         <ion-picker-column-option value="0">Administrador</ion-picker-column-option>
                                         <ion-picker-column-option value="1">Funcionário</ion-picker-column-option>
                                         <ion-picker-column-option value="2">Membro</ion-picker-column-option>

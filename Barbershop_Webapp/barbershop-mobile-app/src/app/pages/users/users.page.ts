@@ -69,7 +69,7 @@ export class UsersPage implements OnInit {
   public toastMessage!: string;
   public toastColor: string = 'light';
 
-  public currentRole!: any;
+  public currentRole: number = 0;
 
   constructor(private users: UsersService, private actSheetCtrl: ActionSheetController) { }
 
@@ -204,6 +204,9 @@ export class UsersPage implements OnInit {
 
   applyRole(role: number, modal: any) {
     this.selectedUser.role[0] = this.roles[role];
+    console.log(this.roles[role]);
+    console.log(this.selectedUser.role[0]);
+    
     modal.dismiss();
   }
 
@@ -227,6 +230,9 @@ export class UsersPage implements OnInit {
     } else {
       this.birthDate = '';
     }
+    this.currentRole = user.role[0].id - 1;
+    console.log(this.currentRole);
+    
     modal.present();
   }
 
@@ -361,7 +367,34 @@ export class UsersPage implements OnInit {
   }
 
   createUser(modal: any) {
-
+    this.users.createUser(this.newUser).subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        modal.dismiss();
+        this.isToastOpen = true;
+        this.toastColor = 'success';
+        this.toastMessage = 'Usuário criado com sucesso!';
+        this.refreshUsers(null);
+        this.newUser = {
+          user: '',
+          password: '',
+          email: '',
+          client: {
+            name: '',
+            birthDate: '',
+            phone: '',
+            anualBonus: false,
+            plano: {
+              id: 1
+            },
+            cpf: '',
+          }
+        };
+      } else {
+        this.isToastOpen = true;
+        this.toastColor = 'danger';
+        this.toastMessage = 'Erro ao criar o usuário!';
+      }
+    })
   }
 
   setToastOpen(isOpen: boolean) {
