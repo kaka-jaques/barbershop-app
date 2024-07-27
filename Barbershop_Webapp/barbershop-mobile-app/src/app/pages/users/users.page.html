@@ -60,7 +60,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -70,7 +70,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -80,7 +80,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -90,7 +90,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -100,7 +100,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -110,7 +110,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -120,7 +120,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -130,7 +130,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -140,7 +140,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -150,7 +150,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -160,7 +160,7 @@
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
-                        <ion-skeleton-text [animated]="true" ></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                     </ion-avatar>
                     <ion-label>
                         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -190,7 +190,8 @@
                             <ion-button fill="clear">Realizar Convite</ion-button>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-button fill="clear" (click)="deleteClient(selectedClient, clientModal)" color="danger">Excluir</ion-button>
+                            <ion-button fill="clear" (click)="deleteClient(selectedClient, clientModal)"
+                                color="danger">Excluir</ion-button>
                         </ion-item>
                     </ion-list>
                 </ion-content>
@@ -271,7 +272,8 @@
                         <ion-item color="light">
                             <ion-label slot="start">Data de Nascimento</ion-label>
                             <ion-datetime-button datetime="datetime"></ion-datetime-button>
-                            <input [(ngModel)]="birthDate" *ngIf="birthDate == ''" class="form-control" type="date" name="date">
+                            <input [(ngModel)]="birthDate" *ngIf="birthDate == ''" class="form-control" type="date"
+                                name="date">
                         </ion-item>
                         <ion-item color="light">
                             <ion-input label="CPF" [(ngModel)]="selectedUser.client.cpf" disabled></ion-input>
@@ -284,28 +286,27 @@
                             <ion-button fill="clear">Dar Bonus</ion-button>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-button fill="clear" (click)="deleteUser(selectedUser, userModal)" color="danger">Excluir</ion-button>
+                            <ion-button fill="clear" (click)="deleteUser(selectedUser, userModal)"
+                                color="danger">Excluir</ion-button>
                         </ion-item>
                     </ion-list>
-                    <ion-modal [initialBreakpoint]="0.35" #roleModal trigger="open-role-modal">
+                    <ion-modal class="role-modal" [initialBreakpoint]="0.35" #roleModal trigger="open-role-modal">
                         <ng-template>
-                            <ion-content color="light">
-                                <ion-toolbar>
-                                    <ion-buttons slot="start">
-                                        <ion-button (click)="roleModal.dismiss()">Cancelar</ion-button>
-                                    </ion-buttons>
-                                    <ion-buttons slot="end">
-                                        <ion-button (click)="applyRole(currentRole, roleModal)">Aplicar</ion-button>
-                                    </ion-buttons>
-                                </ion-toolbar>
-                                <ion-picker>
-                                    <ion-picker-column value="currentRole" [(ngModel)]="currentRole">
-                                        <ion-picker-column-option value="0">Administrador</ion-picker-column-option>
-                                        <ion-picker-column-option value="1">Funcionário</ion-picker-column-option>
-                                        <ion-picker-column-option value="2">Membro</ion-picker-column-option>
-                                    </ion-picker-column>
-                                </ion-picker>
-                            </ion-content>
+                            <ion-toolbar>
+                                <ion-buttons slot="start">
+                                    <ion-button (click)="roleModal.dismiss()">Cancelar</ion-button>
+                                </ion-buttons>
+                                <ion-buttons slot="end">
+                                    <ion-button (click)="applyRole(currentRole, roleModal)">Aplicar</ion-button>
+                                </ion-buttons>
+                            </ion-toolbar>
+                            <ion-picker>
+                                <ion-picker-column [value]="currentRole" (ionChange)="onRoleChange($event)">
+                                    <ion-picker-column-option value="0">Administrador</ion-picker-column-option>
+                                    <ion-picker-column-option value="1">Funcionário</ion-picker-column-option>
+                                    <ion-picker-column-option value="2">Cliente</ion-picker-column-option>
+                                </ion-picker-column>
+                            </ion-picker>
                         </ng-template>
                     </ion-modal>
                     <ion-modal [keepContentsMounted]="true">

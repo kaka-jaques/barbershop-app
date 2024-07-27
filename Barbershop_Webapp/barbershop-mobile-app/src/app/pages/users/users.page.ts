@@ -69,7 +69,7 @@ export class UsersPage implements OnInit {
   public toastMessage!: string;
   public toastColor: string = 'light';
 
-  public currentRole: number = 0;
+  public currentRole: string = '0';
 
   constructor(private users: UsersService, private actSheetCtrl: ActionSheetController) { }
 
@@ -202,12 +202,13 @@ export class UsersPage implements OnInit {
     modal.dismiss();
   }
 
-  applyRole(role: number, modal: any) {
-    this.selectedUser.role[0] = this.roles[role];
-    console.log(this.roles[role]);
-    console.log(this.selectedUser.role[0]);
-    
+  applyRole(role: string, modal: any) {
+    this.selectedUser.role[0] = this.roles[parseInt(role)];
     modal.dismiss();
+  }
+
+  onRoleChange(event: any){
+    this.currentRole = event.detail.value;
   }
 
   resetFilter(modal: any) {
@@ -230,7 +231,7 @@ export class UsersPage implements OnInit {
     } else {
       this.birthDate = '';
     }
-    this.currentRole = user.role[0].id - 1;
+    this.currentRole = (user.role[0].id - 1).toString();
     console.log(this.currentRole);
     
     modal.present();
