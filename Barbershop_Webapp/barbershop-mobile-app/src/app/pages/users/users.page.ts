@@ -70,6 +70,9 @@ export class UsersPage implements OnInit {
   public toastColor: string = 'light';
 
   public currentRole: string = '0';
+  public currentBonus: string = '';
+  public bonusExpiration: string = new Date().toISOString();
+  public bonusReason: string = '';
 
   constructor(private users: UsersService, private actSheetCtrl: ActionSheetController) { }
 
@@ -108,6 +111,26 @@ export class UsersPage implements OnInit {
       this.saveUserButton = false;
     });
 
+  }
+
+  changeBonusType(event: any){
+    this.currentBonus = event.detail.value
+  }
+
+  handleBonusDismiss(modal: any){
+    this.currentBonus = '';
+    this.bonusExpiration = new Date().toISOString();
+    modal.dismiss();
+  }
+
+  applyBonus(modal: any){
+    this.selectedUser.client.anualBonus = 'true';
+    this.selectedUser.client.bonus = {
+      expire_date: this.bonusExpiration,
+      bonus_type: this.currentBonus,
+      other_reason: this.bonusReason
+    }
+    modal.dismiss();
   }
 
   searchUser(event: any) {

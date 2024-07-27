@@ -47,7 +47,7 @@ public class ClientVO {
 	private UserVO user;
 	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<BookingVO> bookings;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "bonus_id", nullable = true)
 	private BonusVO bonus;
 

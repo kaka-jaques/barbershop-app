@@ -283,13 +283,71 @@
                             <ion-button id="open-role-modal" fill="clear">{{ selectedUser.role[0].name }}</ion-button>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-button fill="clear">Dar Bonus</ion-button>
+                            <ion-button fill="clear" id="open-bonus-modal">Dar Bonus</ion-button>
                         </ion-item>
                         <ion-item color="light">
                             <ion-button fill="clear" (click)="deleteUser(selectedUser, userModal)"
                                 color="danger">Excluir</ion-button>
                         </ion-item>
                     </ion-list>
+                    <ion-modal #bonusModal trigger="open-bonus-modal" [presentingElement]="presentingElement">
+                        <ng-template>
+                            <ion-header>
+                                <ion-toolbar>
+                                    <ion-buttons slot="start">
+                                        <ion-button (click)="handleBonusDismiss(bonusModal)">Cancelar</ion-button>
+                                    </ion-buttons>
+                                    <ion-title>Bônus</ion-title>
+                                    <ion-buttons slot="end">
+                                        <ion-button (click)="applyBonus(bonusModal)">Aplicar</ion-button>
+                                    </ion-buttons>
+                                </ion-toolbar>
+                            </ion-header>
+                            <ion-content>
+                                <ion-list>
+                                    <ion-item color="light">
+                                        <ion-select label="Tipo de Bônus" placeholder="Selecione" (ionChange)="changeBonusType($event)">
+                                            <ion-select-option value="Aniversário">Aniversário</ion-select-option>
+                                            <ion-select-option value="Fidelidade">Fidelidade</ion-select-option>
+                                            <ion-select-option value="Tempo de Serviço">Tempo de Serviço</ion-select-option>
+                                            <ion-select-option value="Gratificação">Gratificação</ion-select-option>
+                                            <ion-select-option value="Promoção">Promoção</ion-select-option>
+                                            <ion-select-option value="Natal">Natal</ion-select-option>
+                                            <ion-select-option value="Outra Festival">Outra Comemoração</ion-select-option>
+                                            <ion-select-option value="Outro Motivo">Outro Motivo</ion-select-option>
+                                        </ion-select>
+                                    </ion-item>
+                                    <ion-item color="light">
+                                        <ion-label slot="start">Validade do Bônus</ion-label>
+                                        <ion-datetime-button datetime="bonus-datetime"></ion-datetime-button>
+                                        <ion-modal [keepContentsMounted]="true">
+                                            <ng-template>
+                                                <ion-datetime 
+                                                id="bonus-datetime"
+                                                presentation="date-time"
+                                                [(ngModel)]="bonusExpiration"
+                                                [formatOptions]="{
+                                                    date: {
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: '2-digit'
+                                                    },
+                                                    time: {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit'
+                                                    }
+                                                }"
+                                                ></ion-datetime>
+                                            </ng-template>
+                                        </ion-modal>
+                                    </ion-item>
+                                    <ion-item color="light">
+                                        <ion-input [disabled]="currentBonus != 'Outro Motivo'" label="Motivo do Bônus" [(ngModel)]="bonusReason"></ion-input>
+                                    </ion-item>
+                                </ion-list>
+                            </ion-content>
+                        </ng-template>
+                    </ion-modal>
                     <ion-modal class="role-modal" [initialBreakpoint]="0.35" #roleModal trigger="open-role-modal">
                         <ng-template>
                             <ion-toolbar>
