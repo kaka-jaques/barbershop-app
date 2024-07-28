@@ -413,8 +413,23 @@
                         </ion-item>
                         <ion-item color="light">
                             <ion-label slot="start">Data de Nascimento</ion-label>
-                            <ion-datetime-button datetime="datetime"></ion-datetime-button>
-                            <input *ngIf="birthDate == ''" class="form-control" type="date" name="date">
+                            <ion-datetime-button datetime="add-datetime"></ion-datetime-button>
+                            <ion-modal [keepContentsMounted]="true">
+                                <ng-template>
+                                    <ion-datetime 
+                                    id="add-datetime"
+                                    presentation="date"
+                                    [(ngModel)]="newUser.client.birthDate"
+                                    [formatOptions]="{
+                                        date: {
+                                            day: '2-digit',
+                                            month: 'long',
+                                            year: 'numeric'
+                                        }
+                                    }"
+                                    ></ion-datetime>
+                                </ng-template>
+                            </ion-modal>
                         </ion-item>
                     </ion-list>
                 </ion-content>

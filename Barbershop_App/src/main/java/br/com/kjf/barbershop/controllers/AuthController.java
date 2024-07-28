@@ -1,6 +1,5 @@
 package br.com.kjf.barbershop.controllers;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +37,6 @@ import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.RoleRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.BookingVO;
-import br.com.kjf.barbershop.vo.ClientVO;
 import br.com.kjf.barbershop.vo.NotificationConfigVO;
 import br.com.kjf.barbershop.vo.RoleVO;
 import br.com.kjf.barbershop.vo.UserVO;

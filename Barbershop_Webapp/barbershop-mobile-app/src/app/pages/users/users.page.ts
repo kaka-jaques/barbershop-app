@@ -10,8 +10,6 @@ import { UsersService } from 'src/app/users.service';
 })
 export class UsersPage implements OnInit {
 
-  @ViewChild('searchbar', { static: false }) searchbar: IonSearchbar | undefined;
-
   public usersList: any[] = [];
   public userQuery: any[] = [];
 
@@ -53,7 +51,7 @@ export class UsersPage implements OnInit {
     email: '',
     client: {
       name: '',
-      birthDate: '',
+      birthDate: new Date().toISOString(),
       phone: '',
       anualBonus: false,
       plano: {
@@ -68,6 +66,7 @@ export class UsersPage implements OnInit {
   public isToastOpen: Boolean = false;
   public toastMessage!: string;
   public toastColor: string = 'light';
+  public addBirthdate: string = new Date().toISOString();
 
   public currentRole: string = '0';
   public currentBonus: string = '';
@@ -404,7 +403,7 @@ export class UsersPage implements OnInit {
           email: '',
           client: {
             name: '',
-            birthDate: '',
+            birthDate: new Date().toISOString(),
             phone: '',
             anualBonus: false,
             plano: {

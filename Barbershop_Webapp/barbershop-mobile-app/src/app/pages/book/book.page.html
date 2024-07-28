@@ -1,1 +1,6 @@
-<app-header></app-header>
+<div class="ion-page" #presentingElement>
+    <app-header></app-header>
+    <ion-content [fullscreen]="true">
+        <full-calendar [options]="calendarOptions"></full-calendar>
+    </ion-content>
+</div>

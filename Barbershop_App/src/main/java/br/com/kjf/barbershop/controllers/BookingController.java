@@ -95,6 +95,7 @@ public class BookingController {
 		
 	}
 	
+	@GetMapping("/today")
 	public ResponseEntity<?> getBooksForToday(){
 		
 		Date dateTomorrow = Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
