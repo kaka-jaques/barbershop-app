@@ -105,7 +105,7 @@ public class BookingController {
 		List<BookingVO> books = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow);
 		
 		for(BookingVO book : books) {
-			book.setClient(null);
+			book.getClient().setBookings(null);
 		}
 		
 		return ResponseEntity.ok(books);
