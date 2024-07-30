@@ -6,7 +6,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPuglin from '@fullcalendar/interaction';
 import ptBtLocale from '@fullcalendar/core/locales/pt-br';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
-import { Title } from '@angular/platform-browser';
 import { HttpResponse } from '@angular/common/http';
 
 @Component({
@@ -18,6 +17,8 @@ import { HttpResponse } from '@angular/common/http';
 export class BookPage implements OnInit {
 
   calendarLoading: boolean = true;
+  loadError: boolean = false;
+  initialLoad: boolean = true;
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPuglin, bootstrap5Plugin],
@@ -38,6 +39,7 @@ export class BookPage implements OnInit {
       year: 'numeric'
     },
     themeSystem: 'bootstrap5',
+    datesSet: this.handleDateChange.bind(this),
     events: []
   }
 
@@ -57,7 +59,26 @@ export class BookPage implements OnInit {
         }
         this.calendarLoading = false
       }else{
-        
+        this.loadError = true
+      }
+    })
+
+  }
+
+  handleDateChange(arg: any){
+
+    this.bookService.getPeriodBookings(arg.startStr, arg.endStr).subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.calendarOptions = {
+          ...this.calendarOptions,
+          events: response.body.map((book: any) => ({
+            title: book.client.name + ' - ' + book.services.name,
+            start: new Date(book.bookingDate).toISOString(),
+            end: new Date(book.bookingDate + (book.services.duration[1] * 60000) + (book.services.duration[0] * 3600000)).toISOString()
+          }))
+        }
+      }else{
+        this.loadError = true
       }
     })
 

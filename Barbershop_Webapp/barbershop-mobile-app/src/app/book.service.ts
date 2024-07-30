@@ -13,4 +13,8 @@ export class BookService {
     return this.http.get<any>('http://localhost:8080/book/today', { observe: 'response' });
   }
 
+  getPeriodBookings(startDate: string, endDate: string): Observable<HttpResponse<any>> {
+    return this.http.post<any>('http://localhost:8080/book/period', {startDate: startDate, endDate: endDate},{ observe: 'response' });
+  }
+
 }

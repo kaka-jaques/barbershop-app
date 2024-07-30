@@ -2,6 +2,6 @@
     <app-header></app-header>
     <ion-content [fullscreen]="true">
         <ion-progress-bar *ngIf="calendarLoading" type="indeterminate"></ion-progress-bar>
-        <full-calendar *ngIf="!calendarLoading" [options]="calendarOptions" class="calendar"></full-calendar>
+        <full-calendar *ngIf="!calendarLoading && !loadError" [options]="calendarOptions" class="calendar"></full-calendar>
     </ion-content>
 </div>
