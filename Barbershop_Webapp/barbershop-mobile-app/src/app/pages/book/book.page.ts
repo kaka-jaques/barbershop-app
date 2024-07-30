@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { BookService } from 'src/app/book.service';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions, DatesSetArg } from '@fullcalendar/core';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPuglin from '@fullcalendar/interaction';
 import ptBtLocale from '@fullcalendar/core/locales/pt-br';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import { HttpResponse } from '@angular/common/http';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-book',
@@ -18,14 +19,13 @@ export class BookPage implements OnInit {
 
   calendarLoading: boolean = true;
   loadError: boolean = false;
-  initialLoad: boolean = true;
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPuglin, bootstrap5Plugin],
     initialView: 'timeGridDay',
     slotDuration: '00:10:00',
     nowIndicator: true,
-    scrollTime: '08:00:00',
+    scrollTime: new Date().getHours().toString().padStart(2, '0') + ':00:00',
     locales: [ptBtLocale],
     locale: 'pt-br',
     headerToolbar: {
@@ -40,6 +40,8 @@ export class BookPage implements OnInit {
     },
     themeSystem: 'bootstrap5',
     datesSet: this.handleDateChange.bind(this),
+    //dayCellContent: this.renderCellDay.bind(this),
+    dateClick: this.handleDateClick.bind(this),
     events: []
   }
 
@@ -65,7 +67,7 @@ export class BookPage implements OnInit {
 
   }
 
-  handleDateChange(arg: any){
+  handleDateChange(arg: DatesSetArg){
 
     this.bookService.getPeriodBookings(arg.startStr, arg.endStr).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
@@ -81,6 +83,25 @@ export class BookPage implements OnInit {
         this.loadError = true
       }
     })
+
+  }
+
+  handleDateClick(arg: any) {
+    const calendarApi = arg.view.calendar;
+    calendarApi.changeView('timeGridDay', arg.date);
+  }
+
+  renderCellDay(arg: any){
+    const dateStr = formatDate(arg.date, 'dd/MM/yyyy', 'en-US');
+    const events = this.calendarOptions.events as any[];
+    let eventCount = 0;
+    if(this.calendarOptions.events){
+      eventCount = events.filter((event: any) => formatDate(event.start, 'dd/MM/yyyy', 'en-US') === dateStr).length
+    }
+
+    if(eventCount > 0){
+      const badgeCount = `<ion-badge color="primary">${eventCount}</ion-badge>`
+    }
 
   }
 
