@@ -13,3 +13,18 @@ full-calendar .fc-toolbar-title{
     font-size: 80%;
     text-align: center;
 }
+
+#loading-screen{
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2d2c2c;
+}
+
+.fc-daygrid-day-events{
+    text-align: center;
+}

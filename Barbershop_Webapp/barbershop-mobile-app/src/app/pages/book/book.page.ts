@@ -19,6 +19,7 @@ export class BookPage implements OnInit {
 
   calendarLoading: boolean = true;
   loadError: boolean = false;
+  changeLoading: boolean = false;
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPuglin, bootstrap5Plugin],
@@ -40,12 +41,11 @@ export class BookPage implements OnInit {
     },
     themeSystem: 'bootstrap5',
     datesSet: this.handleDateChange.bind(this),
-    //dayCellContent: this.renderCellDay.bind(this),
     dateClick: this.handleDateClick.bind(this),
     events: []
   }
 
-  constructor(private bookService:BookService) { }
+  constructor(private bookService: BookService) { }
 
   ngOnInit() {
 
@@ -60,14 +60,16 @@ export class BookPage implements OnInit {
           }))
         }
         this.calendarLoading = false
-      }else{
+      } else {
         this.loadError = true
       }
     })
 
   }
 
-  handleDateChange(arg: DatesSetArg){
+  handleDateChange(arg: DatesSetArg) {
+
+    this.changeLoading = true;
 
     this.bookService.getPeriodBookings(arg.startStr, arg.endStr).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
@@ -79,7 +81,11 @@ export class BookPage implements OnInit {
             end: new Date(book.bookingDate + (book.services.duration[1] * 60000) + (book.services.duration[0] * 3600000)).toISOString()
           }))
         }
-      }else{
+        setTimeout(() => {
+          this.renderCellDay();
+          this.changeLoading = false;
+        }, 50)
+      } else {
         this.loadError = true
       }
     })
@@ -91,18 +97,22 @@ export class BookPage implements OnInit {
     calendarApi.changeView('timeGridDay', arg.date);
   }
 
-  renderCellDay(arg: any){
-    const dateStr = formatDate(arg.date, 'dd/MM/yyyy', 'en-US');
-    const events = this.calendarOptions.events as any[];
-    let eventCount = 0;
-    if(this.calendarOptions.events){
-      eventCount = events.filter((event: any) => formatDate(event.start, 'dd/MM/yyyy', 'en-US') === dateStr).length
-    }
+  renderCellDay() {
 
-    if(eventCount > 0){
-      const badgeCount = `<ion-badge color="primary">${eventCount}</ion-badge>`
-    }
+    const dayCells = document.getElementsByClassName('fc-daygrid-day') as HTMLCollectionOf<HTMLElement>;
 
+    for (let i = 0; i < dayCells.length; i++) {
+      let events = dayCells[i].children[0].children[1].children as HTMLCollectionOf<HTMLElement>;
+      
+      if(events.length > 1) {
+        let badgeCount: HTMLElement = document.createElement('ion-badge');
+        badgeCount.innerHTML = (events.length-1).toString();
+        badgeCount.setAttribute('color', 'primary');
+        dayCells[i].children[0].children[1].innerHTML = ''
+        dayCells[i].children[0].children[1].appendChild(badgeCount)
+      }
+
+    }
   }
 
 }
