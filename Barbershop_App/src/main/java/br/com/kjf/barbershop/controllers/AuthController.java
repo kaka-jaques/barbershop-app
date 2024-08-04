@@ -232,6 +232,7 @@ public class AuthController {
 		user.getClient().setActive(true);
 		user.getClient().setPlano(plansRepository.findById(1));
 		user.setNotificationConfig(new NotificationConfigVO());
+		user.getNotificationConfig().setUser(user);
 		
 		userRepository.save(user);
 		

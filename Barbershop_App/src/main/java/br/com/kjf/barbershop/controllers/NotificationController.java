@@ -82,9 +82,7 @@ public class NotificationController {
 		}
 		
 		nc = configRepository.getConfigByUser(user);
-		
-		if(nc.equals(null)) nc = new NotificationConfigVO();
-		
+		nc.setUser(null);
 		
 		return ResponseEntity.ok(nc);
 		
@@ -126,8 +124,9 @@ public class NotificationController {
 
 	@PutMapping
 	public ResponseEntity<?> updateNotificationConfig(@RequestBody NotificationConfigVO nc) throws JsonMappingException, JsonProcessingException{
+		nc.setUser(configRepository.findById(nc.getId()).get().getUser());
 		configRepository.save(nc);
-		return ResponseEntity.ok(objMapper.readTree("{\"status\": \"config successful updated!\""));
+		return ResponseEntity.ok(objMapper.readTree("{\"status\": \"config successful updated!\"}"));
 	}
 	
 }

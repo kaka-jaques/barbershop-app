@@ -19,7 +19,6 @@ public class NotificationConfigVO {
 	private Integer id;
 	@OneToOne
 	@JoinColumn(name = "user_id")
-	@JsonIgnore
 	private UserVO user;
 	private Boolean serviceToday = true;
 	private Boolean billExpired = true;

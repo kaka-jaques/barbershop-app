@@ -12,6 +12,10 @@ export class AuthService {
   public isAuth:boolean = false;
   private token!:string;
 
+  public name:string = '';
+  public email:string = '';
+  public phone:string = '';
+
   constructor(private http:HttpClient) { }
 
   auth():Observable<HttpResponse<any>>{

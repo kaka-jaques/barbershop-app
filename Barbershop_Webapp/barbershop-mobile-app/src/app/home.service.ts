@@ -9,36 +9,20 @@ export class HomeService {
 
   private readonly url:string = 'http://localhost:8080/';
 
-  private name!:string;
-  private user!:string;
-  private email!:string;
-  private phone!:string;
-  private birthdate!:Date;
-  private cpf!:string;
-  private image_url!:string;
+  public notificationConfig!:any;
+
+  public user: any;
 
   constructor(private http:HttpClient) { }
 
   getUserData():any{
     return {
-      user: this.user, 
-      name: this.name, 
-      email: this.email, 
-      phone: this.phone, 
-      birthdate: this.birthdate, 
-      cpf: this.cpf, 
-      image_url: this.image_url
+      user: this.user,
     };
   }
 
   setUserData(data:any){
-    this.user = data.user;
-    this.name = data.name;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.birthdate = data.birthdate;
-    this.cpf = data.cpf;
-    this.image_url = data.image_url;
+    this.user = data;
   }
 
   getNotifications():any{
@@ -47,6 +31,10 @@ export class HomeService {
 
   getNotificationsConfig():Observable<HttpResponse<any>>{
     return this.http.get(this.url + 'notify', {observe: 'response'});
+  }
+
+  setNotificationsConfig(data:any):Observable<HttpResponse<any>>{
+    return this.http.put(this.url + 'notify', data, {observe: 'response'});
   }
 
 }
