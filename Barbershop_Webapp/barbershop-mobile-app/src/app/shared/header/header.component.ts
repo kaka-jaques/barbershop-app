@@ -15,7 +15,8 @@ export class HeaderComponent  implements OnInit {
     '/dashboard': 'Dashboard',
     '/bill': 'Financeiro',
     '/users': 'Usuários',
-    '/config': 'Configurações'
+    '/config': 'Configurações',
+    '/services': 'Serviços'
   }
 
   constructor() { }
