@@ -1,7 +1,8 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActionSheetController, IonSearchbar } from '@ionic/angular';
+import { ActionSheetController, IonInput, IonSearchbar } from '@ionic/angular';
 import { UsersService } from 'src/app/users.service';
+import { MaskitoOptions, MaskitoElementPredicate, maskitoTransform } from '@maskito/core';
 
 @Component({
   selector: 'app-users',
@@ -9,6 +10,10 @@ import { UsersService } from 'src/app/users.service';
   styleUrls: ['./users.page.scss'],
 })
 export class UsersPage implements OnInit {
+
+  @ViewChild('ionInputEl', { static: true }) ionInputEl!: IonInput;
+
+  inputModel = '';
 
   public usersList: any[] = [];
   public userQuery: any[] = [];
@@ -110,6 +115,20 @@ export class UsersPage implements OnInit {
       this.saveUserButton = false;
     });
 
+  }
+
+  filterUser(event: any){ //TODO - FIX
+    const value = event.target!.value;
+    const filteredValue = value.replace(/[^a-zA-Z0-9]+/g, '');
+    this.ionInputEl.value = this.inputModel = filteredValue; 
+  }
+
+  filterOnlyString(event: any) { //TODO - FIX
+    const value = event.target!.value;
+
+    const filteredValue = value.replace(/[^a-zA-Z]+/g, '');
+
+    this.ionInputEl.value = this.inputModel = filteredValue;
   }
 
   changeBonusType(event: any){

@@ -181,10 +181,10 @@
                 <ion-content>
                     <ion-list>
                         <ion-item color="light">
-                            <ion-input label="Nome" [(ngModel)]="selectedClient.name"></ion-input>
+                            <ion-input autocomplete="name" (ionInput)="filterOnlyString($event)" label="Nome" autocapitalize="on" [(ngModel)]="selectedClient.name"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Telefone" [(ngModel)]="selectedClient.telephone"></ion-input>
+                            <ion-input autocomplete="tel" label="Telefone" [(ngModel)]="selectedClient.telephone"></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-button fill="clear">Realizar Convite</ion-button>
@@ -213,16 +213,16 @@
                 <ion-content>
                     <ion-list>
                         <ion-item color="light">
-                            <ion-input label="Usuário" [(ngModel)]="user"></ion-input>
+                            <ion-input label="Usuário" autocomplete="username" [(ngModel)]="user" (ionInput)="filterUser($event)"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Email" [(ngModel)]="email"></ion-input>
+                            <ion-input label="Email" autocomplete="email" errorText="Email Inválido" type="email" email [(ngModel)]="email"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Telefone" [(ngModel)]="phone"></ion-input>
+                            <ion-input autocomplete="tel" label="Telefone" [(ngModel)]="phone"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="CPF" [(ngModel)]="cpf"></ion-input>
+                            <ion-input label="CPF" autocomplete="cpf" [(ngModel)]="cpf"></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-label slot="start">Aniversariante?</ion-label>
@@ -258,16 +258,16 @@
                 <ion-content>
                     <ion-list>
                         <ion-item color="light">
-                            <ion-input label="User" [(ngModel)]="selectedUser.user"></ion-input>
+                            <ion-input label="User" (ionInput)="filterUser($event)" autocomplete="username" [(ngModel)]="selectedUser.user"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Nome" [(ngModel)]="selectedUser.client.name"></ion-input>
+                            <ion-input label="Nome" autocomplete="name" autocapitalize="on" (ionInput)="filterOnlyString($event)" [(ngModel)]="selectedUser.client.name"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Email" [(ngModel)]="selectedUser.email"></ion-input>
+                            <ion-input label="Email" autocomplete="email" errorText="Email Inválido" type="email" email [(ngModel)]="selectedUser.email"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Telefone" [(ngModel)]="selectedUser.client.telephone"></ion-input>
+                            <ion-input label="Telefone" autocomplete="tel" [(ngModel)]="selectedUser.client.telephone"></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-label slot="start">Data de Nascimento</ion-label>
@@ -276,7 +276,7 @@
                                 name="date">
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="CPF" [(ngModel)]="selectedUser.client.cpf" disabled></ion-input>
+                            <ion-input label="CPF" autocomplete="cpf" [(ngModel)]="selectedUser.client.cpf" disabled></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-label slot="start">Cargo: </ion-label>
@@ -397,19 +397,19 @@
                     </ion-header>
                     <ion-list>
                         <ion-item color="light">
-                            <ion-input label="User" [(ngModel)]="newUser.user"></ion-input>
+                            <ion-input label="User" autocomplete="username" (ionChange)="filterUser($event)" [(ngModel)]="newUser.user"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Nome" [(ngModel)]="newUser.client.name"></ion-input>
+                            <ion-input label="Nome" autocomplete="name" autocapitalize="on" (ionInput)="filterOnlyString($event)" [(ngModel)]="newUser.client.name"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Email" [(ngModel)]="newUser.email"></ion-input>
+                            <ion-input label="Email" autocomplete="email" errorText="Email Inválido" type="email" email></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Telefone" [(ngModel)]="newUser.client.telephone"></ion-input>
+                            <ion-input label="Telefone" autocomplete="tel" [(ngModel)]="newUser.client.telephone"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="CPF" [(ngModel)]="newUser.client.cpf"></ion-input>
+                            <ion-input label="CPF" autocomplete="cpf" [(ngModel)]="newUser.client.cpf"></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-label slot="start">Data de Nascimento</ion-label>
