@@ -15,14 +15,14 @@
           Tentar Novamente!
         </ion-button>
       </ion-item>
-      <ion-item *ngIf="!requestError">
-        <ion-button id="open-add-modal" style="margin: auto;" fill="clear">
+      <ion-item lines="full" *ngIf="!requestError">
+        <ion-button id="open-add-modal" (click)="openAddModal()" style="margin: auto;" fill="clear">
           <ion-icon name="add-circle"></ion-icon>
           Novo Serviço
         </ion-button>
       </ion-item>
-      <ion-item *ngFor="let service of servicesData" (click)="openService(service, serviceModal)" [button]="true">
-        <ion-label id="trigger-{{service.id}}">{{service.name}}</ion-label>
+      <ion-item lines="full" *ngFor="let service of servicesData" (click)="openService(service, serviceModal)" [button]="true">
+        <ion-label slot="start" id="trigger-{{service.id}}">{{service.name}}</ion-label>
         <ion-popover trigger="trigger-{{service.id}}" triggerAction="hover">
           <ng-template>
             <ion-content class="bg-dark">
@@ -34,6 +34,54 @@
           </ng-template>
         </ion-popover>
       </ion-item>
+      <ion-modal #addModal trigger="open-add-modal" [presentingElement]="presentingElement">
+        <ng-template>
+          <ion-header>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-button (click)="addModal.dismiss()">Sair</ion-button>
+              </ion-buttons>
+              <ion-title>Novo Serviço</ion-title>
+              <ion-buttons slot="end">
+                <ion-button (click)="createService(addModal)">Criar</ion-button>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content>
+            <ion-list>
+              <ion-item>
+                <ion-input label="Serviço" [(ngModel)]="newService.name"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-input label="Descrição" [(ngModel)]="newService.description"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-input label="Valor" [(ngModel)]="newService.price" type="number" inputmode="decimal"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Duração</ion-label>
+                <ion-datetime-button datetime="newServiceDuration"></ion-datetime-button>
+              </ion-item>
+            </ion-list>
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime 
+                id="newServiceDuration"
+                (ionChange)="updateNewTimeArray($event)"
+                presentation="time"
+                [(ngModel)]="timeString"
+                [formatOptions]="{
+                  time:{
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  }
+                }"
+                ></ion-datetime>
+              </ng-template>
+            </ion-modal>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
       <ion-modal #serviceModal [presentingElement]="presentingElement">
         <ng-template>
           <ion-header>
@@ -50,16 +98,22 @@
           <ion-content>
             <ion-list>
               <ion-item>
-                <ion-input label="Serviço" [(ngModel)]="selectedService.name"></ion-input>
+                <ion-label>Serviço</ion-label>
+                <ion-input [(ngModel)]="selectedService.name"></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label>Duração</ion-label>
                 <ion-datetime-button label="Duração" datetime="serviceDuration"></ion-datetime-button>
               </ion-item>
+              <ion-item>
+                <ion-button fill="clear" (click)="deleteService(selectedService, serviceModal)">Excluir</ion-button>
+              </ion-item>
             </ion-list>
             <ion-modal [keepContentsMounted]="true">
               <ng-template>
-                <ion-datetime id="serviceDuration"
+                <ion-datetime 
+                id="serviceDuration"
+                (ionChange)="updateTimeArray($event)"
                 presentation="time"
                 [(ngModel)]="timeString"
                 [formatOptions]="{

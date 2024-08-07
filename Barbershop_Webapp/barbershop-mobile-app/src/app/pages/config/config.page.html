@@ -3,7 +3,8 @@
   <ion-content [fullscreen]="true">
     <ion-list>
       <ion-item>
-        <ion-select label="Exibir Notificações" placeholder="Nenhuma" [multiple]="true" [(ngModel)]="notificationConfig" (ionChange)="changeNotifications($event)">
+        <ion-select label="Exibir Notificações" placeholder="Nenhuma" [multiple]="true" [(ngModel)]="notificationConfig"
+          (ionChange)="changeNotifications($event)">
           <ion-select-option value="serviceToday">Agendamentos</ion-select-option>
           <ion-select-option value="billExpired">Pagamento Vencidos</ion-select-option>
           <ion-select-option value="billPending">Pagamentos a vencer</ion-select-option>
@@ -11,11 +12,14 @@
           <ion-select-option value="birthsMonth">Aniversariantes do mês</ion-select-option>
         </ion-select>
       </ion-item>
-        <ion-item [button]="true" routerLink="/services" router-direction="forward">
-          <ion-label>Gerenciar Serviços</ion-label>
-        </ion-item>
+      <ion-item [button]="true" routerLink="/services" router-direction="forward">
+        <ion-label>Gerenciar Serviços</ion-label>
+      </ion-item>
+      <ion-item [button]="true" routerLink="/plans" router-direction="forward">
+        <ion-label>Gerenciar Planos</ion-label>
+      </ion-item>
     </ion-list>
-    <ion-toast color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}" [duration]="3000" position="bottom" swiperGesture="vertical"
-            style="color: white;"></ion-toast>
+    <ion-toast color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}" [duration]="3000"
+      position="bottom" swiperGesture="vertical" style="color: white;"></ion-toast>
   </ion-content>
 </div>
