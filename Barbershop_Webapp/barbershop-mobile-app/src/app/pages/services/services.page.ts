@@ -21,6 +21,7 @@ export class ServicesPage implements OnInit {
   servicesData:any;
   selectedService:any;
   timeString:string = '00:00'
+  sendRequest: boolean = false;
 
   isToastOpen: boolean = false
   toastColor: string = 'primary'
@@ -49,10 +50,15 @@ export class ServicesPage implements OnInit {
   formatPrice(event: any){
     let value = event.target.value;
     value = value.replace(/\D/g, '');
-    value = (parseInt(value) / 100).toFixed(2) + ''; 
-    value = value.replace('.', ',');
-    value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+    value = (parseInt(value) / 100).toFixed(2) + '';
     this.newService.price = value;
+  }
+
+  formatPriceUpdate(event: any){
+    let value = event.target.value;
+    value = value.replace(/\D/g, '');
+    value = (parseInt(value) / 100).toFixed(2) + '';
+    this.selectedService.price = value;
   }
 
   openAddModal(){
@@ -66,6 +72,7 @@ export class ServicesPage implements OnInit {
   }
 
   createService(modal: any){
+    this.sendRequest = true
     this.newService.duration = this.timeString.split(':').map(Number)
     this.newService.price = parseFloat(this.newService.price.replace(',', '.'))
     this.config.createService(this.newService).subscribe((response: HttpResponse<any>) => {
@@ -73,14 +80,16 @@ export class ServicesPage implements OnInit {
         this.toastColor = 'success'
         this.toastMessage = 'Serviço criado com sucesso!'
         this.isToastOpen = true
+        this.sendRequest = false
         modal.dismiss();
+        this.ngOnInit();
       }else{
         this.toastColor = 'danger'
         this.toastMessage = 'Erro ao criar o serviço!'
         this.isToastOpen = true
+        this.sendRequest = false
       }
     })
-    this.ngOnInit();
   }
 
   async deleteService(service: any, modal: any){
@@ -160,16 +169,19 @@ export class ServicesPage implements OnInit {
   }
 
   updateService(modal: any){
+    this.sendRequest = true
     this.config.updateService(this.selectedService).subscribe((response: HttpResponse<any>) => {
       if(response.ok){
         this.toastColor = 'success';
         this.toastMessage = 'Serviço atualizado!';
         this.isToastOpen = true;
+        this.sendRequest = false;
         modal.dismiss();
       }else{
         this.toastColor = 'danger';
         this.toastMessage = 'Erro ao atualizar Serviço!'
         this.isToastOpen = true;
+        this.sendRequest = false;
       }
     })
   }
