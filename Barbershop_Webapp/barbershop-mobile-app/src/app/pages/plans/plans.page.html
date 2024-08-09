@@ -65,7 +65,9 @@
                 (ionInput)="formatPrice($event)"></ion-input>
             </ion-item>
             <ion-item>
-              <ion-label>Serviços Inclusos</ion-label>
+              <ion-select label="Serviços Inclusos" placeholder="Nenhum" [multiple]="true" (ionChange)="changeNewServices($event)">
+                <ion-select-option *ngFor="let service of services" [value]="service.name">{{ service.name }}</ion-select-option>
+              </ion-select>
             </ion-item>
           </ion-content>
         </ng-template>
@@ -100,6 +102,9 @@
                 [(ngModel)]="servicesSelected" (ionChange)="changeServices($event)">
                 <ion-select-option *ngFor="let service of services" [value]="service.name">{{ service.name }}</ion-select-option>
               </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-button fill="clear" color="danger" (click)="deletePlan(selectedPlan, editModal)">Excluir</ion-button>
             </ion-item>
           </ion-content>
         </ng-template>

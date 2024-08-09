@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ActionSheetController } from '@ionic/angular';
 import { ConfigService } from 'src/app/config.service';
 
 @Component({
@@ -27,7 +28,7 @@ export class PlansPage implements OnInit {
   sendRequest: boolean = false;
   requestError: boolean = false;
 
-  constructor(private config: ConfigService, private location: Location) { }
+  constructor(private config: ConfigService, private location: Location, private actSheetCtrl: ActionSheetController) { }
 
   ngOnInit() {
     this.config.getPlans().subscribe((response: HttpResponse<any>) => {
@@ -53,10 +54,22 @@ export class PlansPage implements OnInit {
   }
 
   changeServices(event: any) {
+    this.servicesSelected = []; 
     for (let ss of event.detail.value) {
       for(let sr of this.services) {
         if (ss == sr.name) {
           this.selectedPlan.services_include.push(sr)
+        }
+      }
+    }
+  }
+
+  changeNewServices(event: any) {
+    this.newPlan.services_include = [];
+    for (let ss of event.detail.value) {
+      for(let sr of this.services) {
+        if (ss == sr.name) {
+          this.newPlan.services_include.push(sr)
         }
       }
     }
@@ -70,9 +83,12 @@ export class PlansPage implements OnInit {
     this.requestError = false;
     this.config.getPlans().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
-
+        this.planos = response.body;
       } else {
-
+        this.requestError = true
+        this.toastColor = 'danger'
+        this.toastMessage = 'Erro ao carregar os planos!'
+        this.isToastOpen = true
       }
     })
   }
@@ -145,6 +161,48 @@ export class PlansPage implements OnInit {
         this.sendRequest = false
       }
     })
+  }
+
+  async deletePlan(plan:any, modal: any) {
+    let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
+      const sheet = await this.actSheetCtrl.create({
+        header: 'Tem certeza?',
+        subHeader: 'Esta operação não pode ser desfeita',
+        buttons: [
+          {
+            text: 'Excluir',
+            role: 'destructive',
+          },
+          {
+            text: 'Cancelar',
+            role: 'cancel'
+          }
+        ]
+      });
+
+      sheet.present();
+
+      const { role } = await sheet.onDidDismiss();
+      return role === 'destructive';
+
+    }
+
+    if (await deleteConfirmation()) {
+      this.config.deletePlan(plan).subscribe((response: HttpResponse<any>) => {
+        if (response.ok) {
+          this.toastColor = 'success'
+          this.toastMessage = 'Plano deletado com sucesso!'
+          this.isToastOpen = true
+          modal.dismiss();
+          this.ngOnInit();
+        } else {
+          this.toastColor = 'danger'
+          this.toastMessage = 'Erro ao deletar o plano!'
+          this.isToastOpen = true
+        }
+      })
+    }
+
   }
 
 }
