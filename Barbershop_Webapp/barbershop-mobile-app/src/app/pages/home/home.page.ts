@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { HomeService } from 'src/app/home.service';
 import { gsap } from 'gsap';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { AuthService } from 'src/app/auth.service';
+import { LoginPage } from '../login/login.page';
 
 @Component({
   selector: 'app-home',
@@ -28,13 +30,18 @@ export class HomePage implements OnInit {
   }
   public notificationError: boolean = false;
 
-  constructor(private route: Router, private home: HomeService) { }
+  name: string = '';
+
+  constructor(private route: Router, private home: HomeService, public auth: AuthService) { }
 
   async ngOnInit() {
+
+    this.name = this.auth.name.split(' ')[0];
 
     await this.home.getNotificationsConfig().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.notificationConfig = response.body;
+        this.home.notificationConfig = this.notificationConfig;
       } else {
         this.notificationError = true
       }

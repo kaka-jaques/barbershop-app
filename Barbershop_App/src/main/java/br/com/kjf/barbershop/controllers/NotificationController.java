@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import br.com.kjf.barbershop.repository.BookingRepository;
 import br.com.kjf.barbershop.repository.ClientRepository;
 import br.com.kjf.barbershop.repository.NotificationConfigRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
+import br.com.kjf.barbershop.vo.BookingVO;
 import br.com.kjf.barbershop.vo.NotificationConfigVO;
 import br.com.kjf.barbershop.vo.UserVO;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -80,9 +82,7 @@ public class NotificationController {
 		}
 		
 		nc = configRepository.getConfigByUser(user);
-		
-		if(nc.equals(null)) nc = new NotificationConfigVO();
-		
+		nc.setUser(null);
 		
 		return ResponseEntity.ok(nc);
 		
@@ -100,7 +100,13 @@ public class NotificationController {
 		calendarToday.setTime(dateToday);
 		calendarTomorrow.setTime(dateTomorrow);
 		
-		int serviceToday = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow).size();
+		List<BookingVO> services = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow);
+		
+		for(BookingVO book : services) {
+			book.setClient(null);
+		}
+		
+		int serviceToday = services.size();
 		int billPending = billRepository.getPendingMonthBills().size();
 		int billExpired = billRepository.getExpiredBills().size();
 		int birthsToday = clientRepository.getTodayBirths().size();
@@ -118,8 +124,9 @@ public class NotificationController {
 
 	@PutMapping
 	public ResponseEntity<?> updateNotificationConfig(@RequestBody NotificationConfigVO nc) throws JsonMappingException, JsonProcessingException{
+		nc.setUser(configRepository.findById(nc.getId()).get().getUser());
 		configRepository.save(nc);
-		return ResponseEntity.ok(objMapper.readTree("{\"status\": \"config successful updated!\""));
+		return ResponseEntity.ok(objMapper.readTree("{\"status\": \"config successful updated!\"}"));
 	}
 	
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
+import { SharedModule } from 'src/app/shared/shared/shared.module';
 
 import { ConfigPageRoutingModule } from './config-routing.module';
 
@@ -13,7 +14,8 @@ import { ConfigPage } from './config.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    ConfigPageRoutingModule
+    ConfigPageRoutingModule,
+    SharedModule
   ],
   declarations: [ConfigPage]
 })

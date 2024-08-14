@@ -1,5 +1,7 @@
 package br.com.kjf.barbershop.vo;
 
+import java.time.LocalTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ public class ServicesVO {
 	@Column(nullable = false)
 	private String name;
 	private String description;
+	private LocalTime duration;
 	private Double price;
 	
 	public ServicesVO() {
@@ -29,6 +32,14 @@ public class ServicesVO {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public LocalTime getDuration() {
+		return duration;
+	}
+
+	public void setDuration(LocalTime duration) {
+		this.duration = duration;
 	}
 
 	public String getName() {

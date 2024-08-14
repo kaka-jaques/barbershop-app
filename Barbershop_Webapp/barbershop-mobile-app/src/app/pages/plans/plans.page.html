@@ -1,0 +1,116 @@
+<div class="ion-page" #presentingElement>
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="goBack()">Back</ion-button>
+      </ion-buttons>
+      <ion-title>Planos</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item *ngIf="requestError">
+        <ion-button (click)="tryRequestAgain()" style="margin: auto;" fill="clear" class="text-warning">
+          <ion-icon name="warning-outline"></ion-icon>
+          Tentar Novamente!
+        </ion-button>
+      </ion-item>
+      <ion-item lines="full" *ngIf="!requestError">
+        <ion-button id="open-add-modal" (click)="openAddModal()" style="margin: auto;" fill="clear">
+          <ion-icon name="add-circle"></ion-icon>
+          Novo Plano
+        </ion-button>
+      </ion-item>
+      <ion-item [button]="true" *ngIf="!planos && !requestError">
+        <ion-label>
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+      <ion-item [button]="true" *ngIf="!planos && !requestError">
+        <ion-label>
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+      <ion-item [button]="true" *ngIf="!planos && !requestError">
+        <ion-label>
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="full" *ngFor="let plan of planos" [button]="true" (click)="openEditModal(plan, editModal)">
+        <ion-label>{{ plan.name }}</ion-label>
+      </ion-item>
+      <ion-modal #addModal trigger="open-add-modal" [presentingElement]="presentingElement">
+        <ng-template>
+          <ion-header>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-button (click)="addModal.dismiss()">Sair</ion-button>
+              </ion-buttons>
+              <ion-title>Novo Plano</ion-title>
+              <ion-buttons slot="end">
+                <ion-button (click)="createPlan(addModal)" *ngIf="!sendRequest">Criar</ion-button>
+                <ion-spinner *ngIf="sendRequest"></ion-spinner>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content>
+            <ion-item>
+              <ion-input label="Plano" [(ngModel)]="newPlan.name"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-input label="Descrição" [(ngModel)]="newPlan.description"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-input label="Preço" [(ngModel)]="newPlan.price" type="number" inputmode="decimal"
+                (ionInput)="formatPrice($event)"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-select label="Serviços Inclusos" placeholder="Nenhum" [multiple]="true" (ionChange)="changeNewServices($event)">
+                <ion-select-option *ngFor="let service of services" [value]="service.name">{{ service.name }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+      <ion-modal #editModal trigger="open-edit-modal" [presentingElement]="presentingElement">
+        <ng-template>
+          <ion-header>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-button (click)="editModal.dismiss()">Sair</ion-button>
+              </ion-buttons>
+              <ion-title>{{ selectedPlan.name }}</ion-title>
+              <ion-buttons slot="end">
+                <ion-button *ngIf="!sendRequest" (click)="updatePlan(editModal)">Salvar</ion-button>
+                <ion-spinner *ngIf="sendRequest"></ion-spinner>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content>
+            <ion-item>
+              <ion-input label="Plano" [(ngModel)]="selectedPlan.name"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-input label="Descrição" [(ngModel)]="selectedPlan.description"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-input label="Preço" [(ngModel)]="selectedPlan.price" type="number" inputmode="decimal"
+                (ionInput)="formatPriceUpdate($event)"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-select label="Serviços Inclusos" placeholder="Nenhum" [multiple]="true"
+                [(ngModel)]="servicesSelected" (ionChange)="changeServices($event)">
+                <ion-select-option *ngFor="let service of services" [value]="service.name">{{ service.name }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-button fill="clear" color="danger" (click)="deletePlan(selectedPlan, editModal)">Excluir</ion-button>
+            </ion-item>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+    </ion-list>
+    <ion-toast class="text-light" color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}"
+      [duration]="3000"></ion-toast>
+  </ion-content>
+</div>

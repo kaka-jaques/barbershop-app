@@ -17,6 +17,7 @@ import br.com.kjf.barbershop.repository.ClientRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.BonusVO;
 import br.com.kjf.barbershop.vo.BookingVO;
+import br.com.kjf.barbershop.vo.ClientVO;
 import br.com.kjf.barbershop.vo.UserVO;
 
 @RestController
@@ -48,7 +49,14 @@ public class UsersController {
 	
 	@GetMapping("/temp")
 	public ResponseEntity<?> getTempClient(){
-		return ResponseEntity.ok(clientRepository.getTempClients());
+		
+		List<ClientVO> clients = clientRepository.getTempClients();
+		
+		for(ClientVO client : clients) {
+			client.setBookings(null);
+		}
+		
+		return ResponseEntity.ok(clients);
 	}
 	
 	@PostMapping
@@ -59,6 +67,12 @@ public class UsersController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteUser(@PathVariable("id")int id){
 		userRepository.deleteById(id);
+		return ResponseEntity.ok(null);
+	}
+	
+	@DeleteMapping("/temp/{id}")
+	public ResponseEntity<?> deleteClient(@PathVariable("id")int id) {
+		clientRepository.deleteById(id);
 		return ResponseEntity.ok(null);
 	}
 	

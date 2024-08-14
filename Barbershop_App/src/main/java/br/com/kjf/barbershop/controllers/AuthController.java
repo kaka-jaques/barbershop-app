@@ -1,6 +1,5 @@
 package br.com.kjf.barbershop.controllers;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,14 +37,13 @@ import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.RoleRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.BookingVO;
-import br.com.kjf.barbershop.vo.ClientVO;
 import br.com.kjf.barbershop.vo.NotificationConfigVO;
 import br.com.kjf.barbershop.vo.RoleVO;
 import br.com.kjf.barbershop.vo.UserVO;
 import io.jsonwebtoken.ExpiredJwtException;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
+@CrossOrigin(origins = {"127.0.0.1:5500", "http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -214,29 +212,37 @@ public class AuthController {
 	}
 	
 	@PostMapping("/register")
-	public ResponseEntity<?> websiteRegister(@RequestBody UserVO user) throws JsonMappingException, JsonProcessingException{
+	public ResponseEntity<?> websiteRegister(@RequestBody UserVO user, @RequestHeader("Auth")boolean auth) throws JsonMappingException, JsonProcessingException{
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setUser("user-"+userRepository.findAll().get((int)userRepository.count()-1).getId()+1);
 		
-		RoleVO role = roleRepository.findById(3);
+		if(user.getUser() == null) {
+			user.setUser("user-"+userRepository.findAll().get((int)userRepository.count()-1).getId()+1);
+		}
 		
-		Set<RoleVO> roles = new HashSet<>();
-		roles.add(role);
-		user.setRole(roles);
+		if(user.getRole() == null) {
+			RoleVO role = roleRepository.findById(3);
+			
+			Set<RoleVO> roles = new HashSet<>();
+			roles.add(role);
+			user.setRole(roles);
+		}
 		
 		user.getClient().setImage_url("https://ionicframework.com/docs/img/demos/avatar.svg");
 		user.getClient().setActive(true);
 		user.getClient().setPlano(plansRepository.findById(1));
 		user.setNotificationConfig(new NotificationConfigVO());
+		user.getNotificationConfig().setUser(user);
 		
 		userRepository.save(user);
 		
-		final String token = jwtUtil.generateLoginToken(userDetailsService.loadUserByUsername(user.getUser()).getUsername(), false);
-		
 		HttpHeaders headers = new HttpHeaders();
 		
-		headers.set("Set-Cookie", "token="+token+";Max-Age=54000; SameSite=Strict; HttpOnly;");
+		final String token = jwtUtil.generateLoginToken(userDetailsService.loadUserByUsername(user.getUser()).getUsername(), false);
+		
+		if(!auth) {
+			headers.set("Set-Cookie", "token="+token+";Max-Age=54000; SameSite=Strict; HttpOnly;");
+		}
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(
 					objMapper.readTree("{"

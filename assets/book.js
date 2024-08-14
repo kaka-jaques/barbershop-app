@@ -330,7 +330,9 @@ function booking(user) {
     let hour = hoursService[document.querySelector('#service-time').value].split(':');
     let bookDate = new Date(Date.UTC(parseInt(date[2], 10), parseInt(date[1], 10) - 1, parseInt(date[0], 10), parseInt(hour[0], 10), parseInt(hour[1], 10)));
 
-    let body = {
+    let body;
+
+    body = {
         bookingDate: bookDate,
         services: {
             id: document.querySelector('#service').value
@@ -399,6 +401,7 @@ function booking(user) {
             })
 
     } else {
+        console.log(body);
         fetch('http://localhost:8080/book', {
             method: 'POST',
             credentials: 'include',

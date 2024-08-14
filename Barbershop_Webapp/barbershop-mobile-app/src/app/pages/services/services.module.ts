@@ -1,24 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FullCalendarModule } from '@fullcalendar/angular'
 
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared/shared.module';
 
-import { BookPageRoutingModule } from './book-routing.module';
+import { ServicesPageRoutingModule } from './services-routing.module';
 
-import { BookPage } from './book.page';
+import { ServicesPage } from './services.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    BookPageRoutingModule,
-    SharedModule,
-    FullCalendarModule
+    ServicesPageRoutingModule,
+    SharedModule
   ],
-  declarations: [BookPage]
+  declarations: [ServicesPage]
 })
-export class BookPageModule {}
+export class ServicesPageModule {}

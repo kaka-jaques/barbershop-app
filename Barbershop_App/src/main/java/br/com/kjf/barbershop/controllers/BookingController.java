@@ -1,11 +1,15 @@
 package br.com.kjf.barbershop.controllers;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,11 +32,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.kjf.barbershop.repository.BookingRepository;
 import br.com.kjf.barbershop.repository.ClientRepository;
+import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.ServicesRepository;
 import br.com.kjf.barbershop.vo.BookingVO;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
+@CrossOrigin(origins = {"127.0.0.1:5500", "http://localhost:5500", "http://localhost:8100"}, allowCredentials = "true")
 @RequestMapping("/book")
 public class BookingController {
 
@@ -40,6 +46,9 @@ public class BookingController {
 	
 	@Autowired
 	private ClientRepository clientRepository;
+	
+	@Autowired
+	private PlansRepository plansRepository;
 	
 	@Autowired
 	private ServicesRepository servicesRepository;
@@ -53,6 +62,7 @@ public class BookingController {
 		
 		if(!auth) {
 			clientRepository.save(book.getClient());
+			book.getClient().setPlano(plansRepository.findById(book.getClient().getPlano().getId()).get());
 		}
 		
 		bookingRepository.save(book);
@@ -90,6 +100,7 @@ public class BookingController {
 		
 	}
 	
+	@GetMapping("/today")
 	public ResponseEntity<?> getBooksForToday(){
 		
 		Date dateTomorrow = Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -99,7 +110,29 @@ public class BookingController {
 		List<BookingVO> books = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow);
 		
 		for(BookingVO book : books) {
-			book.setClient(null);
+			book.getClient().setBookings(null);
+		}
+		
+		return ResponseEntity.ok(books);
+		
+	}
+	
+	@PostMapping("/period")
+	public ResponseEntity<?> getBooksForPeriod(@RequestBody Map<String, String> periodTime) throws ParseException{
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		GregorianCalendar period1 = new GregorianCalendar();
+		period1.setTime(dateFormat.parse(periodTime.get("startDate")));
+		
+		GregorianCalendar period2 = new GregorianCalendar();
+		period2.setTime(dateFormat.parse(periodTime.get("endDate")));
+		
+		List<BookingVO> books = bookingRepository.getBooksForPeriod(period1, period2);
+		
+		for(BookingVO book : books) {
+			book.getClient().setBookings(null);
 		}
 		
 		return ResponseEntity.ok(books);

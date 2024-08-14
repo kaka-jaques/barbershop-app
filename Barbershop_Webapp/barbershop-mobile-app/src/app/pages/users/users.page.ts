@@ -1,7 +1,8 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { ActionSheetController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActionSheetController, IonInput, IonSearchbar } from '@ionic/angular';
 import { UsersService } from 'src/app/users.service';
+import { MaskitoOptions, MaskitoElementPredicate, maskitoTransform } from '@maskito/core';
 
 @Component({
   selector: 'app-users',
@@ -10,6 +11,10 @@ import { UsersService } from 'src/app/users.service';
 })
 export class UsersPage implements OnInit {
 
+  @ViewChild('ionInputEl', { static: true }) ionInputEl!: IonInput;
+
+  inputModel = '';
+
   public usersList: any[] = [];
   public userQuery: any[] = [];
 
@@ -17,15 +22,16 @@ export class UsersPage implements OnInit {
   public tempClientQuery: any[] = [];
 
   //PARAMETROS PARA FITLRO
-  public user!: string;
-  public email!: string;
-  public startBirthDate!: Date;
-  public endBirthDate!: Date;
-  public activeUser!: Boolean;
-  public phone!: string;
-  public anualBonus!: Boolean;
-  public plan!: number;
-  public cpf!: string;
+  public user: string | null = null;
+  public email: string | null = null;
+  public aniversary: Boolean | null = null;
+  public activeUser: Boolean | null = null;
+  public phone: string | null = null;
+  public anualBonus: Boolean | null = null;
+  public role: number | null = null;
+  public cpf: string | null = null;
+
+  public defaultDate: string = new Date('1950, 01, 01').toISOString();
 
   public roles: any = [
     { id: 1, name: 'ROLE_ADMIN' },
@@ -44,13 +50,33 @@ export class UsersPage implements OnInit {
       name: 'Nan'
     }
   };
+  public newUser: any = {
+    user: '',
+    password: '',
+    email: '',
+    client: {
+      name: '',
+      birthDate: new Date().toISOString(),
+      phone: '',
+      anualBonus: false,
+      plano: {
+        id: 1
+      },
+      cpf: '',
+    }
+  };
+
   public birthDate!: string;
   public saveUserButton: Boolean = false;
   public isToastOpen: Boolean = false;
   public toastMessage!: string;
   public toastColor: string = 'light';
+  public addBirthdate: string = new Date().toISOString();
 
-  public currentRole!: any;
+  public currentRole: string = '0';
+  public currentBonus: string = '';
+  public bonusExpiration: string = new Date().toISOString();
+  public bonusReason: string = '';
 
   constructor(private users: UsersService, private actSheetCtrl: ActionSheetController) { }
 
@@ -91,9 +117,72 @@ export class UsersPage implements OnInit {
 
   }
 
+  filterUser(event: any){ //TODO - FIX
+    const value = event.target!.value;
+    const filteredValue = value.replace(/[^a-zA-Z0-9]+/g, '');
+    this.ionInputEl.value = this.inputModel = filteredValue; 
+  }
+
+  filterOnlyString(event: any) { //TODO - FIX
+    const value = event.target!.value;
+
+    const filteredValue = value.replace(/[^a-zA-Z]+/g, '');
+
+    this.ionInputEl.value = this.inputModel = filteredValue;
+  }
+
+  changeBonusType(event: any){
+    this.currentBonus = event.detail.value
+  }
+
+  handleBonusDismiss(modal: any){
+    this.currentBonus = '';
+    this.bonusExpiration = new Date().toISOString();
+    modal.dismiss();
+  }
+
+  applyBonus(modal: any){
+    this.selectedUser.client.anualBonus = 'true';
+    this.selectedUser.client.bonus = {
+      expire_date: this.bonusExpiration,
+      bonus_type: this.currentBonus,
+      other_reason: this.bonusReason
+    }
+    modal.dismiss();
+  }
+
   searchUser(event: any) {
-    const query: string = event.target.value.toLowerCase();
-    this.userQuery = this.usersList.filter(user => user.client.name.toLowerCase().indexOf(query) > -1);
+    let query: string = ''
+    if (event != null) {
+      query = event.target.value.toLowerCase();
+    }
+
+    this.userQuery = this.usersList.filter(user => {
+      const nameMatch = user.client.name.toLowerCase().indexOf(query) > -1;
+      const phoneMatch = this.phone == null || user.client.telephone?.indexOf(this.phone) > -1;
+      const emailMatch = this.email == null || user.email?.indexOf(this.email) > -1;
+      const activeMatch = this.activeUser == null || user.client.active === this.activeUser;
+      const annualBonusMatch = this.anualBonus == null || user.client.anualBonus === this.anualBonus;
+      const birthDateMatch = this.aniversary == null ||
+        (this.aniversary && user.client.birthDate != null &&
+          new Date(new Date().getFullYear(), user.client.birthDate[1] - 1, user.client.birthDate[2]) >= new Date(new Date().getFullYear(), new Date().getMonth(), 1) && new Date(new Date().getFullYear(), user.client.birthDate[1] - 1, user.client.birthDate[2]) < new Date(new Date().getFullYear(), new Date().getMonth()+1, 1) || this.aniversary != true);
+      const cpfMatch = this.cpf == null || user.client.cpf.indexOf(this.cpf) > -1;
+      const userMatch = this.user == null || user.user.indexOf(this.user) > -1;
+
+      return nameMatch && phoneMatch && emailMatch && activeMatch && annualBonusMatch && birthDateMatch && cpfMatch && userMatch;
+    });
+
+    this.tempClientQuery = this.tempClientList.filter(client => {
+      const nameMatch = client.name.toLowerCase().indexOf(query.toLowerCase()) > -1 && !this.aniversary && !this.anualBonus && !this.email && !this.cpf && !this.user;
+      const phoneMatch = this.phone == null || client.telephone?.indexOf(this.phone) > -1 && !this.aniversary && !this.anualBonus && !this.email && !this.cpf && !this.user;
+      const activeMatch = this.activeUser == null || client.active === this.activeUser && !this.aniversary && !this.anualBonus && !this.email && !this.cpf && !this.user;
+
+      return nameMatch && phoneMatch && activeMatch;
+    });
+
+    this.alphabeticalOrder();
+    this.alphabeticalOrderTempClients();
+
   }
 
   async refreshUsers(event: any) {
@@ -127,6 +216,10 @@ export class UsersPage implements OnInit {
       this.saveUserButton = false;
       event.target.complete();
     });
+
+
+    this.resetFilter(null);
+
   }
 
   alphabeticalOrder() {
@@ -145,16 +238,30 @@ export class UsersPage implements OnInit {
     });
   }
 
-  applyFilter() {
-
-  }
-
-  applyRole(role: number, modal: any) {
-    this.selectedUser.role[0] = this.roles[role];
+  applyFilter(modal: any) {
+    this.searchUser(null)
     modal.dismiss();
   }
 
+  applyRole(role: string, modal: any) {
+    this.selectedUser.role[0] = this.roles[parseInt(role)];
+    modal.dismiss();
+  }
+
+  onRoleChange(event: any){
+    this.currentRole = event.detail.value;
+  }
+
   resetFilter(modal: any) {
+    this.user = null;
+    this.email = null;
+    this.phone = null;
+    this.cpf = null;
+    this.anualBonus = null;
+    this.aniversary = null;
+    this.activeUser = null;
+    this.role = null;
+    this.searchUser(null);
     modal.dismiss();
   }
 
@@ -165,11 +272,14 @@ export class UsersPage implements OnInit {
     } else {
       this.birthDate = '';
     }
+    this.currentRole = (user.role[0].id - 1).toString();
+    console.log(this.currentRole);
+    
     modal.present();
   }
 
-  async deleteUser(user: any) {
-    
+  async deleteUser(user: any, modal: any) {
+
     let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
       const sheet = await this.actSheetCtrl.create({
         header: 'Tem certeza?',
@@ -192,10 +302,64 @@ export class UsersPage implements OnInit {
       return role === 'destructive';
 
     }
-    
-    if(await deleteConfirmation()){
-      console.log('User deleted');
-      
+
+    if (await deleteConfirmation()) {
+      this.users.deleteUser(user).subscribe((response: HttpResponse<any>) => {
+        if (response.ok) {
+          this.isToastOpen = true;
+          this.toastColor = 'success';
+          this.toastMessage = 'cliente excluído com sucesso!';
+          this.refreshUsers(null);
+          modal.dismiss();
+        } else {
+          this.isToastOpen = true;
+          this.toastColor = 'danger';
+          this.toastMessage = 'Erro ao excluir o cliente!';
+          modal.dismiss();
+        }
+      })
+    }
+  }
+
+  async deleteClient(client: any, modal: any) {
+    let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
+      const sheet = await this.actSheetCtrl.create({
+        header: 'Tem certeza?',
+        subHeader: 'Esta operação não pode ser desfeita',
+        buttons: [
+          {
+            text: 'Excluir',
+            role: 'destructive',
+          },
+          {
+            text: 'Cancelar',
+            role: 'cancel'
+          }
+        ]
+      });
+
+      sheet.present();
+
+      const { role } = await sheet.onDidDismiss();
+      return role === 'destructive';
+
+    }
+
+    if (await deleteConfirmation()) {
+      this.users.deleteClient(client).subscribe((response: HttpResponse<any>) => {
+        if (response.ok) {
+          this.isToastOpen = true;
+          this.toastColor = 'success';
+          this.toastMessage = 'cliente excluído com sucesso!';
+          this.refreshUsers(null);
+          modal.dismiss();
+        } else {
+          this.isToastOpen = true;
+          this.toastColor = 'danger';
+          this.toastMessage = 'Erro ao excluir o cliente!';
+          modal.dismiss();
+        }
+      })
     }
   }
 
@@ -207,6 +371,16 @@ export class UsersPage implements OnInit {
   saveUser(modal: any, button: any) {
     button.disabled = true;
     this.saveUserButton = true;
+    if(this.birthDate != '' && this.selectedUser.client.birthDate != null){
+      this.selectedUser.client.birthDate[0] = new Date(this.birthDate).getFullYear();
+      this.selectedUser.client.birthDate[1] = new Date(this.birthDate).getMonth() + 1;
+      this.selectedUser.client.birthDate[2] = new Date(this.birthDate).getDate();
+    }else if(this.selectedUser.client.birthDate == null){
+      this.selectedUser.client.birthDate = [new Date(this.birthDate).getFullYear(), new Date(this.birthDate).getMonth() + 1, new Date(this.birthDate).getDate()];
+    }
+    else{
+      this.selectedUser.client.birthDate = this.birthDate;
+    }
     this.users.updateUser(this.selectedUser).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         modal.dismiss();
@@ -235,7 +409,34 @@ export class UsersPage implements OnInit {
   }
 
   createUser(modal: any) {
-    
+    this.users.createUser(this.newUser).subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        modal.dismiss();
+        this.isToastOpen = true;
+        this.toastColor = 'success';
+        this.toastMessage = 'Usuário criado com sucesso!';
+        this.refreshUsers(null);
+        this.newUser = {
+          user: '',
+          password: '',
+          email: '',
+          client: {
+            name: '',
+            birthDate: new Date().toISOString(),
+            phone: '',
+            anualBonus: false,
+            plano: {
+              id: 1
+            },
+            cpf: '',
+          }
+        };
+      } else {
+        this.isToastOpen = true;
+        this.toastColor = 'danger';
+        this.toastMessage = 'Erro ao criar o usuário!';
+      }
+    })
   }
 
   setToastOpen(isOpen: boolean) {
