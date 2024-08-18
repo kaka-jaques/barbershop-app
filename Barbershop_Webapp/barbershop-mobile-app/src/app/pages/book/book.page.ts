@@ -3,11 +3,13 @@ import { BookService } from 'src/app/book.service';
 import { CalendarOptions, DatesSetArg } from '@fullcalendar/core';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPuglin from '@fullcalendar/interaction';
+import interactionPlugin from '@fullcalendar/interaction';
 import ptBtLocale from '@fullcalendar/core/locales/pt-br';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import { HttpResponse } from '@angular/common/http';
 import { formatDate } from '@angular/common';
+import { ConfigService } from 'src/app/config.service';
+import { UsersService } from 'src/app/users.service';
 
 @Component({
   selector: 'app-book',
@@ -21,8 +23,29 @@ export class BookPage implements OnInit {
   loadError: boolean = false;
   changeLoading: boolean = false;
 
+  requestLoading: boolean = false;
+  
+  books: any;
+  services: any;
+  clients: any;
+  minDate: string = new Date().toISOString();
+
+  newBook: any = {
+    bookingDate: new Date().toISOString(),
+    services: {},
+    client: {
+      name: '',
+      telephone: '',
+      active: false
+    }
+  };
+
+  toastColor: string = 'primary';
+  toastMessage: string = '';
+  isToastOpen: boolean = false;
+
   calendarOptions: CalendarOptions = {
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPuglin, bootstrap5Plugin],
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, bootstrap5Plugin],
     initialView: 'timeGridDay',
     slotDuration: '00:10:00',
     nowIndicator: true,
@@ -42,15 +65,17 @@ export class BookPage implements OnInit {
     themeSystem: 'bootstrap5',
     datesSet: this.handleDateChange.bind(this),
     dateClick: this.handleDateClick.bind(this),
+    eventClick: this.handleEventClick.bind(this),
     events: []
   }
 
-  constructor(private bookService: BookService) { }
+  constructor(private bookService: BookService, private config:ConfigService, private userService: UsersService) { }
 
   ngOnInit() {
 
     this.bookService.getTodayBookings().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
+        this.books = response.body
         this.calendarOptions = {
           ...this.calendarOptions,
           events: response.body.map((book: any) => ({
@@ -62,8 +87,27 @@ export class BookPage implements OnInit {
         this.calendarLoading = false
       } else {
         this.loadError = true
+        this.calendarLoading = false
+        this.toastColor = 'danger'
+        this.toastMessage = 'Erro ao buscar os agendamentos!'
+        this.isToastOpen = true
       }
     })
+
+    this.config.getServices().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.services = response.body
+      } else {
+        this.loadError = true
+        this.toastColor = 'danger'
+        this.toastMessage = 'Erro ao buscar os serviços!'
+        this.isToastOpen = true
+      }
+    })
+
+  }
+
+  handleEventClick(arg:any){
 
   }
 
@@ -73,6 +117,7 @@ export class BookPage implements OnInit {
 
     this.bookService.getPeriodBookings(arg.startStr, arg.endStr).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
+        this.books = response.body
         this.calendarOptions = {
           ...this.calendarOptions,
           events: response.body.map((book: any) => ({
@@ -113,6 +158,62 @@ export class BookPage implements OnInit {
       }
 
     }
+  }
+
+  createBook(modal:any){
+    this.requestLoading = true
+
+    const auth:boolean = this.newBook.client.id != null
+
+    this.bookService.createBook(this.newBook, auth).subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        modal.dismiss();
+        this.toastColor = 'success'
+        this.toastMessage = 'Agendamento criado com sucesso!'
+        this.isToastOpen = true
+        this.requestLoading = false
+      }else{
+        this.loadError = true
+        this.toastColor = 'danger'
+        this.toastMessage = 'Erro ao criar o agendamento!'
+        this.isToastOpen = true
+        this.requestLoading = false
+      }
+    }, (error) => {
+      this.loadError = true
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao criar o agendamento!'
+      this.isToastOpen = true
+      this.requestLoading = false
+    })
+  }
+
+  changeService(event: any) {
+    this.newBook.services = this.services.find((service: any) => service.id === event.detail.value)
+  }
+
+  searchClient() {
+    this.userService.getAllUsers().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.clients = response.body
+      } else {
+        this.loadError = true
+        this.toastColor = 'danger'
+        this.toastMessage = 'Erro ao buscar os clientes!'
+        this.isToastOpen = true
+      }
+    }, (error) => {
+      this.loadError = true
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao buscar os clientes!'
+      this.isToastOpen = true
+    })
+  }
+
+  selectClient(client:any, modal:any, modal2:any){
+    this.newBook.client = client.client
+    modal.dismiss();
+    modal2.dismiss();
   }
 
 }

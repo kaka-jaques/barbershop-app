@@ -17,4 +17,8 @@ export class BookService {
     return this.http.post<any>('http://localhost:8080/book/period', {startDate: startDate, endDate: endDate},{ observe: 'response' });
   }
 
+  createBook(book: any, auth:boolean): Observable<HttpResponse<any>> {
+    return this.http.post<any>('http://localhost:8080/book', book, { observe: 'response', headers: {'Auth': auth.toString()}});
+  }
+
 }

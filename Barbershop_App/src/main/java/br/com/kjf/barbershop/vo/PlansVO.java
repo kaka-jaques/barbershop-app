@@ -2,6 +2,8 @@ package br.com.kjf.barbershop.vo;
 
 import java.util.List;
 
+import org.hibernate.annotations.ForeignKey;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
@@ -29,9 +31,9 @@ public class PlansVO {
 	private String description;
 	@Column(nullable = false)
 	private Double price;
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "plans_service")
-	private List<ServicesVO> services_include;
+	private List<ServicesVO> services_include; //CONFIGURAR NO BANCO DE DADOS O RELACIONAMENTO DAS FOREIGN KEYS EM UPDATE E DELETE COMO 'CASCADE'
 	
 	public List<ServicesVO> getServices_include() {
 		return services_include;

@@ -28,3 +28,10 @@ full-calendar .fc-toolbar-title{
 .fc-daygrid-day-events{
     text-align: center;
 }
+
+ion-fab{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 90
+}

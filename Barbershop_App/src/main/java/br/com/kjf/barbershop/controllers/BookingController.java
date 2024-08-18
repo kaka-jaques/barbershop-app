@@ -61,8 +61,10 @@ public class BookingController {
 		book.setServices(servicesRepository.getServiceById(book.getServices().getId()));
 		
 		if(!auth) {
+			book.getClient().setPlano(plansRepository.findById(1));
 			clientRepository.save(book.getClient());
-			book.getClient().setPlano(plansRepository.findById(book.getClient().getPlano().getId()).get());
+		} else {
+			book.setClient(clientRepository.findById(book.getClient().getId()).get());
 		}
 		
 		bookingRepository.save(book);

@@ -5,7 +5,7 @@
             <ion-searchbar #searchbar style="padding: 0;" color="light" (ionInput)="searchUser($event)"></ion-searchbar>
             <ion-button fill="clear" id="open-filter-modal">Filtrar</ion-button>
         </ion-item>
-        <ion-refresher slot="fixed" color="light" (ionRefresh)="refreshUsers($event)">
+        <ion-refresher slot="fixed" class="bg-dark" (ionRefresh)="refreshUsers($event)">
             <ion-refresher-content pullingIcon="chevron-down" refreshingSpinner="dots"></ion-refresher-content>
         </ion-refresher>
         <ion-list>

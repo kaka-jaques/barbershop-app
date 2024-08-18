@@ -48,7 +48,7 @@ public class ConfigController {
 		return ResponseEntity.ok(null);
 	}
 	
-	@DeleteMapping("/services/{id}")
+	@DeleteMapping("/services/{id}") //CONFIGURAR NO BANCO DE DADOS O RELACIONAMENTO DAS FOREIGN KEYS EM UPDATE E DELETE COMO 'CASCADE'
 	public ResponseEntity<?> deleteService(@PathVariable("id")int id){
 		servicesRepository.deleteById(id);
 		return ResponseEntity.ok(null);
