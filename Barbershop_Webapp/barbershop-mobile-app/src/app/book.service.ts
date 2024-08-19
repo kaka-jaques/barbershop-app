@@ -21,4 +21,12 @@ export class BookService {
     return this.http.post<any>('http://localhost:8080/book', book, { observe: 'response', headers: {'Auth': auth.toString()}});
   }
 
+  updateBook(book: any): Observable<HttpResponse<any>> {
+    return this.http.put<any>('http://localhost:8080/book', book, { observe: 'response' });
+  }
+
+  deleteBook(bookId: number): Observable<HttpResponse<any>> {
+    return this.http.delete<any>('http://localhost:8080/book/' + bookId, { observe: 'response' });
+  }
+
 }

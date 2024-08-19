@@ -111,6 +111,6 @@
       </ion-modal>
     </ion-list>
     <ion-toast class="text-light" color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}"
-      [duration]="3000"></ion-toast>
+      [duration]="3000" (didDismiss)="isToastOpen = false"></ion-toast>
   </ion-content>
 </div>

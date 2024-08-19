@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { BookService } from 'src/app/book.service';
 import { CalendarOptions, DatesSetArg } from '@fullcalendar/core';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -10,6 +10,8 @@ import { HttpResponse } from '@angular/common/http';
 import { formatDate } from '@angular/common';
 import { ConfigService } from 'src/app/config.service';
 import { UsersService } from 'src/app/users.service';
+import { IonModal } from '@ionic/angular';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 
 @Component({
   selector: 'app-book',
@@ -19,19 +21,25 @@ import { UsersService } from 'src/app/users.service';
 })
 export class BookPage implements OnInit {
 
+  @ViewChild('editModal', {static: true, read: ElementRef}) editModal!: ElementRef<IonModal>
+  @ViewChild('calendar') calendar!: FullCalendarComponent
+  
   calendarLoading: boolean = true;
   loadError: boolean = false;
   changeLoading: boolean = false;
+  calendarType: string = 'calendar';
 
   requestLoading: boolean = false;
+
+  selectedBook: any;
   
   books: any;
   services: any;
   clients: any;
-  minDate: string = new Date().toISOString();
+  minDate:string = new Date(new Date().setHours(new Date().getHours() - 3)).toISOString();
 
   newBook: any = {
-    bookingDate: new Date().toISOString(),
+    bookingDate: new Date(new Date().setHours(new Date().getHours() - 3)).toISOString(),
     services: {},
     client: {
       name: '',
@@ -53,9 +61,9 @@ export class BookPage implements OnInit {
     locales: [ptBtLocale],
     locale: 'pt-br',
     headerToolbar: {
-      left: 'prev,next',
+      left: 'prev',
       center: 'title',
-      right: 'dayGridMonth,timeGridDay'
+      right: 'next'
     },
     titleFormat: {
       day: '2-digit',
@@ -72,7 +80,7 @@ export class BookPage implements OnInit {
   constructor(private bookService: BookService, private config:ConfigService, private userService: UsersService) { }
 
   ngOnInit() {
-
+    
     this.bookService.getTodayBookings().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.books = response.body
@@ -81,7 +89,10 @@ export class BookPage implements OnInit {
           events: response.body.map((book: any) => ({
             title: book.client.name + ' - ' + book.services.name,
             start: new Date(book.bookingDate).toISOString(),
-            end: new Date(book.bookingDate + (book.services.duration[1] * 60000) + (book.services.duration[0] * 3600000)).toISOString()
+            end: new Date(book.bookingDate + (book.services.duration[1] * 60000) + (book.services.duration[0] * 3600000)).toISOString(),
+            extendedProps: {
+              ...book
+            }
           }))
         }
         this.calendarLoading = false
@@ -107,8 +118,91 @@ export class BookPage implements OnInit {
 
   }
 
-  handleEventClick(arg:any){
+  changeCalendarType(){
+    if(this.calendarType === 'calendar'){
+      this.calendarType = 'calendar-number'
+      this.calendar.getApi().changeView('dayGridMonth');
+    }else{
+      this.calendarType = 'calendar'
+      this.calendar.getApi().changeView('timeGridDay');
+    }
+  }
 
+  handleEventClick(arg:any){
+    this.selectedBook = {
+      ...arg.event.extendedProps}
+    this.selectedBook.bookingDate = new Date(this.selectedBook.bookingDate).setHours(new Date(this.selectedBook.bookingDate).getHours() - 3);
+    this.selectedBook.bookingDate = new Date(this.selectedBook.bookingDate).toISOString();
+    this.editModal.nativeElement.present();
+  }
+
+  changeClient(modal:any){
+    this.userService.getAllUsers().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.clients = response.body
+        modal.present();
+      }
+    }, (error) => {
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao buscar os clientes!'
+      this.isToastOpen = true
+    })
+  }
+
+  resetNewBook(){
+    this.newBook = {
+      bookingDate: new Date(new Date().setHours(new Date().getHours() - 3)).toISOString(),
+      services: {},
+      client: {
+        name: '',
+        telephone: '',
+        active: false
+      }
+    };
+  }
+
+  selectChangeClient(client: any, modal: any, modal2: any){
+    this.selectedBook.client = client.client;
+    modal.dismiss();
+    modal2.dismiss();
+  }
+
+  updateBook(modal: any){
+    this.requestLoading = true
+    this.bookService.updateBook(this.selectedBook).subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        modal.dismiss();
+        this.requestLoading = false
+        this.toastColor = 'success'
+        this.toastMessage = 'Agendamento atualizado com sucesso!'
+        this.isToastOpen = true
+        this.calendar.getApi().changeView('timeGridDay', new Date());
+      }
+    }, (error) => {
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao atualizar o agendamento!'
+      this.isToastOpen = true
+      this.requestLoading = false
+    })
+  }
+
+  deleteBook(modal: any){
+    this.requestLoading = true
+    this.bookService.deleteBook(this.selectedBook.id).subscribe((response: HttpResponse<any>) => {
+      if(response.ok){
+        modal.dismiss();
+        this.toastColor = 'success'
+        this.toastMessage = 'Agendamento excluido com sucesso!'
+        this.isToastOpen = true
+        this.requestLoading = false
+        this.calendar.getApi().changeView('timeGridDay', new Date());
+      }
+    }, (error) => {
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao excluir o agendamento!'
+      this.isToastOpen = true
+      this.requestLoading = false
+    })
   }
 
   handleDateChange(arg: DatesSetArg) {
@@ -123,7 +217,10 @@ export class BookPage implements OnInit {
           events: response.body.map((book: any) => ({
             title: book.client.name + ' - ' + book.services.name,
             start: new Date(book.bookingDate).toISOString(),
-            end: new Date(book.bookingDate + (book.services.duration[1] * 60000) + (book.services.duration[0] * 3600000)).toISOString()
+            end: new Date(book.bookingDate + (book.services.duration[1] * 60000) + (book.services.duration[0] * 3600000)).toISOString(),
+            extendedProps: {
+              ...book
+            }
           }))
         }
         setTimeout(() => {
@@ -163,6 +260,14 @@ export class BookPage implements OnInit {
   createBook(modal:any){
     this.requestLoading = true
 
+    if(this.newBook.client.name == '' || this.newBook.client.telephone == '' || this.newBook.services.id == null){
+      this.toastColor = 'primary'
+      this.toastMessage = 'Por favor, Preencha todos os campos!'
+      this.isToastOpen = true
+      this.requestLoading = false;
+      return;
+    }
+
     const auth:boolean = this.newBook.client.id != null
 
     this.bookService.createBook(this.newBook, auth).subscribe((response: HttpResponse<any>) => {
@@ -172,12 +277,7 @@ export class BookPage implements OnInit {
         this.toastMessage = 'Agendamento criado com sucesso!'
         this.isToastOpen = true
         this.requestLoading = false
-      }else{
-        this.loadError = true
-        this.toastColor = 'danger'
-        this.toastMessage = 'Erro ao criar o agendamento!'
-        this.isToastOpen = true
-        this.requestLoading = false
+        this.calendar.getApi().changeView(this.calendar.getApi().view.type);
       }
     }, (error) => {
       this.loadError = true
