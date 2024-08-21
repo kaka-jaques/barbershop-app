@@ -21,9 +21,9 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 })
 export class BookPage implements OnInit {
 
-  @ViewChild('editModal', {static: true, read: ElementRef}) editModal!: ElementRef<IonModal>
+  @ViewChild('editModal', { static: true, read: ElementRef }) editModal!: ElementRef<IonModal>
   @ViewChild('calendar') calendar!: FullCalendarComponent
-  
+
   calendarLoading: boolean = true;
   loadError: boolean = false;
   changeLoading: boolean = false;
@@ -32,11 +32,11 @@ export class BookPage implements OnInit {
   requestLoading: boolean = false;
 
   selectedBook: any;
-  
+
   books: any;
   services: any;
   clients: any;
-  minDate:string = new Date(new Date().setHours(new Date().getHours() - 3)).toISOString();
+  minDate: string = new Date(new Date().setHours(new Date().getHours() - 3)).toISOString();
 
   newBook: any = {
     bookingDate: new Date(new Date().setHours(new Date().getHours() - 3)).toISOString(),
@@ -77,10 +77,10 @@ export class BookPage implements OnInit {
     events: []
   }
 
-  constructor(private bookService: BookService, private config:ConfigService, private userService: UsersService) { }
+  constructor(private bookService: BookService, private config: ConfigService, private userService: UsersService) { }
 
   ngOnInit() {
-    
+
     this.bookService.getTodayBookings().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.books = response.body
@@ -118,25 +118,26 @@ export class BookPage implements OnInit {
 
   }
 
-  changeCalendarType(){
-    if(this.calendarType === 'calendar'){
+  changeCalendarType() {
+    if (this.calendarType === 'calendar') {
       this.calendarType = 'calendar-number'
       this.calendar.getApi().changeView('dayGridMonth');
-    }else{
+    } else {
       this.calendarType = 'calendar'
       this.calendar.getApi().changeView('timeGridDay');
     }
   }
 
-  handleEventClick(arg:any){
+  handleEventClick(arg: any) {
     this.selectedBook = {
-      ...arg.event.extendedProps}
+      ...arg.event.extendedProps
+    }
     this.selectedBook.bookingDate = new Date(this.selectedBook.bookingDate).setHours(new Date(this.selectedBook.bookingDate).getHours() - 3);
     this.selectedBook.bookingDate = new Date(this.selectedBook.bookingDate).toISOString();
     this.editModal.nativeElement.present();
   }
 
-  changeClient(modal:any){
+  changeClient(modal: any) {
     this.userService.getAllUsers().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.clients = response.body
@@ -149,7 +150,7 @@ export class BookPage implements OnInit {
     })
   }
 
-  resetNewBook(){
+  resetNewBook() {
     this.newBook = {
       bookingDate: new Date(new Date().setHours(new Date().getHours() - 3)).toISOString(),
       services: {},
@@ -161,13 +162,13 @@ export class BookPage implements OnInit {
     };
   }
 
-  selectChangeClient(client: any, modal: any, modal2: any){
+  selectChangeClient(client: any, modal: any, modal2: any) {
     this.selectedBook.client = client.client;
     modal.dismiss();
     modal2.dismiss();
   }
 
-  updateBook(modal: any){
+  updateBook(modal: any) {
     this.requestLoading = true
     this.bookService.updateBook(this.selectedBook).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
@@ -186,10 +187,10 @@ export class BookPage implements OnInit {
     })
   }
 
-  deleteBook(modal: any){
+  deleteBook(modal: any) {
     this.requestLoading = true
     this.bookService.deleteBook(this.selectedBook.id).subscribe((response: HttpResponse<any>) => {
-      if(response.ok){
+      if (response.ok) {
         modal.dismiss();
         this.toastColor = 'success'
         this.toastMessage = 'Agendamento excluido com sucesso!'
@@ -235,8 +236,11 @@ export class BookPage implements OnInit {
   }
 
   handleDateClick(arg: any) {
-    const calendarApi = arg.view.calendar;
-    calendarApi.changeView('timeGridDay', arg.date);
+    if (arg.view.type != 'timeGridDay') {
+      const calendarApi = arg.view.calendar;
+      calendarApi.changeView('timeGridDay', arg.date);
+      this.changeCalendarType();
+    }
   }
 
   renderCellDay() {
@@ -245,10 +249,10 @@ export class BookPage implements OnInit {
 
     for (let i = 0; i < dayCells.length; i++) {
       let events = dayCells[i].children[0].children[1].children as HTMLCollectionOf<HTMLElement>;
-      
-      if(events.length > 1) {
+
+      if (events.length > 1) {
         let badgeCount: HTMLElement = document.createElement('ion-badge');
-        badgeCount.innerHTML = (events.length-1).toString();
+        badgeCount.innerHTML = (events.length - 1).toString();
         badgeCount.setAttribute('color', 'primary');
         dayCells[i].children[0].children[1].innerHTML = ''
         dayCells[i].children[0].children[1].appendChild(badgeCount)
@@ -257,10 +261,10 @@ export class BookPage implements OnInit {
     }
   }
 
-  createBook(modal:any){
+  createBook(modal: any) {
     this.requestLoading = true
 
-    if(this.newBook.client.name == '' || this.newBook.client.telephone == '' || this.newBook.services.id == null){
+    if (this.newBook.client.name == '' || this.newBook.client.telephone == '' || this.newBook.services.id == null) {
       this.toastColor = 'primary'
       this.toastMessage = 'Por favor, Preencha todos os campos!'
       this.isToastOpen = true
@@ -268,7 +272,7 @@ export class BookPage implements OnInit {
       return;
     }
 
-    const auth:boolean = this.newBook.client.id != null
+    const auth: boolean = this.newBook.client.id != null
 
     this.bookService.createBook(this.newBook, auth).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
@@ -310,7 +314,7 @@ export class BookPage implements OnInit {
     })
   }
 
-  selectClient(client:any, modal:any, modal2:any){
+  selectClient(client: any, modal: any, modal2: any) {
     this.newBook.client = client.client
     modal.dismiss();
     modal2.dismiss();

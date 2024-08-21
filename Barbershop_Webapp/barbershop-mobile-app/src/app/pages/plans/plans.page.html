@@ -100,7 +100,7 @@
             <ion-item>
               <ion-select label="Serviços Inclusos" placeholder="Nenhum" [multiple]="true"
                 [(ngModel)]="servicesSelected" (ionChange)="changeServices($event)">
-                <ion-select-option *ngFor="let service of services" [value]="service.name">{{ service.name }}</ion-select-option>
+                <ion-select-option *ngFor="let service of services" [value]="service.id">{{ service.name }}</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item>
