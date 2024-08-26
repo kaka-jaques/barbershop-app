@@ -206,7 +206,7 @@ export class BookPage implements OnInit {
     })
   }
 
-  handleDateChange(arg: DatesSetArg) {
+  async handleDateChange(arg: any) {
 
     this.changeLoading = true;
 
@@ -230,9 +230,12 @@ export class BookPage implements OnInit {
         }, 50)
       } else {
         this.loadError = true
+        this.changeLoading = false
+        this.toastColor = 'danger'
+        this.toastMessage = 'Erro ao buscar os agendamentos!'
+        this.isToastOpen = true
       }
     })
-
   }
 
   handleDateClick(arg: any) {
@@ -261,8 +264,13 @@ export class BookPage implements OnInit {
     }
   }
 
-  createBook(modal: any) {
+  async createBook(modal: any) {
     this.requestLoading = true
+
+    let newEvent = this.newBook.bookingDate;
+    let newEventDate:Date = new Date(newEvent);
+    newEventDate.setHours(0);
+    newEventDate.setMinutes(0);
 
     if (this.newBook.client.name == '' || this.newBook.client.telephone == '' || this.newBook.services.id == null) {
       this.toastColor = 'primary'
@@ -271,6 +279,31 @@ export class BookPage implements OnInit {
       this.requestLoading = false;
       return;
     }
+
+    let nothing =await this.handleDateChange({startStr: newEventDate.toISOString(), endStr: newEventDate.toISOString().split('T')[0] + 'T23:59:59.999Z'});
+
+    let events = this.calendar.getApi().getEvents();
+    let overDate = false;
+
+    console.log(events);
+
+    return;
+
+    events.forEach((event: any) => {
+      let existEventStart = new Date(event.start)
+      let existEventEnd = new Date(event.end)
+      
+      if(new Date(newEvent) < existEventEnd || new Date(newEvent + (this.newBook.services.duration[1] * 60000) + (this.newBook.services.duration[0] * 3600000)) > existEventStart) {
+        this.toastColor = 'danger'
+        this.toastMessage = 'Existe um agendamento no mesmo horário entre ' + existEventStart.toLocaleTimeString() + ' e ' + existEventEnd.toLocaleTimeString()
+        this.isToastOpen = true
+        this.requestLoading = false
+        overDate = true
+        return
+      }
+    })
+
+    if(overDate) return;
 
     const auth: boolean = this.newBook.client.id != null
 

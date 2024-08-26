@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
       if(error.status == 302){
         this.auth.name = error.error.client.name;
         this.auth.email = error.error.email;
-        this.auth.phone = error.error.client.phone;
+        this.auth.phone = error.error.client.telephone;
         this.auth.isAuth = true;
         this.router.navigateByUrl('/home');
       }

@@ -3,9 +3,9 @@
     <ion-menu [swipeGesture]="auth.isAuth" contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-list-header>Nome Completo</ion-list-header>
-          <ion-note>Telefone</ion-note><br>
-          <ion-note style="margin-bottom: 15%;">Email</ion-note>
+          <ion-list-header>{{ auth.fullName }}</ion-list-header>
+          <ion-note>{{ auth.phone }}</ion-note><br>
+          <ion-note style="margin-bottom: 15%;">{{ auth.email}}</ion-note>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
             <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">

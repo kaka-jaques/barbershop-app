@@ -31,12 +31,27 @@ export class HomePage implements OnInit {
   public notificationError: boolean = false;
 
   name: string = '';
+  fullName: string = '';
 
   constructor(private route: Router, private home: HomeService, public auth: AuthService) { }
 
   async ngOnInit() {
 
     this.name = this.auth.name.split(' ')[0];
+
+    let nameSplice = this.auth.name.split(' ');
+    this.fullName = nameSplice[0].charAt(0).toUpperCase() + nameSplice[0].slice(1).toLowerCase();
+
+    for (let i = 1; i < nameSplice.length - 1; i++) {
+      this.fullName += ' ' + nameSplice[i].charAt(0).toUpperCase() + '.';
+    }
+
+    if (nameSplice.length > 1) {
+      let lastName = nameSplice[nameSplice.length - 1];
+      this.fullName += ' ' + lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
+    }
+
+    this.auth.fullName = this.fullName;
 
     await this.home.getNotificationsConfig().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
