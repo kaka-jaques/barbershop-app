@@ -10,7 +10,7 @@ import { HttpResponse } from '@angular/common/http';
 import { formatDate } from '@angular/common';
 import { ConfigService } from 'src/app/config.service';
 import { UsersService } from 'src/app/users.service';
-import { IonModal } from '@ionic/angular';
+import { ActionSheetController, IonModal } from '@ionic/angular';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 
 @Component({
@@ -77,7 +77,7 @@ export class BookPage implements OnInit {
     events: []
   }
 
-  constructor(private bookService: BookService, private config: ConfigService, private userService: UsersService) { }
+  constructor(private bookService: BookService, private config: ConfigService, private userService: UsersService, private actSheetCtrl:ActionSheetController) { }
 
   ngOnInit() {
 
@@ -187,23 +187,51 @@ export class BookPage implements OnInit {
     })
   }
 
-  deleteBook(modal: any) {
+  async deleteBook(modal: any) {
     this.requestLoading = true
-    this.bookService.deleteBook(this.selectedBook.id).subscribe((response: HttpResponse<any>) => {
-      if (response.ok) {
-        modal.dismiss();
-        this.toastColor = 'success'
-        this.toastMessage = 'Agendamento excluido com sucesso!'
+
+    let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
+      const sheet = await this.actSheetCtrl.create({
+        header: 'Tem certeza?',
+        subHeader: 'Esta operação não pode ser desfeita',
+        buttons: [
+          {
+            text: 'Excluir',
+            role: 'destructive',
+          },
+          {
+            text: 'Cancelar',
+            role: 'cancel'
+          }
+        ]
+      });
+
+      sheet.present();
+
+      const { role } = await sheet.onDidDismiss();
+      return role === 'destructive';
+
+    }
+
+    if(await deleteConfirmation()) {
+      this.bookService.deleteBook(this.selectedBook.id).subscribe((response: HttpResponse<any>) => {
+        if (response.ok) {
+          modal.dismiss();
+          this.toastColor = 'success'
+          this.toastMessage = 'Agendamento excluido com sucesso!'
+          this.isToastOpen = true
+          this.requestLoading = false
+          this.calendar.getApi().changeView('timeGridDay', new Date());
+        }
+      }, (error) => {
+        this.toastColor = 'danger'
+        this.toastMessage = 'Erro ao excluir o agendamento!'
         this.isToastOpen = true
         this.requestLoading = false
-        this.calendar.getApi().changeView('timeGridDay', new Date());
-      }
-    }, (error) => {
-      this.toastColor = 'danger'
-      this.toastMessage = 'Erro ao excluir o agendamento!'
-      this.isToastOpen = true
+      })
+    }else{
       this.requestLoading = false
-    })
+    }
   }
 
   async handleDateChange(arg: any) {
@@ -227,6 +255,7 @@ export class BookPage implements OnInit {
         setTimeout(() => {
           this.renderCellDay();
           this.changeLoading = false;
+          return true;
         }, 50)
       } else {
         this.loadError = true
@@ -268,7 +297,7 @@ export class BookPage implements OnInit {
     this.requestLoading = true
 
     let newEvent = this.newBook.bookingDate;
-    let newEventDate:Date = new Date(newEvent);
+    let newEventDate: Date = new Date(newEvent);
     newEventDate.setHours(0);
     newEventDate.setMinutes(0);
 
@@ -280,20 +309,58 @@ export class BookPage implements OnInit {
       return;
     }
 
-    let nothing =await this.handleDateChange({startStr: newEventDate.toISOString(), endStr: newEventDate.toISOString().split('T')[0] + 'T23:59:59.999Z'});
+    this.bookService.getPeriodBookings(newEventDate.toISOString(), newEventDate.toISOString().split('T')[0] + 'T23:59:59.999Z').subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.books = response.body
+        this.requestLoading = false
+        this.calendarOptions = {
+          ...this.calendarOptions,
+          events: response.body.map((book: any) => ({
+            title: book.client.name + ' - ' + book.services.name,
+            start: new Date(book.bookingDate).toISOString(),
+            end: new Date(book.bookingDate + (book.services.duration[1] * 60000) + (book.services.duration[0] * 3600000)).toISOString(),
+            extendedProps: {
+              ...book
+            }
+          }))
+        }
+        setTimeout(() => {
+          this.verifyAndCreateBook(newEvent, modal);
+        }, 50)
+      } else {
+        this.requestLoading = false
+        this.loadError = true
+        this.changeLoading = false
+        this.toastColor = 'danger'
+        this.toastMessage = 'Erro ao buscar os agendamentos!'
+        this.isToastOpen = true
+      }
+    }, (error) => {
+      this.requestLoading = false
+      this.loadError = true
+      this.changeLoading = false
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao buscar os agendamentos!'
+      this.isToastOpen = true
+    })
 
+  }
+
+  verifyAndCreateBook(newEvent: any, modal: any) {
     let events = this.calendar.getApi().getEvents();
     let overDate = false;
-
-    console.log(events);
-
-    return;
+    let newEventStart = new Date(newEvent);
+    let newEventEnd = new Date(new Date(newEvent).getTime() + (this.newBook.services.duration[1] * 60000) + (this.newBook.services.duration[0] * 3600000));
 
     events.forEach((event: any) => {
       let existEventStart = new Date(event.start)
       let existEventEnd = new Date(event.end)
-      
-      if(new Date(newEvent) < existEventEnd || new Date(newEvent + (this.newBook.services.duration[1] * 60000) + (this.newBook.services.duration[0] * 3600000)) > existEventStart) {
+
+      if (
+        (newEventStart < existEventEnd && newEventEnd > existEventStart) ||
+        (newEventEnd > existEventStart && newEventEnd <= existEventEnd) ||
+        (newEventStart >= existEventStart && newEventEnd <= existEventEnd)
+      ) {
         this.toastColor = 'danger'
         this.toastMessage = 'Existe um agendamento no mesmo horário entre ' + existEventStart.toLocaleTimeString() + ' e ' + existEventEnd.toLocaleTimeString()
         this.isToastOpen = true
@@ -303,26 +370,26 @@ export class BookPage implements OnInit {
       }
     })
 
-    if(overDate) return;
+    if (!overDate) {
+      const auth: boolean = this.newBook.client.id != null
 
-    const auth: boolean = this.newBook.client.id != null
-
-    this.bookService.createBook(this.newBook, auth).subscribe((response: HttpResponse<any>) => {
-      if (response.ok) {
-        modal.dismiss();
-        this.toastColor = 'success'
-        this.toastMessage = 'Agendamento criado com sucesso!'
+      this.bookService.createBook(this.newBook, auth).subscribe((response: HttpResponse<any>) => {
+        if (response.ok) {
+          modal.dismiss();
+          this.toastColor = 'success'
+          this.toastMessage = 'Agendamento criado com sucesso!'
+          this.isToastOpen = true
+          this.requestLoading = false
+          this.calendar.getApi().changeView(this.calendar.getApi().view.type);
+        }
+      }, (error) => {
+        this.loadError = true
+        this.toastColor = 'danger'
+        this.toastMessage = 'Erro ao criar o agendamento!'
         this.isToastOpen = true
         this.requestLoading = false
-        this.calendar.getApi().changeView(this.calendar.getApi().view.type);
-      }
-    }, (error) => {
-      this.loadError = true
-      this.toastColor = 'danger'
-      this.toastMessage = 'Erro ao criar o agendamento!'
-      this.isToastOpen = true
-      this.requestLoading = false
-    })
+      })
+    }
   }
 
   changeService(event: any) {
