@@ -150,7 +150,7 @@ export class BookPage implements OnInit {
     })
   }
 
-  resetNewBook() {
+  resetNewBook(modal:any) {
     this.newBook = {
       bookingDate: new Date(new Date().setHours(new Date().getHours() - 3)).toISOString(),
       services: {},
@@ -160,6 +160,7 @@ export class BookPage implements OnInit {
         active: false
       }
     };
+    modal.present();
   }
 
   selectChangeClient(client: any, modal: any, modal2: any) {

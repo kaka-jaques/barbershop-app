@@ -217,7 +217,6 @@ export class UsersPage implements OnInit {
       event.target.complete();
     });
 
-
     this.resetFilter(null);
 
   }

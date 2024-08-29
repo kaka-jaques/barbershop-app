@@ -7,10 +7,16 @@ import { Observable } from 'rxjs';
 })
 export class BillService {
 
+  expiredBills:number = 0;
+
   constructor(private http:HttpClient) { }
 
   getBills(month:number, year:number): Observable<HttpResponse<any>> {
     return this.http.get<any>('http://localhost:8080/bill/'+month+'/'+year, { observe: 'response' });
+  }
+
+  getBillTypes(): Observable<HttpResponse<any>> {
+    return this.http.get<any>('http://localhost:8080/bill/type', { observe: 'response' });
   }
 
   createBill(bill:any): Observable<HttpResponse<any>> {

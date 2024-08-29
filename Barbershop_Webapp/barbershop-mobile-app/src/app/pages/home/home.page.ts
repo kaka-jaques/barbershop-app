@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { AuthService } from 'src/app/auth.service';
 import { LoginPage } from '../login/login.page';
+import { BillService } from 'src/app/bill.service';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +34,7 @@ export class HomePage implements OnInit {
   name: string = '';
   fullName: string = '';
 
-  constructor(private route: Router, private home: HomeService, public auth: AuthService) { }
+  constructor(private route: Router, private home: HomeService, public auth: AuthService, private bill:BillService) { }
 
   async ngOnInit() {
 
@@ -67,6 +68,7 @@ export class HomePage implements OnInit {
     await this.home.getNotifications().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.notificationData = response.body;
+        this.bill.expiredBills = this.notificationData.billExpired;
       } else {
         this.notificationError = true
       }

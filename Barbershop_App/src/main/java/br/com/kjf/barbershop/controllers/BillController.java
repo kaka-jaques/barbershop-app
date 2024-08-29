@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.kjf.barbershop.repository.BillRepository;
+import br.com.kjf.barbershop.repository.BillTypeRepository;
 import br.com.kjf.barbershop.vo.BillVO;
 
 @RestController
@@ -32,6 +33,9 @@ public class BillController {
 	
 	@Autowired
 	private BillRepository billRepository;
+	
+	@Autowired
+	private BillTypeRepository billTypeRepository;
 	
 	private ObjectMapper objMapper = new ObjectMapper();
 	
@@ -67,6 +71,11 @@ public class BillController {
 			return ResponseEntity.status(HttpStatus.CREATED).body(objMapper.readTree("{\"status\": \"bill successful created!\"}"));
 		}
 		
+	}
+	
+	@GetMapping("/type")
+	public ResponseEntity<?> getBillType(){
+		return ResponseEntity.ok(billTypeRepository.findAll());
 	}
 	
 	@DeleteMapping("/{id}")
