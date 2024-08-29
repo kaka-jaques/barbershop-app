@@ -1,0 +1,28 @@
+#container {
+    width: 100%;
+    height: 170px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+}
+.progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+}
+#bar-legends{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    height: 25px;
+    bottom: 0;
+}
+#legend-item{
+    align-items: center;
+}

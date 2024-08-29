@@ -1,4 +1,48 @@
 <app-header></app-header>
 <ion-content class="bg-dark">
+    <div id="container">
+        <div id="blue-circle" class="progress-bar"></div>
+        <div id="yellow-circle" class="progress-bar"></div>
+        <div id="red-circle" class="progress-bar"></div>
+        <div id="bar-legends">
+            <div id="legend-item">
+                <ion-icon name="radio-button-on" color="primary"></ion-icon> Receitas
+            </div>
+            <div id="legend-item">
+                <ion-icon name="radio-button-on" color="warning"></ion-icon> Reserva
+            </div>
+            <div id="legend-item">
+                <ion-icon name="radio-button-on" color="danger"></ion-icon> Despesas
+            </div>
+        </div>
+    </div>
+    
+    <ion-list>
+        <ion-item lines="none">
+            <ion-spinner name="crescent" *ngIf="loading" style="margin: auto;"></ion-spinner>
+            <ion-button fill="clear" slot="end" (click)="viewToggle = !viewToggle">
+                <ion-icon name="filter"></ion-icon>
+            </ion-button>
+        </ion-item>
+        <ion-item-group *ngIf="viewToggle">
+            <ion-item-divider>
+                <ion-label>Receitas</ion-label>
+            </ion-item-divider>
 
+            <ion-item>
+                <ion-label>Receita 1</ion-label>
+            </ion-item>
+
+        </ion-item-group>
+        <ion-item-group *ngIf="viewToggle">
+            <ion-item-divider>
+                <ion-label>Despesas</ion-label>
+            </ion-item-divider>
+
+            <ion-item>
+                <ion-label>Despesa 1</ion-label>
+            </ion-item>
+
+        </ion-item-group>
+    </ion-list>
 </ion-content>
