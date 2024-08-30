@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -61,8 +62,10 @@ public class BookingController {
 		book.setServices(servicesRepository.getServiceById(book.getServices().getId()));
 		
 		if(!auth) {
+			book.getClient().setPlano(plansRepository.findById(1));
 			clientRepository.save(book.getClient());
-			book.getClient().setPlano(plansRepository.findById(book.getClient().getPlano().getId()).get());
+		} else {
+			book.setClient(clientRepository.findById(book.getClient().getId()).get());
 		}
 		
 		bookingRepository.save(book);
@@ -72,6 +75,12 @@ public class BookingController {
 					+ "\"message\": \"Your booking was created!\""
 					+ "}")));
 		
+	}
+	
+	@PutMapping
+	public ResponseEntity<?> updateBook(@RequestBody BookingVO book){
+		bookingRepository.save(book);
+		return ResponseEntity.ok(null);
 	}
 	
 	@GetMapping("/all")
@@ -152,8 +161,8 @@ public class BookingController {
 		
 	}
 	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?> deleteBook(@RequestParam("id")int id) throws JsonMappingException, JsonProcessingException{
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteBook(@PathVariable("id")int id) throws JsonMappingException, JsonProcessingException{
 		try {
 			bookingRepository.deleteById(id);
 		}catch(Exception e) {

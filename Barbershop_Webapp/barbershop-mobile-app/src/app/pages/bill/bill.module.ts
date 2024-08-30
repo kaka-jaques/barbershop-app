@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared/shared.module';
@@ -15,7 +16,8 @@ import { BillPage } from './bill.page';
     FormsModule,
     IonicModule,
     BillPageRoutingModule,
-    SharedModule
+    SharedModule,
+    FullCalendarModule
   ],
   declarations: [BillPage]
 })

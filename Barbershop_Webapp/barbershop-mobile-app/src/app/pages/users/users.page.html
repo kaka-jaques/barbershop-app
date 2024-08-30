@@ -5,7 +5,7 @@
             <ion-searchbar #searchbar style="padding: 0;" color="light" (ionInput)="searchUser($event)"></ion-searchbar>
             <ion-button fill="clear" id="open-filter-modal">Filtrar</ion-button>
         </ion-item>
-        <ion-refresher slot="fixed" color="light" (ionRefresh)="refreshUsers($event)">
+        <ion-refresher slot="fixed" class="bg-dark" (ionRefresh)="refreshUsers($event)">
             <ion-refresher-content pullingIcon="chevron-down" refreshingSpinner="dots"></ion-refresher-content>
         </ion-refresher>
         <ion-list>
@@ -213,16 +213,16 @@
                 <ion-content>
                     <ion-list>
                         <ion-item color="light">
-                            <ion-input label="Usuário" autocomplete="username" [(ngModel)]="user" (ionInput)="filterUser($event)"></ion-input>
+                            <ion-input label="Usuário" [(ngModel)]="user" (ionInput)="filterUser($event)"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Email" autocomplete="email" errorText="Email Inválido" type="email" email [(ngModel)]="email"></ion-input>
+                            <ion-input label="Email" errorText="Email Inválido" type="email" email [(ngModel)]="email"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input autocomplete="tel" label="Telefone" [(ngModel)]="phone"></ion-input>
+                            <ion-input label="Telefone" [(ngModel)]="phone"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="CPF" autocomplete="cpf" [(ngModel)]="cpf"></ion-input>
+                            <ion-input label="CPF" [(ngModel)]="cpf"></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-label slot="start">Aniversariante?</ion-label>
@@ -397,19 +397,19 @@
                     </ion-header>
                     <ion-list>
                         <ion-item color="light">
-                            <ion-input label="User" autocomplete="username" (ionChange)="filterUser($event)" [(ngModel)]="newUser.user"></ion-input>
+                            <ion-input label="User" (ionChange)="filterUser($event)" [(ngModel)]="newUser.user"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Nome" autocomplete="name" autocapitalize="on" (ionInput)="filterOnlyString($event)" [(ngModel)]="newUser.client.name"></ion-input>
+                            <ion-input label="Nome" autocapitalize="on" (ionInput)="filterOnlyString($event)" [(ngModel)]="newUser.client.name"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Email" autocomplete="email" errorText="Email Inválido" type="email" email></ion-input>
+                            <ion-input label="Email" errorText="Email Inválido" type="email" email></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Telefone" autocomplete="tel" [(ngModel)]="newUser.client.telephone"></ion-input>
+                            <ion-input label="Telefone" [(ngModel)]="newUser.client.telephone"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="CPF" autocomplete="cpf" [(ngModel)]="newUser.client.cpf"></ion-input>
+                            <ion-input label="CPF" [(ngModel)]="newUser.client.cpf"></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-label slot="start">Data de Nascimento</ion-label>
@@ -437,6 +437,6 @@
         </ion-modal>
         <ion-toast color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}" [duration]="5000"
             (didDimiss)="setToastOpen(false)" position="bottom" swiperGesture="vertical"
-            style="color: white;"></ion-toast>
+            style="color: white;" (didDismiss)="isToastOpen = false"></ion-toast>
     </ion-content>
 </div>

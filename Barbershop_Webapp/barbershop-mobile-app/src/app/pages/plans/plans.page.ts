@@ -54,14 +54,14 @@ export class PlansPage implements OnInit {
   }
 
   changeServices(event: any) {
-    this.servicesSelected = []; 
-    for (let ss of event.detail.value) {
-      for(let sr of this.services) {
-        if (ss == sr.name) {
-          this.selectedPlan.services_include.push(sr)
-        }
+    this.servicesSelected = event.detail.value;
+    this.selectedPlan.services_include = [];
+    this.servicesSelected.forEach((serviceId:number) => {
+      const service = this.services.find((service: any) => service.id === serviceId);
+      if (service) {
+        this.selectedPlan.services_include.push(service);
       }
-    }
+    });
   }
 
   changeNewServices(event: any) {
@@ -104,9 +104,10 @@ export class PlansPage implements OnInit {
 
   openEditModal(plan: any, modal: any) {
     this.selectedPlan = plan;
+    console.log(this.selectedPlan);
     this.servicesSelected = [];
     for (let service of this.selectedPlan.services_include) {
-      this.servicesSelected.push(service.name)
+      this.servicesSelected.push(service.id)
     }
     modal.present();
   }

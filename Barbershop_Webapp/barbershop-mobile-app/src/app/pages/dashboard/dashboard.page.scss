@@ -1,0 +1,36 @@
+#container {
+    width: 100%;
+    height: 170px;
+    position: fixed;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    z-index: 100;
+    background-color: black;
+}
+.progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+}
+#bar-legends{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    height: 25px;
+    bottom: 0;
+}
+#legend-item{
+    align-items: center;
+}
+#top{
+    height: 190px;
+}
+ion-popover ion-content{
+    --background: rgb(41, 41, 41);
+}

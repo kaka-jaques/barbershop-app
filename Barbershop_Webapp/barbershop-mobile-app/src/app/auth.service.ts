@@ -13,6 +13,7 @@ export class AuthService {
   private token!:string;
 
   public name:string = '';
+  public fullName:string = '';
   public email:string = '';
   public phone:string = '';
 
