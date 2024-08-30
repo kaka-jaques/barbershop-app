@@ -5,18 +5,33 @@
         <div id="yellow-circle" class="progress-bar"></div>
         <div id="red-circle" class="progress-bar"></div>
         <div id="bar-legends">
-            <div id="legend-item">
+            <div id="legend-item" id="receipt-pop">
                 <ion-icon name="radio-button-on" color="primary"></ion-icon> Receitas
             </div>
-            <div id="legend-item">
+            <ion-popover trigger="receipt-pop" triggerAction="click">
+                <ng-template>
+                    <ion-content class="ion-padding">{{ profitQt | currency: 'BRL' }}</ion-content>
+                </ng-template>
+            </ion-popover>
+            <div id="legend-item" id="due-pop">
                 <ion-icon name="radio-button-on" color="warning"></ion-icon> Reserva
             </div>
-            <div id="legend-item">
+            <ion-popover trigger="due-pop" triggerAction="click">
+                <ng-template>
+                    <ion-content class="ion-padding">{{ dueQt | currency: 'BRL' }}</ion-content>
+                </ng-template>
+            </ion-popover>
+            <div id="legend-item" id="bill-pop">
                 <ion-icon name="radio-button-on" color="danger"></ion-icon> Despesas
             </div>
+            <ion-popover trigger="bill-pop" triggerAction="click">
+                <ng-template>
+                    <ion-content class="ion-padding">{{ billQt | currency: 'BRL' }}</ion-content>
+                </ng-template>
+            </ion-popover>
         </div>
     </div>
-    
+    <div id="top"></div>
     <ion-list>
         <ion-item lines="none">
             <ion-spinner name="crescent" *ngIf="loading" style="margin: auto;"></ion-spinner>
@@ -24,25 +39,32 @@
                 <ion-icon name="filter"></ion-icon>
             </ion-button>
         </ion-item>
+
         <ion-item-group *ngIf="viewToggle">
             <ion-item-divider>
-                <ion-label>Receitas</ion-label>
+                <ion-label>Receitas ( {{ profitQt | currency: 'BRL' }} )</ion-label>
             </ion-item-divider>
 
-            <ion-item>
-                <ion-label>Receita 1</ion-label>
+            <ion-item *ngFor="let book of books">
+                <ion-label>{{ book.bookingDate | date: 'dd/MM/yyyy' }} - {{ book.services.name }}: {{ book.services.price | currency: 'BRL'}}</ion-label>
             </ion-item>
 
         </ion-item-group>
         <ion-item-group *ngIf="viewToggle">
             <ion-item-divider>
-                <ion-label>Despesas</ion-label>
+                <ion-label>Despesas ( {{ billQt | currency: 'BRL' }} )</ion-label>
             </ion-item-divider>
 
-            <ion-item>
-                <ion-label>Despesa 1</ion-label>
+            <ion-item *ngFor="let bill of bills">
+                <ion-label>{{ bill.bookingDate | date: 'dd/MM/yyyy' }} - {{ bill.bill_type.name }}: {{ bill.value | currency: 'BRL' }}</ion-label>
             </ion-item>
 
         </ion-item-group>
+
+        <ion-item [hidden]="viewToggle" *ngFor="let dt of data">
+            <ion-label>{{ dt.bookingDate | date: 'dd/MM/yyyy' }} - {{ dt.type }}: {{ dt.value | currency: 'BRL' }}</ion-label>
+        </ion-item>
+
     </ion-list>
+    <ion-toast color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}" [duration]="3000" (didDismiss)="isToastOpen = false"></ion-toast>
 </ion-content>
