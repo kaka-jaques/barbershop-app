@@ -8,6 +8,16 @@
     z-index: 100;
     background-color: black;
 }
+#back-button, #next-button{
+    position: absolute;
+    top: 20%;
+}
+#back-button{
+    left: 0.2%;
+}
+#next-button{
+    right: 0.2%;
+}
 .progress-bar {
     position: absolute;
     top: 0;
@@ -33,4 +43,8 @@
 }
 ion-popover ion-content{
     --background: rgb(41, 41, 41);
+}
+.swiper-container{
+    width: 100%;
+    height: 100%;
 }
