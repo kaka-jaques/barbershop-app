@@ -50,12 +50,8 @@
     z-index: 110;
 }
 #toggleView{
-    position: absolute;
-    text-align: center;
-    bottom: -15px;
-    right: 0;
-    width: 60px;
-    z-index: 120;
+    position: flex;
+    width: 50px;
 }
 #top{
     height: 225px;

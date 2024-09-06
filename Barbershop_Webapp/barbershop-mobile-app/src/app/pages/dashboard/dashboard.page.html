@@ -52,13 +52,9 @@
                 </ng-template>
             </ion-popover>
             <div id="legend-item" [hidden]="sliderPosition != 1" *ngFor="let s of services">
-                <ion-icon name="radio-button-on" color="{{ionColors[s.pos]}}"></ion-icon>
+                <ion-icon name="radio-button-on" color="{{getIonicColor(s.id)}}"></ion-icon>
+                {{ s.name }}
             </div>
-        </div>
-        <div id="toggleView" *ngIf="sliderPosition > 0">
-            <ion-button fill="clear" (click)="viewToggleLegend = !viewToggleLegend">
-                <ion-icon [name]="viewToggleLegend ? 'chevron-up' : 'chevron-down'"></ion-icon>
-            </ion-button>
         </div>
     </div>
     <swiper-container #swiper (swiperslidechange)="onSlideChange(swiper)">
@@ -111,7 +107,17 @@
         </swiper-slide>
         <swiper-slide>
             <div id="top"></div>
-            Slide 2
+            <div id="toggleView">
+                <ion-button fill="clear" (click)="viewToggleLegend = !viewToggleLegend">
+                    <ion-icon [name]="viewToggleLegend ? 'chevron-up' : 'chevron-down'"></ion-icon>
+                </ion-button>
+            </div>
+            <ion-list>
+                <ion-item *ngFor="let s of services">
+                    <ion-label slot="start">{{ s.name }}</ion-label>
+                    <ion-label slot="end">{{ qtServicesQueue[s.id] }}</ion-label>
+                </ion-item>
+            </ion-list>
         </swiper-slide>
     </swiper-container>
     <ion-toast color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}" [duration]="3000"

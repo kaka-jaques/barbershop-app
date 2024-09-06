@@ -87,27 +87,52 @@ export class DashboardPage implements OnInit {
     'Serviços',
     'Slide 3'
   ]
-  ionColors = [
-    'primary',
-    'secondary',
-    'tertiary',
-    'success',
-    'warning',
-    'danger',
-    'dark',
-    'medium',
-    'light'
-  ]
-  hexaColors = [
-    '#0054e9',
-    '#0163aa',
-    '#6030ff',
-    '#2dd55b',
-    '#ffc409',
-    '#c5000f',
-    '#2f2f2f',
-    '#5f5f5f',
-    '#f6f8fc'
+  servicesColors = [
+    {
+      ionColor: 'primary',
+      hexaColor: '#0054e9',
+      serviceId: 0
+    },
+    {
+      ionColor: 'secondary',
+      hexaColor: '#0163aa',
+      serviceId: 0
+    },
+    {
+      ionColor: 'tertiary',
+      hexaColor: '#6030ff',
+      serviceId: 0
+    },
+    {
+      ionColor: 'success',
+      hexaColor: '#2dd55b',
+      serviceId: 0
+    },
+    {
+      ionColor: 'warning',
+      hexaColor: '#ffc409',
+      serviceId: 0
+    },
+    {
+      ionColor: 'danger',
+      hexaColor: '#c5000f',
+      serviceId: 0
+    },
+    {
+      ionColor: 'dark',
+      hexaColor: '#2f2f2f',
+      serviceId: 0
+    },
+    {
+      ionColor: 'medium',
+      hexaColor: '#5f5f5f',
+      serviceId: 0
+    },
+    {
+      ionColor: 'light',
+      hexaColor: '#f6f8fc',
+      serviceId: 0
+    }
   ]
 
   constructor(private bill: BillService, private book: BookService, private config: ConfigService) { }
@@ -163,22 +188,27 @@ export class DashboardPage implements OnInit {
         this.services = response[2].body;
         this.servicesQt = this.services.length;
 
+        let i = 0;
+
         this.services.forEach((service: any) => {
-          this.qtServicesQueue[service.name] = 0;
+          this.qtServicesQueue[service.id] = 0;
+          this.servicesColors[i].serviceId = service.id;
+          i++;
         });
 
         this.books.forEach((book: any) => {
-          if (book.services && book.services.name) {
-            const serviceName = book.services.name;
+          if (book.services && book.services.id) {
+            const serviceId = book.services.id;
             
-            if (this.qtServicesQueue.hasOwnProperty(serviceName)) {
-              this.qtServicesQueue[serviceName] += 1;
+            if (this.qtServicesQueue.hasOwnProperty(serviceId)) {
+              this.qtServicesQueue[serviceId] += 1;
             } else {
-              this.qtServicesQueue[serviceName] = 1; 
+              this.qtServicesQueue[serviceId] = 1; 
             }
             this.totalServicesQueue += 1;
           }
         });
+
         for (let i = 0; i < this.servicesQt; i++) {
           this.services[i] = {
             ...this.services[i],
@@ -210,14 +240,26 @@ export class DashboardPage implements OnInit {
           this.allBarsCharts[1] = (this.dueQt / this.totalQt) + this.allBarsCharts[2];
         } else if (this.totalQt < 0) {
           this.totalQt = this.totalQt * -1
-          this.allBarsCharts[0] = 1
+          this.allBarsCharts[0] = (this.profitQt / this.totalQt) + (this.dueQt / this.totalQt) + (this.billQt / this.totalQt);
           this.allBarsCharts[2] = this.billQt / this.totalQt;
           this.allBarsCharts[1] = (this.dueQt / this.totalQt) + this.allBarsCharts[2];
         } else {
           this.totalQt = this.profitQt + this.dueQt + this.billQt
-          this.allBarsCharts[0] = 1
+          this.allBarsCharts[0] = (this.profitQt / this.totalQt) + (this.dueQt / this.totalQt) + (this.billQt / this.totalQt);
           this.allBarsCharts[2] = this.billQt / this.totalQt;
           this.allBarsCharts[1] = (this.dueQt / this.totalQt) + this.allBarsCharts[2];
+        }
+
+        if(isNaN(this.allBarsCharts[0])){
+          this.allBarsCharts[0] = 0
+        }
+
+        if(isNaN(this.allBarsCharts[1])){
+          this.allBarsCharts[1] = 0
+        }
+
+        if(isNaN(this.allBarsCharts[2])){
+          this.allBarsCharts[2] = 0
         }
 
         this.data = [...this.bills, ...this.books];
@@ -226,32 +268,46 @@ export class DashboardPage implements OnInit {
 
         setTimeout(() => {
 
-          let a = 1;
-
           for (let i = 0; i < this.servicesQt; i++) {
             var bar = new ProgressBar.Circle('#bar' + i, {
               strokeWidth: 6,
               easing: 'easeInOut',
               duration: 1000,
-              color: this.hexaColors[i],
+              color: this.getHexaColor(this.services[i].id),
               trailColor: 'transparent',
               svgStyle: null
             })
             
             if(i>0){
-              this.allBarsCharts[this.servicesQt+2-i] =(this.qtServicesQueue[this.services[i].name]/this.totalServicesQueue) + this.allBarsCharts[this.servicesQt+3-i];
+              this.allBarsCharts[this.servicesQt+2-i] =(this.qtServicesQueue[this.services[i].id]/this.totalServicesQueue) + this.allBarsCharts[this.servicesQt+3-i];
+              if(isNaN(this.allBarsCharts[this.servicesQt+2-i])){
+                this.allBarsCharts[this.servicesQt+2-i] = 0
+              }
             }else{
-              this.allBarsCharts[this.servicesQt+2] = (this.qtServicesQueue[this.services[i].name]/this.totalServicesQueue)
+              this.allBarsCharts[this.servicesQt+2] = (this.qtServicesQueue[this.services[i].id]/this.totalServicesQueue);
+              if(isNaN(this.allBarsCharts[this.servicesQt+2])){
+                this.allBarsCharts[this.servicesQt+2] = 0
+              }
             }
             this.allBars[i+3] = bar;
           }
           this.animateBars(this.allBars);
           console.log(this.qtServicesQueue);
+          console.log(this.services);
+          console.log(this.servicesColors);
           
         }, 50)
 
       })
 
+  }
+
+  getIonicColor(id: number){
+    return this.servicesColors.find((s: any) => s.serviceId == id)?.ionColor
+  }
+
+  getHexaColor(id: number){
+    return this.servicesColors.find((s: any) => s.serviceId == id)?.hexaColor
   }
 
   animateBars(bars: any) {
@@ -305,6 +361,7 @@ export class DashboardPage implements OnInit {
     this.profitQt = 0;
     this.allBarsCharts = []
     this.totalQt = 0;
+    this.totalServicesQueue = 0;
     
     Object.keys(this.qtServicesQueue).forEach((key: string) => {
       this.qtServicesQueue[key] = 0;
@@ -328,13 +385,14 @@ export class DashboardPage implements OnInit {
 
         this.books.forEach((book: any) => {
           if (book.services && book.services.name) {
-            const serviceName = book.services.name;
+            const serviceId = book.services.id;
             
-            if (this.qtServicesQueue.hasOwnProperty(serviceName)) {
-              this.qtServicesQueue[serviceName] += 1;
+            if (this.qtServicesQueue.hasOwnProperty(serviceId)) {
+              this.qtServicesQueue[serviceId] += 1;
             } else {
-              this.qtServicesQueue[serviceName] = 1; 
+              this.qtServicesQueue[serviceId] = 1; 
             }
+            this.totalServicesQueue += 1;
           } else {
             console.error("Serviço não encontrado ou nome do serviço está undefined:", book);
           }
@@ -359,19 +417,31 @@ export class DashboardPage implements OnInit {
         }
 
         if (this.totalQt > 0 && !isNaN(this.totalQt)) {
-          this.allBarsCharts[0] = 1
+          this.allBarsCharts[0] = (this.profitQt / this.totalQt) + (this.dueQt / this.totalQt) + (this.billQt / this.totalQt);
           this.allBarsCharts[2] = this.billQt / this.totalQt;
           this.allBarsCharts[1] = (this.dueQt / this.totalQt) + this.allBarsCharts[2];
         } else if (this.totalQt < 0) {
           this.totalQt = this.totalQt * -1
-          this.allBarsCharts[0] = 1
+          this.allBarsCharts[0] = (this.profitQt / this.totalQt) + (this.dueQt / this.totalQt) + (this.billQt / this.totalQt);
           this.allBarsCharts[2] = this.billQt / this.totalQt;
           this.allBarsCharts[1] = (this.dueQt / this.totalQt) + this.allBarsCharts[2];
         } else {
           this.totalQt = this.profitQt + this.dueQt + this.billQt
-          this.allBarsCharts[0] = 1
+          this.allBarsCharts[0] = (this.profitQt / this.totalQt) + (this.dueQt / this.totalQt) + (this.billQt / this.totalQt);
           this.allBarsCharts[2] = this.billQt / this.totalQt;
           this.allBarsCharts[1] = (this.dueQt / this.totalQt) + this.allBarsCharts[2];
+        }
+
+        if(isNaN(this.allBarsCharts[0])){
+          this.allBarsCharts[0] = 0
+        }
+
+        if(isNaN(this.allBarsCharts[1])){
+          this.allBarsCharts[1] = 0
+        }
+
+        if(isNaN(this.allBarsCharts[2])){
+          this.allBarsCharts[2] = 0
         }
 
         this.data = [...this.bills, ...this.books];
@@ -381,15 +451,23 @@ export class DashboardPage implements OnInit {
         for (let i = 0; i < this.servicesQt; i++) {
           
           if(i>0){
-            this.allBarsCharts[this.servicesQt+2-i] =(this.qtServicesQueue[this.services[i].name]/this.totalServicesQueue) + this.allBarsCharts[this.servicesQt+3-i];
+            this.allBarsCharts[this.servicesQt+2-i] =(this.qtServicesQueue[this.services[i].id] / this.totalServicesQueue) + this.allBarsCharts[this.servicesQt+3-i];
+            if(isNaN(this.allBarsCharts[this.servicesQt+2-i])){
+              this.allBarsCharts[this.servicesQt+2-i] = 0
+            }
           }else{
-            this.allBarsCharts[this.servicesQt+2] = (this.qtServicesQueue[this.services[i].name]/this.totalServicesQueue)
+            this.allBarsCharts[this.servicesQt+2] = (this.qtServicesQueue[this.services[i].id] / this.totalServicesQueue)
+            if(isNaN(this.allBarsCharts[this.servicesQt+2])){
+              this.allBarsCharts[this.servicesQt+2] = 0
+            }
           }
         }
 
         this.animateBars(this.allBars);
         console.log(this.services);
         console.log(this.qtServicesQueue);
+        console.log(this.totalServicesQueue);
+        
         console.log(this.allBarsCharts);
         
       }, (error) => {
