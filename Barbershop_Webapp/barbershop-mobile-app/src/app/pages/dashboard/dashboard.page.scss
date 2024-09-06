@@ -32,20 +32,37 @@
     height: 80%;
 }
 #bar-legends{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
     bottom: 0;
     position: absolute;
     width: 100%;
     height: 25px;
-    bottom: 0;
+    text-align: center;
+    overflow: hidden;
+}
+#bar-legends.overflow{
+    overflow: visible;
 }
 #legend-item{
     align-items: center;
+    z-index: 110;
+}
+#toggleView{
+    position: absolute;
+    text-align: center;
+    bottom: -15px;
+    right: 0;
+    width: 60px;
+    z-index: 120;
 }
 #top{
     height: 225px;
+    z-index: 50;
+}
+#bottom{
+    height: 250px;
 }
 ion-popover ion-content{
     --background: rgb(41, 41, 41);
