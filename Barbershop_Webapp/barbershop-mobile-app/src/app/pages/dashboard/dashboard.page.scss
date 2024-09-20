@@ -4,9 +4,25 @@
     position: fixed;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 5%;
+    margin-top: 12%;
     z-index: 100;
     background-color: black;
+}
+#month-selector{
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+}
+#back-button, #next-button{
+    position: absolute;
+    top: 20%;
+    z-index: 101;
+}
+#back-button{
+    left: 0%;
+}
+#next-button{
+    right: 0%;
 }
 .progress-bar {
     position: absolute;
@@ -16,20 +32,33 @@
     height: 80%;
 }
 #bar-legends{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
     bottom: 0;
     position: absolute;
     width: 100%;
     height: 25px;
-    bottom: 0;
+    text-align: center;
+    overflow: hidden;
+}
+#bar-legends.overflow{
+    overflow: visible;
 }
 #legend-item{
     align-items: center;
+    z-index: 110;
+}
+#toggleView{
+    position: flex;
+    width: 50px;
 }
 #top{
-    height: 190px;
+    height: 225px;
+    z-index: 50;
+}
+#bottom{
+    height: 250px;
 }
 ion-popover ion-content{
     --background: rgb(41, 41, 41);

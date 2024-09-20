@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared/shared.module';
@@ -17,6 +18,7 @@ import { DashboardPage } from './dashboard.page';
     DashboardPageRoutingModule,
     SharedModule
   ],
-  declarations: [DashboardPage]
+  declarations: [DashboardPage],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class DashboardPageModule {}

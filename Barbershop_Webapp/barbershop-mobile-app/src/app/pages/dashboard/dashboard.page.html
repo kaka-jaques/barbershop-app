@@ -1,11 +1,33 @@
 <app-header></app-header>
 <ion-content class="bg-dark">
+    <ion-item id="month-selector" lines="none" class="text-center">
+        <ion-button fill="clear" [disabled]="changeLoading" (click)="prevMonth()">
+            <ion-icon name="chevron-back"></ion-icon>
+        </ion-button>
+        <ion-label>{{ months[month]}}/{{year}}</ion-label>
+        <ion-button fill="clear" [disabled]="changeLoading" (click)="nextMonth()">
+            <ion-icon name="chevron-forward"></ion-icon>
+        </ion-button>
+    </ion-item>
     <div id="container">
+
+        <ion-button (click)="backSlide(swiper)" *ngIf="sliderPosition >= 1" fill="clear" id="back-button">
+            <ion-icon name="chevron-back"></ion-icon>
+            {{ slidesName[sliderPosition - 1] }}
+        </ion-button>
+
         <div id="blue-circle" class="progress-bar"></div>
         <div id="yellow-circle" class="progress-bar"></div>
         <div id="red-circle" class="progress-bar"></div>
-        <div id="bar-legends">
-            <div id="legend-item" id="receipt-pop">
+        <div *ngFor="let service of services" id="bar{{service.pos}}" class="progress-bar"></div>
+
+        <ion-button (click)="nextSlide(swiper)" *ngIf="sliderPosition < 1" fill="clear" id="next-button">
+            {{ slidesName[sliderPosition + 1] }}
+            <ion-icon name="chevron-forward"></ion-icon>
+        </ion-button>
+
+        <div id="bar-legends" [ngClass]="{'overflow':viewToggleLegend}">
+            <div id="legend-item" *ngIf="sliderPosition == 0" id="receipt-pop">
                 <ion-icon name="radio-button-on" color="primary"></ion-icon> Receitas
             </div>
             <ion-popover trigger="receipt-pop" triggerAction="click">
@@ -13,7 +35,7 @@
                     <ion-content class="ion-padding">{{ profitQt | currency: 'BRL' }}</ion-content>
                 </ng-template>
             </ion-popover>
-            <div id="legend-item" id="due-pop">
+            <div id="legend-item" *ngIf="sliderPosition == 0" id="due-pop">
                 <ion-icon name="radio-button-on" color="warning"></ion-icon> Reserva
             </div>
             <ion-popover trigger="due-pop" triggerAction="click">
@@ -21,7 +43,7 @@
                     <ion-content class="ion-padding">{{ dueQt | currency: 'BRL' }}</ion-content>
                 </ng-template>
             </ion-popover>
-            <div id="legend-item" id="bill-pop">
+            <div id="legend-item" *ngIf="sliderPosition == 0" id="bill-pop">
                 <ion-icon name="radio-button-on" color="danger"></ion-icon> Despesas
             </div>
             <ion-popover trigger="bill-pop" triggerAction="click">
@@ -29,42 +51,75 @@
                     <ion-content class="ion-padding">{{ billQt | currency: 'BRL' }}</ion-content>
                 </ng-template>
             </ion-popover>
+            <div id="legend-item" [hidden]="sliderPosition != 1" *ngFor="let s of services">
+                <ion-icon name="radio-button-on" color="{{getIonicColor(s.id)}}"></ion-icon>
+                {{ s.name }}
+            </div>
         </div>
     </div>
-    <div id="top"></div>
-    <ion-list>
-        <ion-item lines="none">
-            <ion-spinner name="crescent" *ngIf="loading" style="margin: auto;"></ion-spinner>
-            <ion-button fill="clear" slot="end" (click)="viewToggle = !viewToggle">
-                <ion-icon name="filter"></ion-icon>
-            </ion-button>
-        </ion-item>
+    <swiper-container #swiper (swiperslidechange)="onSlideChange(swiper)">
+        <swiper-slide>
+            <div id="top"></div>
+            <ion-list>
+                <ion-item lines="none">
+                    <ion-spinner name="crescent" *ngIf="loading" style="margin: auto;"></ion-spinner>
+                    <ion-button fill="clear" slot="end" (click)="viewToggle = !viewToggle">
+                        <ion-icon name="filter"></ion-icon>
+                    </ion-button>
+                </ion-item>
 
-        <ion-item-group *ngIf="viewToggle">
-            <ion-item-divider>
-                <ion-label>Receitas ( {{ profitQt | currency: 'BRL' }} )</ion-label>
-            </ion-item-divider>
+                <ion-item-group *ngIf="viewToggle">
+                    <ion-item-divider>
+                        <ion-label>Receitas ( {{ profitQt | currency: 'BRL' }} )</ion-label>
+                        <ion-button (click)="profitGroupVisible = !profitGroupVisible" slot="end" fill="clear">
+                            <ion-icon [name]="profitGroupVisible ? 'add' : 'remove'"></ion-icon>
+                        </ion-button>
+                    </ion-item-divider>
 
-            <ion-item *ngFor="let book of books">
-                <ion-label>{{ book.bookingDate | date: 'dd/MM/yyyy' }} - {{ book.services.name }}: {{ book.services.price | currency: 'BRL'}}</ion-label>
-            </ion-item>
+                    <ion-item *ngFor="let book of books" [hidden]="profitGroupVisible">
+                        <ion-label>{{ book.bookingDate | date: 'dd/MM/yyyy' }} - {{ book.services.name }}: {{
+                            book.services.price | currency: 'BRL'}}</ion-label>
+                    </ion-item>
 
-        </ion-item-group>
-        <ion-item-group *ngIf="viewToggle">
-            <ion-item-divider>
-                <ion-label>Despesas ( {{ billQt | currency: 'BRL' }} )</ion-label>
-            </ion-item-divider>
+                </ion-item-group>
+                <ion-item-group *ngIf="viewToggle">
+                    <ion-item-divider>
+                        <ion-label>Despesas ( {{ billQt | currency: 'BRL' }} )</ion-label>
+                        <ion-button (click)="billGroupVisible = !billGroupVisible" slot="end" fill="clear">
+                            <ion-icon [name]="billGroupVisible ? 'add' : 'remove'"></ion-icon>
+                        </ion-button>
+                    </ion-item-divider>
 
-            <ion-item *ngFor="let bill of bills">
-                <ion-label>{{ bill.bookingDate | date: 'dd/MM/yyyy' }} - {{ bill.bill_type.name }}: {{ bill.value | currency: 'BRL' }}</ion-label>
-            </ion-item>
+                    <ion-item *ngFor="let bill of bills" [hidden]="billGroupVisible">
+                        <ion-label>{{ bill.bookingDate | date: 'dd/MM/yyyy' }} - {{ bill.bill_type.name }}: {{
+                            bill.value | currency: 'BRL' }}</ion-label>
+                    </ion-item>
 
-        </ion-item-group>
+                </ion-item-group>
 
-        <ion-item [hidden]="viewToggle" *ngFor="let dt of data">
-            <ion-label>{{ dt.bookingDate | date: 'dd/MM/yyyy' }} - {{ dt.type }}: {{ dt.value | currency: 'BRL' }}</ion-label>
-        </ion-item>
+                <ion-item [hidden]="viewToggle" *ngFor="let dt of data">
+                    <ion-label>{{ dt.bookingDate | date: 'dd/MM/yyyy' }} - {{ dt.type }}: {{ dt.value | currency:
+                        'BRL' }}</ion-label>
+                </ion-item>
 
-    </ion-list>
-    <ion-toast color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}" [duration]="3000" (didDismiss)="isToastOpen = false"></ion-toast>
+            </ion-list>
+            <div id="bottom"></div>
+        </swiper-slide>
+        <swiper-slide>
+            <div id="top"></div>
+            <div id="toggleView">
+                <ion-button fill="clear" (click)="viewToggleLegend = !viewToggleLegend">
+                    <ion-icon [name]="viewToggleLegend ? 'chevron-up' : 'chevron-down'"></ion-icon>
+                </ion-button>
+            </div>
+            <ion-list>
+                <ion-item *ngFor="let s of services">
+                    <ion-label slot="start">{{ s.name }}</ion-label>
+                    <ion-label slot="end">{{ qtServicesQueue[s.id] }}</ion-label>
+                </ion-item>
+            </ion-list>
+        </swiper-slide>
+    </swiper-container>
+    <ion-toast color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}" [duration]="3000"
+        (didDismiss)="isToastOpen = false"></ion-toast>
 </ion-content>
