@@ -36,7 +36,8 @@ export class UsersPage implements OnInit {
   public roles: any = [
     { id: 1, name: 'ROLE_ADMIN' },
     { id: 2, name: 'ROLE_EMPLOYEE' },
-    { id: 3, name: 'ROLE_MEMBER' }
+    { id: 3, name: 'ROLE_MEMBER' },
+    { id: 4, name: 'ROLE_ADMIN-EMPLOYEE' }
   ];
 
   public selectedClient: any = {
@@ -117,13 +118,13 @@ export class UsersPage implements OnInit {
 
   }
 
-  filterUser(event: any){ //TODO - FIX
+  filterUser(event: any){
     const value = event.target!.value;
     const filteredValue = value.replace(/[^a-zA-Z0-9]+/g, '');
     this.ionInputEl.value = this.inputModel = filteredValue; 
   }
 
-  filterOnlyString(event: any) { //TODO - FIX
+  filterOnlyString(event: any) { 
     const value = event.target!.value;
 
     const filteredValue = value.replace(/[^a-zA-Z]+/g, '');

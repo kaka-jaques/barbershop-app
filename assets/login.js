@@ -140,9 +140,14 @@ function constructProfile(data) {
     if (data.client.telephone != '') document.getElementById('phone').disabled = true;
     document.getElementById('cpf').value = data.client.cpf
     if (data.client.cpf != '') document.getElementById('cpf').disabled = true;
-    document.getElementById('plan-title').innerHTML = data.client.plano.name;
-    document.getElementById('plan-price').innerHTML = 'R$' + data.client.plano.price;
-    document.getElementById('plan-description').innerHTML = data.client.plano.description.replace(/\*/g, '<br>*');
+
+    //PLANO DESATIVADO ATÉ SEGUNDA ORDEM
+
+    // document.getElementById('plan-title').innerHTML = data.client.plano.name;
+    // document.getElementById('plan-price').innerHTML = 'R$' + data.client.plano.price;
+    // document.getElementById('plan-description').innerHTML = data.client.plano.description.replace(/\*/g, '<br>*');
+
+
     gsap.to('#loading-screen', {
         opacity: 0,
         duration: 1,

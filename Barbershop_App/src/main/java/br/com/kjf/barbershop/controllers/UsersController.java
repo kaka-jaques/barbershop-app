@@ -1,6 +1,8 @@
 package br.com.kjf.barbershop.controllers;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.kjf.barbershop.repository.ClientRepository;
+import br.com.kjf.barbershop.repository.RoleRepository;
 import br.com.kjf.barbershop.repository.UserRepository;
 import br.com.kjf.barbershop.vo.BonusVO;
 import br.com.kjf.barbershop.vo.BookingVO;
 import br.com.kjf.barbershop.vo.ClientVO;
+import br.com.kjf.barbershop.vo.RoleVO;
 import br.com.kjf.barbershop.vo.UserVO;
 
 @RestController
@@ -30,6 +34,9 @@ public class UsersController {
 	
 	@Autowired
 	private ClientRepository clientRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
 	
 	@GetMapping
 	public ResponseEntity<?> getAllUsers() {
@@ -57,6 +64,26 @@ public class UsersController {
 		}
 		
 		return ResponseEntity.ok(clients);
+	}
+	
+	@GetMapping("/barberman")
+	public ResponseEntity<?> getBarbermans(){
+		
+		List<UserVO> allClients = userRepository.getAllActiveUsers();
+		
+		RoleVO admEmp = roleRepository.findById(4);
+		RoleVO emp = roleRepository.findById(2);
+		
+		List<UserVO> barbermans = allClients.stream()
+				.filter(user -> user.getRole().contains(admEmp) || user.getRole().contains(emp))
+				.collect(Collectors.toList());
+		
+		for(UserVO barber : barbermans) {
+			barber.getClient().setBookings(null);
+		}
+		
+		return ResponseEntity.ok(barbermans);
+		
 	}
 	
 	@PostMapping

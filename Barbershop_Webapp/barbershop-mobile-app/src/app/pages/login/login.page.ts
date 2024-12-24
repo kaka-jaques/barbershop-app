@@ -19,18 +19,16 @@ export class LoginPage implements OnInit {
   ngOnInit() {
 
     this.auth.auth().subscribe((response:HttpResponse<any>) => {
-      if(response.status == 302){
+      if(response.ok){
+        this.auth.isAuth = true;
+        this.auth.name = response.body.client.name;
+        this.auth.email = response.body.email;
+        this.auth.phone = response.body.client.telephone;
         this.auth.isAuth = true;
         this.router.navigateByUrl('/home');
       }
     }, (error:HttpErrorResponse) => {
-      if(error.status == 302){
-        this.auth.name = error.error.client.name;
-        this.auth.email = error.error.email;
-        this.auth.phone = error.error.client.telephone;
-        this.auth.isAuth = true;
-        this.router.navigateByUrl('/home');
-      }
+      //TODO - tratar erro
     })
 
   }

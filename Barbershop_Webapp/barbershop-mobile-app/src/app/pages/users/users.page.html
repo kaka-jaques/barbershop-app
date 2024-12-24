@@ -258,6 +258,11 @@
                 <ion-content>
                     <ion-list>
                         <ion-item color="light">
+                            <ion-avatar slot="start" style="width: 150px; height: 150px; border-radius: 4px;">
+                                <img src="{{ selectedUser.client.image_url }}" alt="">
+                            </ion-avatar>
+                        </ion-item>
+                        <ion-item color="light">
                             <ion-input label="User" (ionInput)="filterUser($event)" autocomplete="username" [(ngModel)]="selectedUser.user"></ion-input>
                         </ion-item>
                         <ion-item color="light">
@@ -361,7 +366,8 @@
                             <ion-picker>
                                 <ion-picker-column [value]="currentRole" (ionChange)="onRoleChange($event)">
                                     <ion-picker-column-option value="0">Administrador</ion-picker-column-option>
-                                    <ion-picker-column-option value="1">Funcionário</ion-picker-column-option>
+                                    <ion-picker-column-option value="3">Admin/Cabeleireiro</ion-picker-column-option>
+                                    <ion-picker-column-option value="1">Cabeleireiro</ion-picker-column-option>
                                     <ion-picker-column-option value="2">Cliente</ion-picker-column-option>
                                 </ion-picker-column>
                             </ion-picker>

@@ -5,6 +5,11 @@
         <div *ngIf="changeLoading" id="loading-screen">
             <ion-spinner name="lines"></ion-spinner>
         </div>
+        <div *ngIf="loadError" id="error-screen">
+            <ion-button fill="clear" (click)="reloadCalendar()">
+                <ion-icon name="reload"></ion-icon>
+            </ion-button>
+        </div>
         <full-calendar #calendar *ngIf="!calendarLoading && !loadError" [options]="calendarOptions"
             class="calendar"></full-calendar>
         <ion-fab>
@@ -17,6 +22,9 @@
                 </ion-fab-button>
                 <ion-fab-button id="open-add-modal" (click)="resetNewBook(addModal)">
                     <ion-icon name="add"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-button>
+                    <ion-icon name="person"></ion-icon>
                 </ion-fab-button>
             </ion-fab-list>
         </ion-fab>
@@ -40,6 +48,10 @@
                             <ion-label>Cliente</ion-label>
                             <ion-label>{{ selectedBook.client.name }}</ion-label>
                         </ion-item>
+                        <ion-item button="true" (click)="changeBarberman(changeBarbermanModal)">
+                            <ion-label>Barbeiro</ion-label>
+                            <ion-label>{{ selectedBook.barberman.client.name }}</ion-label>
+                        </ion-item>
                         <ion-item>
                             <ion-label>Data</ion-label>
                             <ion-datetime-button datetime="edit-datetime"></ion-datetime-button>
@@ -52,6 +64,25 @@
                             <ion-button fill="clear" color="danger" (click)="deleteBook(editModal)">Excluir</ion-button>
                         </ion-item>
                     </ion-list>
+                    <ion-modal #changeBarbermanModal [presentingElement]="presentingElement">
+                        <ng-template>
+                            <ion-header>
+                                <ion-toolbar>
+                                    <ion-buttons slot="start">
+                                        <ion-button (click)="changeBarbermanModal.dismiss()">Cancelar</ion-button>
+                                    </ion-buttons>
+                                    <ion-title>Trocar Barbeiro</ion-title>
+                                </ion-toolbar>
+                            </ion-header>
+                            <ion-content>
+                                <ion-list>
+                                    <ion-item button="true" *ngFor="let barber of barbermans" (click)="selectBarberman(barber, changeBarbermanModal)">
+                                        <ion-label>{{ barber.client.name }}</ion-label>
+                                    </ion-item>
+                                </ion-list>
+                            </ion-content>
+                        </ng-template>
+                    </ion-modal>
                     <ion-modal #changeClientModal [presentingElement]="presentingElement">
                         <ng-template>
                             <ion-header>

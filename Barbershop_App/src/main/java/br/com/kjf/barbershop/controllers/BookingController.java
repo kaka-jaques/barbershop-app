@@ -90,6 +90,9 @@ public class BookingController {
 		
 		books.forEach(book -> {
 			book.getClient().setBookings(null);
+			if(book.getBarberman() != null) {
+				book.getBarberman().getClient().setBookings(null);
+			}
 		});
 		
 		return ResponseEntity.ok(books);
@@ -103,6 +106,9 @@ public class BookingController {
 		
 		books.forEach(book -> {
 			book.getClient().setBookings(null);
+			if(book.getBarberman() != null) {
+				book.getBarberman().getClient().setBookings(null);
+			}
 		});
 		
 		return ResponseEntity.ok(books);
@@ -120,6 +126,9 @@ public class BookingController {
 		
 		for(BookingVO book : books) {
 			book.getClient().setBookings(null);
+			if(book.getBarberman() != null) {
+				book.getBarberman().getClient().setBookings(null);
+			}
 		}
 		
 		return ResponseEntity.ok(books);
@@ -142,6 +151,9 @@ public class BookingController {
 		
 		for(BookingVO book : books) {
 			book.getClient().setBookings(null);
+			if(book.getBarberman() != null) {
+				book.getBarberman().getClient().setBookings(null);
+			}
 		}
 		
 		return ResponseEntity.ok(books);

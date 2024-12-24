@@ -30,7 +30,19 @@ public class BookingVO {
 	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private ClientVO client;
+	@ManyToOne
+	@JoinColumn(name = "barber_id")
+	private UserVO barberman;
 	
+	//GETTERS AND SETTERS
+	public UserVO getBarberman() {
+		return barberman;
+	}
+
+	public void setBarberman(UserVO barberman) {
+		this.barberman = barberman;
+	}
+
 	public ServicesVO getServices() {
 		return services;
 	}

@@ -31,11 +31,18 @@ export class BookPage implements OnInit {
 
   requestLoading: boolean = false;
 
-  selectedBook: any;
+  selectedBook: any = {
+    barberman: {
+      client: {
+        name: ''
+      }
+    }
+  };
 
   books: any;
   services: any;
   clients: any;
+  barbermans: any;
   minDate: string = new Date(new Date().setHours(new Date().getHours() - 3)).toISOString();
 
   newBook: any = {
@@ -77,7 +84,7 @@ export class BookPage implements OnInit {
     events: []
   }
 
-  constructor(private bookService: BookService, private config: ConfigService, private userService: UsersService, private actSheetCtrl:ActionSheetController) { }
+  constructor(private bookService: BookService, private config: ConfigService, private userService: UsersService, private actSheetCtrl: ActionSheetController) { }
 
   ngOnInit() {
 
@@ -103,6 +110,12 @@ export class BookPage implements OnInit {
         this.toastMessage = 'Erro ao buscar os agendamentos!'
         this.isToastOpen = true
       }
+    }, (error) => {
+      this.loadError = true
+      this.calendarLoading = false
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao buscar os agendamentos!'
+      this.isToastOpen = true
     })
 
     this.config.getServices().subscribe((response: HttpResponse<any>) => {
@@ -114,8 +127,19 @@ export class BookPage implements OnInit {
         this.toastMessage = 'Erro ao buscar os serviços!'
         this.isToastOpen = true
       }
+    }, (error) => {
+      this.loadError = true
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao buscar os serviços!'
+      this.isToastOpen = true
     })
 
+  }
+
+  reloadCalendar() {
+    this.loadError = false;
+    this.calendarLoading = true;
+    this.ngOnInit();
   }
 
   changeCalendarType() {
@@ -134,6 +158,7 @@ export class BookPage implements OnInit {
     }
     this.selectedBook.bookingDate = new Date(this.selectedBook.bookingDate).setHours(new Date(this.selectedBook.bookingDate).getHours() - 3);
     this.selectedBook.bookingDate = new Date(this.selectedBook.bookingDate).toISOString();
+    if (this.selectedBook.barberman === null) this.selectedBook.barberman = { client: { name: '' } }
     this.editModal.nativeElement.present();
   }
 
@@ -150,7 +175,20 @@ export class BookPage implements OnInit {
     })
   }
 
-  resetNewBook(modal:any) {
+  changeBarberman(modal: any) {
+    this.userService.getBarbermans().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.barbermans = response.body
+        modal.present();
+      }
+    }, (error) => {
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao buscar os barbeiros!'
+      this.isToastOpen = true
+    })
+  }
+
+  resetNewBook(modal: any) {
     this.newBook = {
       bookingDate: new Date(new Date().setHours(new Date().getHours() - 3)).toISOString(),
       services: {},
@@ -167,6 +205,11 @@ export class BookPage implements OnInit {
     this.selectedBook.client = client.client;
     modal.dismiss();
     modal2.dismiss();
+  }
+
+  selectBarberman(barberman: any, modal: any) {
+    this.selectedBook.barberman = barberman;
+    modal.dismiss();
   }
 
   updateBook(modal: any) {
@@ -214,7 +257,7 @@ export class BookPage implements OnInit {
 
     }
 
-    if(await deleteConfirmation()) {
+    if (await deleteConfirmation()) {
       this.bookService.deleteBook(this.selectedBook.id).subscribe((response: HttpResponse<any>) => {
         if (response.ok) {
           modal.dismiss();
@@ -230,7 +273,7 @@ export class BookPage implements OnInit {
         this.isToastOpen = true
         this.requestLoading = false
       })
-    }else{
+    } else {
       this.requestLoading = false
     }
   }
@@ -258,13 +301,12 @@ export class BookPage implements OnInit {
           this.changeLoading = false;
           return true;
         }, 50)
-      } else {
-        this.loadError = true
-        this.changeLoading = false
-        this.toastColor = 'danger'
-        this.toastMessage = 'Erro ao buscar os agendamentos!'
-        this.isToastOpen = true
       }
+    }, (error) => {
+      this.loadError = true
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao buscar os serviços!'
+      this.isToastOpen = true
     })
   }
 
@@ -328,13 +370,6 @@ export class BookPage implements OnInit {
         setTimeout(() => {
           this.verifyAndCreateBook(newEvent, modal);
         }, 50)
-      } else {
-        this.requestLoading = false
-        this.loadError = true
-        this.changeLoading = false
-        this.toastColor = 'danger'
-        this.toastMessage = 'Erro ao buscar os agendamentos!'
-        this.isToastOpen = true
       }
     }, (error) => {
       this.requestLoading = false

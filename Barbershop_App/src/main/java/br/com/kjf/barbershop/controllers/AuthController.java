@@ -114,10 +114,8 @@ public class AuthController {
 						+ "}")));
 		}else {
 			user.setPassword(null);
-			user.getClient().getBookings().forEach(book -> {
-				book.setClient(null);
-			});
-			return ResponseEntity.status(HttpStatus.FOUND).body(user);
+			user.getClient().setBookings(null);
+			return ResponseEntity.ok(user);
 		}
 		
 	}
