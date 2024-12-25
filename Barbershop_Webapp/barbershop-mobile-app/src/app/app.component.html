@@ -8,7 +8,8 @@
           <ion-note style="margin-bottom: 15%;">{{ auth.email}}</ion-note>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false"
+              routerLinkActive="selected">
               <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
@@ -16,11 +17,13 @@
         </ion-list>
       </ion-content>
       <ion-item></ion-item>
-      <ion-item (click)="logout()" lines="none" style="margin-top: auto;">
+      <ion-item [disabled]="logouting" (click)="logout()" lines="none" style="margin-top: auto;">
         <ion-icon color="danger" slot="start" name="log-out"></ion-icon>
         <ion-label>Sair</ion-label>
+        <ion-spinner *ngIf="logouting" name="lines"></ion-spinner>
       </ion-item>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>
+  <ion-toast color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}" [duration]="3000" (onDidDismiss)="isToastOpen = false"></ion-toast>
 </ion-app>

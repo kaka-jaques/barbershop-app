@@ -12,11 +12,20 @@ import br.com.kjf.barbershop.vo.BookingVO;
 
 public interface BookingRepository extends JpaRepository<BookingVO, Integer>{
 
+	@Query("FROM BookingVO WHERE bookingDate > CURDATE() AND barberman.id = :barberId")
+	public List<BookingVO> findNextBooks(@Param("barberId") int barberId);
+	
 	@Query("FROM BookingVO WHERE bookingDate > CURDATE()")
 	public List<BookingVO> findNextBooks();
 	
-	@Query("FROM BookingVO WHERE bookingDate >= :today AND bookingDate < :tomorrow ")
+	@Query("FROM BookingVO WHERE bookingDate >= :today AND bookingDate < :tomorrow AND barberman.id = :barberId")
+	public List<BookingVO> getBooksForToday(@Param("today")GregorianCalendar today, @Param("tomorrow") Calendar tomorrow, @Param("barberId") int barberId);
+	
+	@Query("FROM BookingVO WHERE bookingDate >= :today AND bookingDate < :tomorrow")
 	public List<BookingVO> getBooksForToday(@Param("today")GregorianCalendar today, @Param("tomorrow") Calendar tomorrow);
+	
+	@Query("FROM BookingVO WHERE bookingDate >= :per1 AND bookingDate < :per2 AND barberman.id = :barberId")
+	public List<BookingVO> getBooksForPeriod(@Param("per1")GregorianCalendar per1, @Param("per2")GregorianCalendar per2, @Param("barberId") int barberId);
 	
 	@Query("FROM BookingVO WHERE bookingDate >= :per1 AND bookingDate < :per2")
 	public List<BookingVO> getBooksForPeriod(@Param("per1")GregorianCalendar per1, @Param("per2")GregorianCalendar per2);

@@ -73,6 +73,7 @@ export class UsersPage implements OnInit {
   public toastMessage!: string;
   public toastColor: string = 'light';
   public addBirthdate: string = new Date().toISOString();
+  public loadError: boolean = false;
 
   public currentRole: string = '0';
   public currentBonus: string = '';
@@ -100,6 +101,7 @@ export class UsersPage implements OnInit {
       this.toastColor = 'danger';
       this.toastMessage = 'Erro ao buscar os usuários!';
       this.saveUserButton = false;
+      this.loadError = true;
     });
 
     await this.users.getTempClients().subscribe((response: HttpResponse<any>) => {
@@ -114,17 +116,59 @@ export class UsersPage implements OnInit {
       this.toastColor = 'danger';
       this.toastMessage = 'Erro ao buscar os clientes!';
       this.saveUserButton = false;
+      this.loadError = true;
     });
 
   }
 
-  filterUser(event: any){
-    const value = event.target!.value;
-    const filteredValue = value.replace(/[^a-zA-Z0-9]+/g, '');
-    this.ionInputEl.value = this.inputModel = filteredValue; 
+  openAddModal(modal: any) {
+    this.newUser = {
+      user: '',
+      password: '',
+      email: '',
+      client: {
+        name: '',
+        birthDate: new Date().toISOString(),
+        phone: '',
+        anualBonus: false,
+        plano: {
+          id: 1
+        },
+        cpf: '',
+      }
+    }
+    modal.present();
   }
 
-  filterOnlyString(event: any) { 
+  saveClient(clientModal: any, addModal: any) {
+    this.newUser = {
+      user: '',
+      password: '',
+      email: '',
+      client: {
+        name: '',
+        birthDate: new Date().toISOString(),
+        phone: '',
+        anualBonus: false,
+        plano: {
+          id: 1
+        },
+        cpf: '',
+      }
+    }
+    this.newUser.client.name = this.selectedClient.name;
+    this.newUser.client.telephone = this.selectedClient.telephone;
+    clientModal.dismiss();
+    addModal.present();
+  }
+
+  filterUser(event: any) {
+    const value = event.target!.value;
+    const filteredValue = value.replace(/[^a-zA-Z0-9]+/g, '');
+    this.ionInputEl.value = this.inputModel = filteredValue;
+  }
+
+  filterOnlyString(event: any) {
     const value = event.target!.value;
 
     const filteredValue = value.replace(/[^a-zA-Z]+/g, '');
@@ -132,17 +176,17 @@ export class UsersPage implements OnInit {
     this.ionInputEl.value = this.inputModel = filteredValue;
   }
 
-  changeBonusType(event: any){
+  changeBonusType(event: any) {
     this.currentBonus = event.detail.value
   }
 
-  handleBonusDismiss(modal: any){
+  handleBonusDismiss(modal: any) {
     this.currentBonus = '';
     this.bonusExpiration = new Date().toISOString();
     modal.dismiss();
   }
 
-  applyBonus(modal: any){
+  applyBonus(modal: any) {
     this.selectedUser.client.anualBonus = 'true';
     this.selectedUser.client.bonus = {
       expire_date: this.bonusExpiration,
@@ -166,7 +210,7 @@ export class UsersPage implements OnInit {
       const annualBonusMatch = this.anualBonus == null || user.client.anualBonus === this.anualBonus;
       const birthDateMatch = this.aniversary == null ||
         (this.aniversary && user.client.birthDate != null &&
-          new Date(new Date().getFullYear(), user.client.birthDate[1] - 1, user.client.birthDate[2]) >= new Date(new Date().getFullYear(), new Date().getMonth(), 1) && new Date(new Date().getFullYear(), user.client.birthDate[1] - 1, user.client.birthDate[2]) < new Date(new Date().getFullYear(), new Date().getMonth()+1, 1) || this.aniversary != true);
+          new Date(new Date().getFullYear(), user.client.birthDate[1] - 1, user.client.birthDate[2]) >= new Date(new Date().getFullYear(), new Date().getMonth(), 1) && new Date(new Date().getFullYear(), user.client.birthDate[1] - 1, user.client.birthDate[2]) < new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1) || this.aniversary != true);
       const cpfMatch = this.cpf == null || user.client.cpf.indexOf(this.cpf) > -1;
       const userMatch = this.user == null || user.user.indexOf(this.user) > -1;
 
@@ -248,7 +292,7 @@ export class UsersPage implements OnInit {
     modal.dismiss();
   }
 
-  onRoleChange(event: any){
+  onRoleChange(event: any) {
     this.currentRole = event.detail.value;
   }
 
@@ -274,12 +318,12 @@ export class UsersPage implements OnInit {
     }
     this.currentRole = (user.role[0].id - 1).toString();
     console.log(this.currentRole);
-    
+
     modal.present();
   }
 
   async deleteUser(user: any, modal: any) {
-
+    this.saveUserButton = true;
     let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
       const sheet = await this.actSheetCtrl.create({
         header: 'Tem certeza?',
@@ -306,22 +350,27 @@ export class UsersPage implements OnInit {
     if (await deleteConfirmation()) {
       this.users.deleteUser(user).subscribe((response: HttpResponse<any>) => {
         if (response.ok) {
+          this.saveUserButton = false;
           this.isToastOpen = true;
           this.toastColor = 'success';
           this.toastMessage = 'cliente excluído com sucesso!';
           this.refreshUsers(null);
           modal.dismiss();
-        } else {
-          this.isToastOpen = true;
-          this.toastColor = 'danger';
-          this.toastMessage = 'Erro ao excluir o cliente!';
-          modal.dismiss();
         }
+      }, (error) => {
+        this.saveUserButton = false;
+        this.isToastOpen = true;
+        this.toastColor = 'danger';
+        this.toastMessage = 'Erro ao excluir o cliente! - '+error.message;
+        modal.dismiss();
       })
+    }else{
+      this.saveUserButton = false;
     }
   }
 
   async deleteClient(client: any, modal: any) {
+    this.saveUserButton = true
     let deleteConfirmation: () => Promise<boolean> = async (): Promise<boolean> => {
       const sheet = await this.actSheetCtrl.create({
         header: 'Tem certeza?',
@@ -353,12 +402,20 @@ export class UsersPage implements OnInit {
           this.toastMessage = 'cliente excluído com sucesso!';
           this.refreshUsers(null);
           modal.dismiss();
+          this.saveUserButton = false
         } else {
           this.isToastOpen = true;
           this.toastColor = 'danger';
           this.toastMessage = 'Erro ao excluir o cliente!';
           modal.dismiss();
+          this.saveUserButton = false
         }
+      }, (error) => {
+        this.isToastOpen = true;
+        this.toastColor = 'danger';
+        this.toastMessage = 'Erro ao excluir o cliente!';
+        modal.dismiss();
+        this.saveUserButton = false
       })
     }
   }
@@ -371,14 +428,14 @@ export class UsersPage implements OnInit {
   saveUser(modal: any, button: any) {
     button.disabled = true;
     this.saveUserButton = true;
-    if(this.birthDate != '' && this.selectedUser.client.birthDate != null){
+    if (this.birthDate != '' && this.selectedUser.client.birthDate != null) {
       this.selectedUser.client.birthDate[0] = new Date(this.birthDate).getFullYear();
       this.selectedUser.client.birthDate[1] = new Date(this.birthDate).getMonth() + 1;
       this.selectedUser.client.birthDate[2] = new Date(this.birthDate).getDate();
-    }else if(this.selectedUser.client.birthDate == null){
+    } else if (this.selectedUser.client.birthDate == null) {
       this.selectedUser.client.birthDate = [new Date(this.birthDate).getFullYear(), new Date(this.birthDate).getMonth() + 1, new Date(this.birthDate).getDate()];
     }
-    else{
+    else {
       this.selectedUser.client.birthDate = this.birthDate;
     }
     this.users.updateUser(this.selectedUser).subscribe((response: HttpResponse<any>) => {
@@ -409,9 +466,11 @@ export class UsersPage implements OnInit {
   }
 
   createUser(modal: any) {
+    this.saveUserButton = true;
     this.users.createUser(this.newUser).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         modal.dismiss();
+        this.saveUserButton = false;
         this.isToastOpen = true;
         this.toastColor = 'success';
         this.toastMessage = 'Usuário criado com sucesso!';
@@ -431,11 +490,20 @@ export class UsersPage implements OnInit {
             cpf: '',
           }
         };
-      } else {
-        this.isToastOpen = true;
-        this.toastColor = 'danger';
-        this.toastMessage = 'Erro ao criar o usuário!';
       }
+    }, (error) => {
+      if (error.status == 409) {
+        this.saveUserButton = false;
+        this.toastColor = 'primary';
+        this.toastMessage = 'Erro ao criar o usuário: Dados obrigatórios faltantes!';
+        this.isToastOpen = true;
+      } else {
+        this.saveUserButton = false;
+        this.toastColor = 'danger';
+        this.toastMessage = 'Erro ao criar o usuário! - ' + error.message;
+        this.isToastOpen = true;
+      }
+
     })
   }
 

@@ -99,10 +99,16 @@ public class BookingController {
 		
 	}
 	
-	@GetMapping("/admin")
-	public ResponseEntity<?> getNextBooksToAdmin(){
+	@GetMapping("/admin/{id}")
+	public ResponseEntity<?> getNextBooksToAdmin(@PathVariable("id")int id){
 		
-		List<BookingVO> books = bookingRepository.findNextBooks();
+		List<BookingVO> books;
+		
+		if(id == 0) {
+			books = bookingRepository.findNextBooks();
+		}else {
+			books = bookingRepository.findNextBooks(id);
+		}
 		
 		books.forEach(book -> {
 			book.getClient().setBookings(null);
@@ -115,14 +121,20 @@ public class BookingController {
 		
 	}
 	
-	@GetMapping("/today")
-	public ResponseEntity<?> getBooksForToday(){
+	@GetMapping("/today/{id}")
+	public ResponseEntity<?> getBooksForToday(@PathVariable("id")int id){
 		
 		Date dateTomorrow = Date.from(LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
 		Calendar calendarTomorrow = Calendar.getInstance();
 		calendarTomorrow.setTime(dateTomorrow);
 		
-		List<BookingVO> books = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow);
+		List<BookingVO> books;
+		
+		if(id == 0) {
+			books = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow);
+		}else {
+			books = bookingRepository.getBooksForToday(new GregorianCalendar(), calendarTomorrow, id);
+		}
 		
 		for(BookingVO book : books) {
 			book.getClient().setBookings(null);
@@ -135,8 +147,8 @@ public class BookingController {
 		
 	}
 	
-	@PostMapping("/period")
-	public ResponseEntity<?> getBooksForPeriod(@RequestBody Map<String, String> periodTime) throws ParseException{
+	@PostMapping("/period/{id}")
+	public ResponseEntity<?> getBooksForPeriod(@RequestBody Map<String, String> periodTime, @PathVariable("id")int id) throws ParseException{
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -147,7 +159,13 @@ public class BookingController {
 		GregorianCalendar period2 = new GregorianCalendar();
 		period2.setTime(dateFormat.parse(periodTime.get("endDate")));
 		
-		List<BookingVO> books = bookingRepository.getBooksForPeriod(period1, period2);
+		List<BookingVO> books;
+		
+		if(id == 0) {
+			books = bookingRepository.getBooksForPeriod(period1, period2);
+		}else {
+			books = bookingRepository.getBooksForPeriod(period1, period2, id);
+		}
 		
 		for(BookingVO book : books) {
 			book.getClient().setBookings(null);
@@ -175,6 +193,7 @@ public class BookingController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteBook(@PathVariable("id")int id) throws JsonMappingException, JsonProcessingException{
+		
 		try {
 			bookingRepository.deleteById(id);
 		}catch(Exception e) {

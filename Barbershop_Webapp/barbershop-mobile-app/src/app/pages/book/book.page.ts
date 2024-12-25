@@ -7,11 +7,11 @@ import interactionPlugin from '@fullcalendar/interaction';
 import ptBtLocale from '@fullcalendar/core/locales/pt-br';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import { HttpResponse } from '@angular/common/http';
-import { formatDate } from '@angular/common';
 import { ConfigService } from 'src/app/config.service';
 import { UsersService } from 'src/app/users.service';
 import { ActionSheetController, IonModal } from '@ionic/angular';
 import { FullCalendarComponent } from '@fullcalendar/angular';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
   selector: 'app-book',
@@ -28,6 +28,8 @@ export class BookPage implements OnInit {
   loadError: boolean = false;
   changeLoading: boolean = false;
   calendarType: string = 'calendar';
+  barbermanID:number = 0;
+  adminLogin: boolean = false;
 
   requestLoading: boolean = false;
 
@@ -84,11 +86,20 @@ export class BookPage implements OnInit {
     events: []
   }
 
-  constructor(private bookService: BookService, private config: ConfigService, private userService: UsersService, private actSheetCtrl: ActionSheetController) { }
+  constructor(private bookService: BookService, private config: ConfigService, private userService: UsersService, private actSheetCtrl: ActionSheetController, private authService:AuthService) { }
 
   ngOnInit() {
 
-    this.bookService.getTodayBookings().subscribe((response: HttpResponse<any>) => {
+    if(this.authService.role == 2){
+      this.barbermanID = this.authService.id
+    }else if(this.authService.role == 4){
+      this.barbermanID = this.authService.id
+      this.adminLogin = true
+    }else if(this.authService.role == 1){
+      this.barbermanID = 0;
+    }
+
+    this.bookService.getTodayBookings(this.barbermanID).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.books = response.body
         this.calendarOptions = {
@@ -282,7 +293,7 @@ export class BookPage implements OnInit {
 
     this.changeLoading = true;
 
-    this.bookService.getPeriodBookings(arg.startStr, arg.endStr).subscribe((response: HttpResponse<any>) => {
+    this.bookService.getPeriodBookings(arg.startStr, arg.endStr, this.barbermanID).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.books = response.body
         this.calendarOptions = {
@@ -352,7 +363,7 @@ export class BookPage implements OnInit {
       return;
     }
 
-    this.bookService.getPeriodBookings(newEventDate.toISOString(), newEventDate.toISOString().split('T')[0] + 'T23:59:59.999Z').subscribe((response: HttpResponse<any>) => {
+    this.bookService.getPeriodBookings(newEventDate.toISOString(), newEventDate.toISOString().split('T')[0] + 'T23:59:59.999Z', this.barbermanID).subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.books = response.body
         this.requestLoading = false

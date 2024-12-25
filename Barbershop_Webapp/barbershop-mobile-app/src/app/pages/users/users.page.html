@@ -10,7 +10,7 @@
         </ion-refresher>
         <ion-list>
             <ion-item>
-                <ion-button id="open-add-modal" style="margin: auto;" fill="clear">
+                <ion-button id="open-add-modal" (click)="openAddModal(addModal)" style="margin: auto;" fill="clear">
                     <ion-icon name="person-add"></ion-icon>
                     Criar Usuário
                 </ion-button>
@@ -56,7 +56,7 @@
                 </ion-item-options>
             </ion-item-sliding>
         </ion-list>
-        <ion-list *ngIf="!userQuery.length && !tempClientQuery.length">
+        <ion-list *ngIf="!userQuery.length && !tempClientQuery.length && !loadError">
             <ion-item-sliding color="light">
                 <ion-item>
                     <ion-avatar slot="start">
@@ -181,13 +181,13 @@
                 <ion-content>
                     <ion-list>
                         <ion-item color="light">
-                            <ion-input autocomplete="name" (ionInput)="filterOnlyString($event)" label="Nome" autocapitalize="on" [(ngModel)]="selectedClient.name"></ion-input>
+                            <ion-input (ionInput)="filterOnlyString($event)" label="Nome" autocapitalize="on" [(ngModel)]="selectedClient.name"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input autocomplete="tel" label="Telefone" [(ngModel)]="selectedClient.telephone"></ion-input>
+                            <ion-input label="Telefone" [(ngModel)]="selectedClient.telephone"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-button fill="clear">Realizar Convite</ion-button>
+                            <ion-button fill="clear" (click)="saveClient(clientModal, addModal)">Cadastrar Cliente</ion-button>
                         </ion-item>
                         <ion-item color="light">
                             <ion-button fill="clear" (click)="deleteClient(selectedClient, clientModal)"
@@ -249,7 +249,7 @@
                         </ion-buttons>
                         <ion-title>{{ selectedUser.client.name }}</ion-title>
                         <ion-buttons slot="end">
-                            <ion-button #saveButton (click)="saveUser(userModal, saveButton)"><ion-label
+                            <ion-button #saveButton [disabled]="saveUserButton" (click)="saveUser(userModal, saveButton)"><ion-label
                                     *ngIf="!saveUserButton">Salvar</ion-label><ion-spinner *ngIf="saveUserButton"
                                     name="lines"></ion-spinner></ion-button>
                         </ion-buttons>
@@ -263,16 +263,16 @@
                             </ion-avatar>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="User" (ionInput)="filterUser($event)" autocomplete="username" [(ngModel)]="selectedUser.user"></ion-input>
+                            <ion-input label="User" (ionInput)="filterUser($event)"  [(ngModel)]="selectedUser.user"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Nome" autocomplete="name" autocapitalize="on" (ionInput)="filterOnlyString($event)" [(ngModel)]="selectedUser.client.name"></ion-input>
+                            <ion-input label="Nome" autocapitalize="on" (ionInput)="filterOnlyString($event)" [(ngModel)]="selectedUser.client.name"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Email" autocomplete="email" errorText="Email Inválido" type="email" email [(ngModel)]="selectedUser.email"></ion-input>
+                            <ion-input label="Email" errorText="Email Inválido" type="email" email [(ngModel)]="selectedUser.email"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Telefone" autocomplete="tel" [(ngModel)]="selectedUser.client.telephone"></ion-input>
+                            <ion-input label="Telefone" [(ngModel)]="selectedUser.client.telephone"></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-label slot="start">Data de Nascimento</ion-label>
@@ -281,7 +281,7 @@
                                 name="date">
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="CPF" autocomplete="cpf" [(ngModel)]="selectedUser.client.cpf" disabled></ion-input>
+                            <ion-input label="CPF" [(ngModel)]="selectedUser.client.cpf" disabled></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-label slot="start">Cargo: </ion-label>
@@ -397,7 +397,8 @@
                             </ion-buttons>
                             <ion-title>Criar Usuário</ion-title>
                             <ion-buttons slot="end">
-                                <ion-button (click)="createUser(addModal)">Criar</ion-button>
+                                <ion-button *ngIf="!saveUserButton" (click)="createUser(addModal)">Criar</ion-button>
+                                <ion-spinner *ngIf="saveUserButton" name="lines"></ion-spinner>
                             </ion-buttons>
                         </ion-toolbar>
                     </ion-header>
@@ -412,13 +413,13 @@
                             <ion-input label="Email" errorText="Email Inválido" type="email" email></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-input label="Telefone" [(ngModel)]="newUser.client.telephone"></ion-input>
+                            <ion-input label="Telefone*" [(ngModel)]="newUser.client.telephone"></ion-input>
                         </ion-item>
                         <ion-item color="light">
                             <ion-input label="CPF" [(ngModel)]="newUser.client.cpf"></ion-input>
                         </ion-item>
                         <ion-item color="light">
-                            <ion-label slot="start">Data de Nascimento</ion-label>
+                            <ion-label slot="start">Data de Nascimento*</ion-label>
                             <ion-datetime-button datetime="add-datetime"></ion-datetime-button>
                             <ion-modal [keepContentsMounted]="true">
                                 <ng-template>

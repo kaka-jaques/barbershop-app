@@ -17,6 +17,10 @@ export class AuthService {
   public email:string = '';
   public phone:string = '';
 
+  public id!:number;
+  public role!:number;
+  public admin:boolean = false;
+
   constructor(private http:HttpClient) { }
 
   auth():Observable<HttpResponse<any>>{
@@ -27,10 +31,8 @@ export class AuthService {
     return this.http.post<any>(this.url + 'auth/login', {user: user, password: password}, {observe: 'response', headers: {'keep': 'true'}});
   }
 
-  logout(){
-    this.http.get(this.url + 'auth/logout', {observe: 'response'}).subscribe();
-    this.isAuth = false;
-    
+  logout():Observable<HttpResponse<any>>{
+    return this.http.get(this.url + 'auth/logout', {observe: 'response'});
   }
 
   getToken():string{

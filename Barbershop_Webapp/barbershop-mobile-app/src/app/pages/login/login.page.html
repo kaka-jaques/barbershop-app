@@ -5,6 +5,11 @@
     <ion-input type="password" label="Senha" placeholder="Senha" [(ngModel)]="password">
       <ion-input-password-toggle slot="end"></ion-input-password-toggle>
     </ion-input>
-    <ion-button fill="clear" expand="full" (click)="login(user, password)">Login</ion-button>
+    <ion-button [disabled]="logging" fill="clear" expand="full" (click)="login(user, password)">
+      <ion-label *ngIf="!logging">Login</ion-label>
+      <ion-spinner *ngIf="logging" name="lines"></ion-spinner>
+    </ion-button>
   </div>
+  <ion-toast color="{{ toastColor }}" [isOpen]="isToastOpen" message="{{ toastMessage }}" [duration]="5000" position="bottom" swiperGesture="vertical" style="color: white;"
+    (didDismiss)="isToastOpen = false"></ion-toast>
 </div>

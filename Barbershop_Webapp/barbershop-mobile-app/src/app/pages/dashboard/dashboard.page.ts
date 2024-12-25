@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import * as ProgressBar from 'progressbar.js';
 import { forkJoin } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
 import { BillService } from 'src/app/bill.service';
 import { BookService } from 'src/app/book.service';
 import { ConfigService } from 'src/app/config.service';
@@ -28,6 +29,7 @@ export class DashboardPage implements OnInit {
   profitGroupVisible: boolean = false;
   billGroupVisible: boolean = false;
   viewToggleLegend: boolean = false;
+  barbermanID: number = 0;
 
   allBars: any = [];
   allBarsCharts: any = [];
@@ -135,9 +137,11 @@ export class DashboardPage implements OnInit {
     }
   ]
 
-  constructor(private bill: BillService, private book: BookService, private config: ConfigService) { }
+  constructor(private bill: BillService, private book: BookService, private config: ConfigService, private authService:AuthService) { }
 
   ngOnInit() {
+
+    this.barbermanID = this.authService.id
 
     var dueBar = new ProgressBar.Circle('#yellow-circle', {
       strokeWidth: 6,
@@ -168,7 +172,7 @@ export class DashboardPage implements OnInit {
 
     this.allBars = [profitBar, dueBar, billBar];
 
-    forkJoin([this.bill.getBills(this.month + 1, this.year), this.book.getPeriodBookings(new Date(this.year, this.month, 1).toISOString(), new Date(this.year, this.month + 1, 0).toISOString()), this.config.getServices()])
+    forkJoin([this.bill.getBills(this.month + 1, this.year), this.book.getPeriodBookings(new Date(this.year, this.month, 1).toISOString(), new Date(this.year, this.month + 1, 0).toISOString(), this.barbermanID), this.config.getServices()])
       .pipe()
       .subscribe((response: any) => {
 
@@ -367,7 +371,7 @@ export class DashboardPage implements OnInit {
       this.qtServicesQueue[key] = 0;
     });
 
-    forkJoin([this.bill.getBills(this.month + 1, this.year), this.book.getPeriodBookings(new Date(this.year, this.month, 1).toISOString(), new Date(this.year, this.month + 1, 0).toISOString()), this.resetBarsProgress(this.allBars)])
+    forkJoin([this.bill.getBills(this.month + 1, this.year), this.book.getPeriodBookings(new Date(this.year, this.month, 1).toISOString(), new Date(this.year, this.month + 1, 0).toISOString(), this.barbermanID), this.resetBarsProgress(this.allBars)])
       .pipe()
       .subscribe((response: any) => {
         this.bills = response[0].body.map((bill: any) => ({

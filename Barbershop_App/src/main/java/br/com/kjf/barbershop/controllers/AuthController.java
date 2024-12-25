@@ -3,7 +3,9 @@ package br.com.kjf.barbershop.controllers;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.PropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -214,8 +216,12 @@ public class AuthController {
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		
-		if(user.getUser() == null) {
+		if(user.getUser() == null || user.getUser().isEmpty() || user.getUser().isBlank()) {
 			user.setUser("user-"+userRepository.findAll().get((int)userRepository.count()-1).getId()+1);
+		}
+		
+		if(user.getPassword().isBlank() || user.getPassword().isEmpty() || user.getPassword() == null) {
+			user.setPassword("Troc@r123");
 		}
 		
 		if(user.getRole() == null) {
@@ -232,7 +238,13 @@ public class AuthController {
 		user.setNotificationConfig(new NotificationConfigVO());
 		user.getNotificationConfig().setUser(user);
 		
-		userRepository.save(user);
+		try {
+			userRepository.save(user);
+		}catch(PropertyValueException | DataIntegrityViolationException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(objMapper.readTree("{"
+					+ "\"status\": \"User not created due missing data!\""
+					+ "}"));
+		}
 		
 		HttpHeaders headers = new HttpHeaders();
 		

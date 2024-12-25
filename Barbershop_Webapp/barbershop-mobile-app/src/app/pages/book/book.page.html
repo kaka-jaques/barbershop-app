@@ -17,14 +17,14 @@
                 <ion-icon name="chevron-up"></ion-icon>
             </ion-fab-button>
             <ion-fab-list side="top">
+                <ion-fab-button *ngIf="!adminLogin">
+                    <ion-icon name="person"></ion-icon>
+                </ion-fab-button>
                 <ion-fab-button (click)="changeCalendarType()">
                     <ion-icon name="{{ calendarType }}"></ion-icon>
                 </ion-fab-button>
                 <ion-fab-button id="open-add-modal" (click)="resetNewBook(addModal)">
                     <ion-icon name="add"></ion-icon>
-                </ion-fab-button>
-                <ion-fab-button>
-                    <ion-icon name="person"></ion-icon>
                 </ion-fab-button>
             </ion-fab-list>
         </ion-fab>
