@@ -51,7 +51,7 @@ export class LoginPage implements OnInit {
         this.isToastOpen = true;
       } else {
         this.toastColor = 'danger';
-        this.toastMessage = 'Erro ao logar: ' + error.error.message;
+        this.toastMessage = 'Erro ao autenticar: ' + error.message;
         this.isToastOpen = true;
       }
     })
@@ -74,7 +74,7 @@ export class LoginPage implements OnInit {
         this.isToastOpen = true;
       } else {
         this.toastColor = 'danger';
-        this.toastMessage = 'Erro ao logar: ' + error.error.message;
+        this.toastMessage = 'Erro ao logar: ' + error.message;
         this.isToastOpen = true;
       }
     })

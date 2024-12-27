@@ -30,6 +30,8 @@ export class BookPage implements OnInit {
   calendarType: string = 'calendar';
   barbermanID:number = 0;
   adminLogin: boolean = false;
+  barberLoading:boolean = false;
+  barberLoadingError:boolean = false;
 
   requestLoading: boolean = false;
 
@@ -97,6 +99,7 @@ export class BookPage implements OnInit {
       this.adminLogin = true
     }else if(this.authService.role == 1){
       this.barbermanID = 0;
+      this.adminLogin = true
     }
 
     this.bookService.getTodayBookings(this.barbermanID).subscribe((response: HttpResponse<any>) => {
@@ -147,6 +150,10 @@ export class BookPage implements OnInit {
 
   }
 
+  openChangeBarber(modal:any){
+    this.changeBarberman(modal);
+  }
+
   reloadCalendar() {
     this.loadError = false;
     this.calendarLoading = true;
@@ -187,15 +194,37 @@ export class BookPage implements OnInit {
   }
 
   changeBarberman(modal: any) {
+    modal.present();
+    this.barberLoading = true
+    this.barberLoadingError = false
     this.userService.getBarbermans().subscribe((response: HttpResponse<any>) => {
       if (response.ok) {
         this.barbermans = response.body
-        modal.present();
+        this.barberLoading = false
       }
     }, (error) => {
       this.toastColor = 'danger'
       this.toastMessage = 'Erro ao buscar os barbeiros!'
       this.isToastOpen = true
+      this.barberLoading = false
+      this.barberLoadingError = true;
+    })
+  }
+
+  reloadBarbermans() {
+    this.barberLoading = true;
+    this.barberLoadingError = false;
+    this.userService.getBarbermans().subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.barbermans = response.body
+        this.barberLoading = false
+      }
+    }, (error) => {
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao buscar os barbeiros!'
+      this.isToastOpen = true
+      this.barberLoading = false
+      this.barberLoadingError = true;
     })
   }
 
@@ -221,6 +250,12 @@ export class BookPage implements OnInit {
   selectBarberman(barberman: any, modal: any) {
     this.selectedBook.barberman = barberman;
     modal.dismiss();
+  }
+
+  selectBarber(barberman: any, modal: any) {
+    this.barbermanID = barberman.id;
+    modal.dismiss();
+    this.reloadCalendar();
   }
 
   updateBook(modal: any) {

@@ -214,8 +214,6 @@ public class AuthController {
 	@PostMapping("/register")
 	public ResponseEntity<?> websiteRegister(@RequestBody UserVO user, @RequestHeader("Auth")boolean auth) throws JsonMappingException, JsonProcessingException{
 		
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		
 		if(user.getUser() == null || user.getUser().isEmpty() || user.getUser().isBlank()) {
 			user.setUser("user-"+userRepository.findAll().get((int)userRepository.count()-1).getId()+1);
 		}
@@ -223,6 +221,8 @@ public class AuthController {
 		if(user.getPassword().isBlank() || user.getPassword().isEmpty() || user.getPassword() == null) {
 			user.setPassword("Troc@r123");
 		}
+		
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		
 		if(user.getRole() == null) {
 			RoleVO role = roleRepository.findById(3);
