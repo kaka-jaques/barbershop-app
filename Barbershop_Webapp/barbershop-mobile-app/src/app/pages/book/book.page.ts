@@ -94,6 +94,7 @@ export class BookPage implements OnInit {
 
     if(this.authService.role == 2){
       this.barbermanID = this.authService.id
+      this.adminLogin = false
     }else if(this.authService.role == 4){
       this.barbermanID = this.authService.id
       this.adminLogin = true
@@ -117,13 +118,7 @@ export class BookPage implements OnInit {
           }))
         }
         this.calendarLoading = false
-      } else {
-        this.loadError = true
-        this.calendarLoading = false
-        this.toastColor = 'danger'
-        this.toastMessage = 'Erro ao buscar os agendamentos!'
-        this.isToastOpen = true
-      }
+      } 
     }, (error) => {
       this.loadError = true
       this.calendarLoading = false
@@ -150,6 +145,10 @@ export class BookPage implements OnInit {
 
   }
 
+  ionViewWillEnter() {
+    this.ngOnInit();
+  }
+
   openChangeBarber(modal:any){
     this.changeBarberman(modal);
   }
@@ -157,7 +156,36 @@ export class BookPage implements OnInit {
   reloadCalendar() {
     this.loadError = false;
     this.calendarLoading = true;
-    this.ngOnInit();
+
+    this.bookService.getTodayBookings(this.barbermanID).subscribe((response: HttpResponse<any>) => {
+      if (response.ok) {
+        this.books = response.body
+        this.calendarOptions = {
+          ...this.calendarOptions,
+          events: response.body.map((book: any) => ({
+            title: book.client.name + ' - ' + book.services.name,
+            start: new Date(book.bookingDate).toISOString(),
+            end: new Date(book.bookingDate + (book.services.duration[1] * 60000) + (book.services.duration[0] * 3600000)).toISOString(),
+            extendedProps: {
+              ...book
+            }
+          })
+          )
+        }
+        setTimeout(() => {
+          this.renderCellDay();
+          this.calendarLoading = false;
+          return true;
+        }, 150)
+      }
+    }, (error) => {
+      this.loadError = true
+      this.calendarLoading = false
+      this.toastColor = 'danger'
+      this.toastMessage = 'Erro ao buscar os agendamentos!'
+      this.isToastOpen = true
+    })
+
   }
 
   changeCalendarType() {
@@ -253,7 +281,11 @@ export class BookPage implements OnInit {
   }
 
   selectBarber(barberman: any, modal: any) {
-    this.barbermanID = barberman.id;
+    if(barberman != null){
+      this.barbermanID = barberman.id;
+    }else{
+      this.barbermanID = 0;
+    }
     modal.dismiss();
     this.reloadCalendar();
   }
@@ -346,7 +378,7 @@ export class BookPage implements OnInit {
           this.renderCellDay();
           this.changeLoading = false;
           return true;
-        }, 50)
+        }, 150)
       }
     }, (error) => {
       this.loadError = true

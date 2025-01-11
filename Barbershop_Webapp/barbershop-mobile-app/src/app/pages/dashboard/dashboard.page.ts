@@ -29,7 +29,6 @@ export class DashboardPage implements OnInit {
   profitGroupVisible: boolean = false;
   billGroupVisible: boolean = false;
   viewToggleLegend: boolean = false;
-  barbermanID: number = 0;
 
   allBars: any = [];
   allBarsCharts: any = [];
@@ -141,8 +140,6 @@ export class DashboardPage implements OnInit {
 
   ngOnInit() {
 
-    this.barbermanID = this.authService.id
-
     var dueBar = new ProgressBar.Circle('#yellow-circle', {
       strokeWidth: 6,
       easing: 'easeInOut',
@@ -172,7 +169,7 @@ export class DashboardPage implements OnInit {
 
     this.allBars = [profitBar, dueBar, billBar];
 
-    forkJoin([this.bill.getBills(this.month + 1, this.year), this.book.getPeriodBookings(new Date(this.year, this.month, 1).toISOString(), new Date(this.year, this.month + 1, 0).toISOString(), this.barbermanID), this.config.getServices()])
+    forkJoin([this.bill.getBills(this.month + 1, this.year), this.book.getPeriodBookings(new Date(this.year, this.month, 1).toISOString(), new Date(this.year, this.month + 1, 0).toISOString(), 0), this.config.getServices()])
       .pipe()
       .subscribe((response: any) => {
 
@@ -296,12 +293,14 @@ export class DashboardPage implements OnInit {
             this.allBars[i+3] = bar;
           }
           this.animateBars(this.allBars);
-          console.log(this.qtServicesQueue);
-          console.log(this.services);
-          console.log(this.servicesColors);
-          
         }, 50)
 
+      }, (error)=>{
+        this.toastColor = 'danger';
+        this.toastMessage = 'Ocorreu um erro ao carregar os dados. Tente novamente mais tarde.';
+        this.isToastOpen = true;
+        this.changeLoading = false;
+        this.loading = false;
       })
 
   }
@@ -371,7 +370,7 @@ export class DashboardPage implements OnInit {
       this.qtServicesQueue[key] = 0;
     });
 
-    forkJoin([this.bill.getBills(this.month + 1, this.year), this.book.getPeriodBookings(new Date(this.year, this.month, 1).toISOString(), new Date(this.year, this.month + 1, 0).toISOString(), this.barbermanID), this.resetBarsProgress(this.allBars)])
+    forkJoin([this.bill.getBills(this.month + 1, this.year), this.book.getPeriodBookings(new Date(this.year, this.month, 1).toISOString(), new Date(this.year, this.month + 1, 0).toISOString(), 0), this.resetBarsProgress(this.allBars)])
       .pipe()
       .subscribe((response: any) => {
         this.bills = response[0].body.map((bill: any) => ({
@@ -495,6 +494,144 @@ export class DashboardPage implements OnInit {
     this.sliderPosition = swiper.swiper.realIndex;
     this.resetBarsProgress(this.allBars)
     this.animateBars(this.allBars);
+  }
+
+  reloadDashboard() {
+
+    forkJoin([this.bill.getBills(this.month + 1, this.year), this.book.getPeriodBookings(new Date(this.year, this.month, 1).toISOString(), new Date(this.year, this.month + 1, 0).toISOString(), 0), this.config.getServices()])
+      .pipe()
+      .subscribe((response: any) => {
+
+        this.bills = response[0].body.map((bill: any) => ({
+          ...bill,
+          value: bill.value - bill.value * 2,
+          bookingDate: new Date(bill.year, bill.month - 1, bill.day).getTime(),
+          type: bill.bill_type.name
+        }));
+
+        this.books = response[1].body.map((book: any) => ({
+          ...book,
+          value: book.services.price,
+          type: book.services.name
+        }));
+
+        this.services = response[2].body;
+        this.servicesQt = this.services.length;
+
+        let i = 0;
+
+        this.services.forEach((service: any) => {
+          this.qtServicesQueue[service.id] = 0;
+          this.servicesColors[i].serviceId = service.id;
+          i++;
+        });
+
+        this.books.forEach((book: any) => {
+          if (book.services && book.services.id) {
+            const serviceId = book.services.id;
+            
+            if (this.qtServicesQueue.hasOwnProperty(serviceId)) {
+              this.qtServicesQueue[serviceId] += 1;
+            } else {
+              this.qtServicesQueue[serviceId] = 1; 
+            }
+            this.totalServicesQueue += 1;
+          }
+        });
+
+        for (let i = 0; i < this.servicesQt; i++) {
+          this.services[i] = {
+            ...this.services[i],
+            pos: i
+          }
+        }
+
+        this.bills.forEach((bill: any) => {
+          this.billQt += bill.value - bill.value * 2;
+        });
+        this.books.forEach((book: any) => {
+          this.profitQt += book.value;
+        });
+
+        if (this.profitQt < this.dueQt) {
+          this.totalQt = this.billQt + this.profitQt
+          this.dueQt = 0;
+        } else if (this.profitQt > this.billQt) {
+          this.dueQt = this.profitQt - this.billQt;
+          if (this.dueQt >= 1000) {
+            this.dueQt = 1000
+          }
+          this.totalQt = this.billQt + this.dueQt + this.profitQt;
+        }
+
+        if (this.totalQt > 0 && !isNaN(this.totalQt)) {
+          this.allBarsCharts[0] = 1
+          this.allBarsCharts[2] = this.billQt / this.totalQt;
+          this.allBarsCharts[1] = (this.dueQt / this.totalQt) + this.allBarsCharts[2];
+        } else if (this.totalQt < 0) {
+          this.totalQt = this.totalQt * -1
+          this.allBarsCharts[0] = (this.profitQt / this.totalQt) + (this.dueQt / this.totalQt) + (this.billQt / this.totalQt);
+          this.allBarsCharts[2] = this.billQt / this.totalQt;
+          this.allBarsCharts[1] = (this.dueQt / this.totalQt) + this.allBarsCharts[2];
+        } else {
+          this.totalQt = this.profitQt + this.dueQt + this.billQt
+          this.allBarsCharts[0] = (this.profitQt / this.totalQt) + (this.dueQt / this.totalQt) + (this.billQt / this.totalQt);
+          this.allBarsCharts[2] = this.billQt / this.totalQt;
+          this.allBarsCharts[1] = (this.dueQt / this.totalQt) + this.allBarsCharts[2];
+        }
+
+        if(isNaN(this.allBarsCharts[0])){
+          this.allBarsCharts[0] = 0
+        }
+
+        if(isNaN(this.allBarsCharts[1])){
+          this.allBarsCharts[1] = 0
+        }
+
+        if(isNaN(this.allBarsCharts[2])){
+          this.allBarsCharts[2] = 0
+        }
+
+        this.data = [...this.bills, ...this.books];
+        this.data.sort((a: any, b: any) => a.bookingDate - b.bookingDate);
+        this.loading = false;
+
+        setTimeout(() => {
+
+          for (let i = 0; i < this.servicesQt; i++) {
+            var bar = new ProgressBar.Circle('#bar' + i, {
+              strokeWidth: 6,
+              easing: 'easeInOut',
+              duration: 1000,
+              color: this.getHexaColor(this.services[i].id),
+              trailColor: 'transparent',
+              svgStyle: null
+            })
+            
+            if(i>0){
+              this.allBarsCharts[this.servicesQt+2-i] =(this.qtServicesQueue[this.services[i].id]/this.totalServicesQueue) + this.allBarsCharts[this.servicesQt+3-i];
+              if(isNaN(this.allBarsCharts[this.servicesQt+2-i])){
+                this.allBarsCharts[this.servicesQt+2-i] = 0
+              }
+            }else{
+              this.allBarsCharts[this.servicesQt+2] = (this.qtServicesQueue[this.services[i].id]/this.totalServicesQueue);
+              if(isNaN(this.allBarsCharts[this.servicesQt+2])){
+                this.allBarsCharts[this.servicesQt+2] = 0
+              }
+            }
+            this.allBars[i+3] = bar;
+          }
+          this.animateBars(this.allBars);
+        }, 50)
+
+      }, (error)=>{
+        this.toastColor = 'danger';
+        this.toastMessage = 'Ocorreu um erro ao carregar os dados. Tente novamente mais tarde.';
+        this.isToastOpen = true;
+        this.changeLoading = false;
+        this.loading = false;
+      })
+
   }
 
 }

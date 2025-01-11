@@ -31,23 +31,28 @@
         <ion-modal #changeBarberModal [presentingElement]="presentingElement">
             <ng-template>
                 <ion-header>
-                    <ion-buttons slot="start">
-                        <ion-button (click)="changeBarberModal.dismiss()">Cancelar</ion-button>
-                    </ion-buttons>
-                    <ion-toolbar>Selecionar Barbeiro</ion-toolbar>
+                    <ion-toolbar>
+                        <ion-buttons slot="start">
+                            <ion-button (click)="changeBarberModal.dismiss()">Cancelar</ion-button>
+                        </ion-buttons>
+                        <ion-title>Selecionar Barbeiro</ion-title>
+                    </ion-toolbar>
                 </ion-header>
                 <ion-content>
                     <ion-button fill="clear" (click)="reloadBarbermans()" *ngIf="barberLoadingError">
                         <ion-icon name="reload"></ion-icon>
                     </ion-button>
                     <ion-list>
-                        <ion-item *ngFor="let barber of barbermans" button="true" (click)="selectBarber(barber, changeBarberModal)">
-                            <ion-label>{{ barber.client.name }}</ion-label>
-                        </ion-item>
                         <ion-item *ngIf="barberLoading">
                             <ion-label>
                                 <ion-skeleton-text [animated]="true"></ion-skeleton-text>
                             </ion-label>
+                        </ion-item>
+                        <ion-item *ngFor="let barber of barbermans" button="true" (click)="selectBarber(barber, changeBarberModal)">
+                            <ion-label>{{ barber.client.name }}</ion-label>
+                        </ion-item>
+                        <ion-item button="true" (click)="selectBarber(null, changeBarberModal)">
+                            <ion-label>Todos agendamentos</ion-label>
                         </ion-item>
                     </ion-list>
                 </ion-content>
@@ -100,19 +105,19 @@
                                 </ion-toolbar>
                             </ion-header>
                             <ion-content>
-                                <ion-item>
-                                    <ion-button fill="clear" (click)="reloadBarbermans()" *ngIf="barberLoadingError">
+                                <ion-item *ngIf="barberLoadingError">
+                                    <ion-button fill="clear" (click)="reloadBarbermans()">
                                         <ion-icon name="reload"></ion-icon>
                                     </ion-button>
+                                </ion-item>
+                                <ion-item *ngIf="barberLoading">
+                                    <ion-label>
+                                        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                                    </ion-label>
                                 </ion-item>
                                 <ion-list>
                                     <ion-item button="true" *ngFor="let barber of barbermans" (click)="selectBarberman(barber, changeBarbermanModal)">
                                         <ion-label>{{ barber.client.name }}</ion-label>
-                                    </ion-item>
-                                    <ion-item *ngIf="barberLoading">
-                                        <ion-label>
-                                            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-                                        </ion-label>
                                     </ion-item>
                                 </ion-list>
                             </ion-content>

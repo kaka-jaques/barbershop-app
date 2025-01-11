@@ -51,10 +51,6 @@
                     <ion-content class="ion-padding">{{ billQt | currency: 'BRL' }}</ion-content>
                 </ng-template>
             </ion-popover>
-            <div id="legend-item" [hidden]="sliderPosition != 1" *ngFor="let s of services">
-                <ion-icon name="radio-button-on" color="{{getIonicColor(s.id)}}"></ion-icon>
-                {{ s.name }}
-            </div>
         </div>
     </div>
     <swiper-container #swiper (swiperslidechange)="onSlideChange(swiper)">
@@ -63,6 +59,9 @@
             <ion-list>
                 <ion-item lines="none">
                     <ion-spinner name="crescent" *ngIf="loading" style="margin: auto;"></ion-spinner>
+                    <ion-button fill="clear" *ngIf="loadError" (click)="reloadDashboard()">
+                        <ion-icon name="reload"></ion-icon>
+                    </ion-button>
                     <ion-button fill="clear" slot="end" (click)="viewToggle = !viewToggle">
                         <ion-icon name="filter"></ion-icon>
                     </ion-button>
@@ -107,14 +106,9 @@
         </swiper-slide>
         <swiper-slide>
             <div id="top"></div>
-            <div id="toggleView">
-                <ion-button fill="clear" (click)="viewToggleLegend = !viewToggleLegend">
-                    <ion-icon [name]="viewToggleLegend ? 'chevron-up' : 'chevron-down'"></ion-icon>
-                </ion-button>
-            </div>
             <ion-list>
                 <ion-item *ngFor="let s of services">
-                    <ion-label slot="start">{{ s.name }}</ion-label>
+                    <ion-label slot="start">{{ s.name }}<ion-icon name="radio-button-on" color="{{ getIonicColor(s.id) }}"></ion-icon> </ion-label>
                     <ion-label slot="end">{{ qtServicesQueue[s.id] }}</ion-label>
                 </ion-item>
             </ion-list>

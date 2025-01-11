@@ -15,7 +15,7 @@ function auth() {
         }
     })
         .then(response => {
-            if (response.status == 302) {
+            if (response.ok) {
 
                 response.json().then(data => {
                     if (window.location.pathname == '/login.html') {
@@ -61,7 +61,7 @@ function bookAuth() {
         }
     })
         .then(response => {
-            if (response.status == 302) {
+            if (response.ok) {
                 response.json().then(data => {
                     if (window.location.pathname == '/booking.html') {
                         constructCalendar(data);

@@ -82,6 +82,10 @@ export class HomePage implements OnInit {
 
   }
 
+  ionViewWillEnter() {
+    this.ngOnInit();
+  }
+
   async refreshNotification(event: any) {
 
     console.log("notificações atualizadas");

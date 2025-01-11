@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -90,6 +92,7 @@ public class BookingController {
 		
 		books.forEach(book -> {
 			book.getClient().setBookings(null);
+			book.getBookingDate().setTimeZone(TimeZone.getTimeZone("UTC"));
 			if(book.getBarberman() != null) {
 				book.getBarberman().getClient().setBookings(null);
 			}
@@ -111,6 +114,7 @@ public class BookingController {
 		}
 		
 		books.forEach(book -> {
+			book.getBookingDate().setTimeZone(TimeZone.getTimeZone("UTC"));
 			book.getClient().setBookings(null);
 			if(book.getBarberman() != null) {
 				book.getBarberman().getClient().setBookings(null);
@@ -137,6 +141,7 @@ public class BookingController {
 		}
 		
 		for(BookingVO book : books) {
+			book.getBookingDate().setTimeZone(TimeZone.getTimeZone("UTC"));
 			book.getClient().setBookings(null);
 			if(book.getBarberman() != null) {
 				book.getBarberman().getClient().setBookings(null);
@@ -150,24 +155,27 @@ public class BookingController {
 	@PostMapping("/period/{id}")
 	public ResponseEntity<?> getBooksForPeriod(@RequestBody Map<String, String> periodTime, @PathVariable("id")int id) throws ParseException{
 		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		
-		GregorianCalendar period1 = new GregorianCalendar();
-		period1.setTime(dateFormat.parse(periodTime.get("startDate")));
-		
-		GregorianCalendar period2 = new GregorianCalendar();
-		period2.setTime(dateFormat.parse(periodTime.get("endDate")));
+		DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+	    ZonedDateTime startDate = ZonedDateTime.parse(periodTime.get("startDate"), formatter);
+	    ZonedDateTime endDate = ZonedDateTime.parse(periodTime.get("endDate"), formatter);
+
+	    ZonedDateTime startDateUtc = startDate.withZoneSameInstant(ZoneId.of("UTC"));
+	    ZonedDateTime endDateUtc = endDate.withZoneSameInstant(ZoneId.of("UTC"));
+
+	    // Convertendo para os tipos compatíveis com o repositório
+	    GregorianCalendar startPeriod = GregorianCalendar.from(startDateUtc);
+	    GregorianCalendar endPeriod = GregorianCalendar.from(endDateUtc);
 		
 		List<BookingVO> books;
 		
 		if(id == 0) {
-			books = bookingRepository.getBooksForPeriod(period1, period2);
+			books = bookingRepository.getBooksForPeriod(startPeriod, endPeriod);
 		}else {
-			books = bookingRepository.getBooksForPeriod(period1, period2, id);
+			books = bookingRepository.getBooksForPeriod(startPeriod, endPeriod, id);
 		}
 		
 		for(BookingVO book : books) {
+			book.getBookingDate().setTimeZone(TimeZone.getTimeZone("UTC"));
 			book.getClient().setBookings(null);
 			if(book.getBarberman() != null) {
 				book.getBarberman().getClient().setBookings(null);
@@ -184,6 +192,7 @@ public class BookingController {
 		List<BookingVO> bookWithoutCredentials = bookingRepository.findNextBooks();
 		
 		for(BookingVO book : bookWithoutCredentials) {
+			book.getBookingDate().setTimeZone(TimeZone.getTimeZone("UTC"));
 			book.setClient(null);
 		}
 		
