@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.kjf.barbershop.repository.PlansRepository;
 import br.com.kjf.barbershop.repository.ServicesRepository;
+import br.com.kjf.barbershop.repository.WorkdayRepository;
 import br.com.kjf.barbershop.vo.PlansVO;
 import br.com.kjf.barbershop.vo.ServicesVO;
+import br.com.kjf.barbershop.vo.WorkdayVO;
 
 @RestController
-@CrossOrigin(allowCredentials = "true", origins = {"http://localhost:8100"})
+@CrossOrigin(allowCredentials = "true", origins = {"http://localhost:8100", "http://localhost:5500"})
 @RequestMapping("config")
 public class ConfigController {
 
@@ -30,8 +32,17 @@ public class ConfigController {
 	@Autowired
 	private PlansRepository plansRepository;
 	
+	@Autowired
+	private WorkdayRepository workdayRepository;
+	
 	@GetMapping("/services")
 	public ResponseEntity<?> getServices(){
+		List<ServicesVO> services = servicesRepository.findAll();	
+		return ResponseEntity.ok(services);
+	}
+	
+	@GetMapping("/serviceStats")
+	public ResponseEntity<?> getServicesClient(){
 		List<ServicesVO> services = servicesRepository.findAll();	
 		return ResponseEntity.ok(services);
 	}
@@ -75,6 +86,17 @@ public class ConfigController {
 	@DeleteMapping("/plans/{id}")
 	public ResponseEntity<?> deletePlan(@PathVariable("id")int id){
 		plansRepository.deleteById(id);
+		return ResponseEntity.ok(null);
+	}
+	
+	@GetMapping("/workday")
+	public ResponseEntity<?> getWorkday(){
+		return ResponseEntity.ok(workdayRepository.getWorkday());
+	}
+	
+	@PutMapping("/setworkday")
+	public ResponseEntity<?> updateWorkday(@RequestBody WorkdayVO work){
+		workdayRepository.save(work);
 		return ResponseEntity.ok(null);
 	}
 	

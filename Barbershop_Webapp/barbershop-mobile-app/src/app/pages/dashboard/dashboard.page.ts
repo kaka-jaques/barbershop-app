@@ -20,6 +20,7 @@ register();
 export class DashboardPage implements OnInit {
 
   loading: boolean = true;
+  loadError: boolean = false;
   changeLoading: boolean = false;
   viewToggle: boolean = false;
   toastColor: string = 'primary';
@@ -301,6 +302,7 @@ export class DashboardPage implements OnInit {
         this.isToastOpen = true;
         this.changeLoading = false;
         this.loading = false;
+        this.loadError = true;
       })
 
   }

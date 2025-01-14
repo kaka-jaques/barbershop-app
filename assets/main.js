@@ -22,8 +22,6 @@ function auth() {
                         constructProfile(data);
                     } else if (window.location.pathname == '/register.html') {
                         window.location.href = '/login.html';
-                    } else if (window.location.pathname == '/index.html' || window.location.pathname == '/') {
-                        alert('Indo para página de assinaturas')
                     }
                 })
             } else if (window.location.pathname == '/index.html' || window.location.pathname == '/') {
@@ -33,7 +31,6 @@ function auth() {
             }
         })
         .catch(error => {
-            console.log(error);
             gsap.to('#loading-screen', {
                 opacity: 0,
                 duration: 1,
@@ -72,7 +69,6 @@ function bookAuth() {
             }
         })
         .catch(error => {
-            console.log(error);
             if(error.status == 403){
                 constructCalendar(data);
             }else{
@@ -296,8 +292,6 @@ function register() {
         }
     }
 
-    console.log(body.json);
-
     fetch('http://localhost:8080/auth/register', {
         method: 'POST',
         body: JSON.stringify(body),
@@ -328,7 +322,6 @@ function register() {
             }
         })
         .catch(error => {
-            console.log(error);
             document.querySelector('.alert').innerHTML = 'Erro! Por favor, contate o administrador do sistema.'
             document.querySelector('button').disabled = false;
             document.querySelector('button').style.cursor = 'pointer'
