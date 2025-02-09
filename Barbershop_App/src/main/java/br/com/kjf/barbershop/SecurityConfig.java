@@ -36,7 +36,11 @@ public class SecurityConfig {
     @SuppressWarnings("removal")
     @Bean
     AuthenticationManager authenticationManager(HttpSecurity httpSec, PasswordEncoder passEncoder, UserDetailsService userDetailsService) throws Exception {
-		return httpSec.getSharedObject(AuthenticationManagerBuilder.class)
+		
+    	httpSec.authenticationManager(authManager -> authManager
+    						.);)
+    	
+    	return httpSec.getSharedObject(AuthenticationManagerBuilder.class)
 				.userDetailsService(userDetailsService)
 				.passwordEncoder(passEncoder)
 				.and()

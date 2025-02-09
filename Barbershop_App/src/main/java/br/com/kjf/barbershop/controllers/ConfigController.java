@@ -91,7 +91,7 @@ public class ConfigController {
 	
 	@GetMapping("/workday")
 	public ResponseEntity<?> getWorkday(){
-		return ResponseEntity.ok(workdayRepository.getWorkday());
+		return ResponseEntity.ok(workdayRepository.findAll());
 	}
 	
 	@PutMapping("/setworkday")

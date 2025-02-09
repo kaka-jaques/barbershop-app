@@ -1,6 +1,7 @@
 package br.com.kjf.barbershop.vo;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -13,6 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -20,7 +23,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
-@Table(name = "financeiro")
+@Table(name = "bill")
 public class BillVO {
 
 	public enum RecType {
@@ -79,6 +82,9 @@ public class BillVO {
 	@Temporal(TemporalType.DATE)
 	private LocalDate last_pay;
 	private Boolean paid = false;
+	@ManyToMany
+	@JoinTable(name = "bill_bills")
+	private List<Long> despesasRelacionadas;
 	@Enumerated(EnumType.STRING)
 	private RecType recurrency;
 	
@@ -99,6 +105,14 @@ public class BillVO {
 		this.last_pay = bill.getLast_pay();
 		this.paid = bill.getPaid();
 		this.recurrency = bill.getRecurrency();
+	}
+
+	public List<Long> getDespesasRelacionadas() {
+		return despesasRelacionadas;
+	}
+
+	public void setDespesasRelacionadas(List<Long> despesasRelacionadas) {
+		this.despesasRelacionadas = despesasRelacionadas;
 	}
 
 	public RecType getRecurrency() {

@@ -1,5 +1,6 @@
 package br.com.kjf.barbershop.vo;
 
+import java.time.LocalTime;
 import java.util.GregorianCalendar;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,7 +26,7 @@ public class BookingVO {
 	@Column(nullable = false)
 	private GregorianCalendar bookingDate;
 	@ManyToOne
-	@JoinColumn(name = "services_id", nullable = false)
+	@JoinColumn(name = "services_id")
 	private ServicesVO services;
 	@ManyToOne
 	@JoinColumn(name = "client_id")
@@ -33,10 +34,47 @@ public class BookingVO {
 	@ManyToOne
 	@JoinColumn(name = "barber_id")
 	private UserVO barberman;
+	private Boolean jobDone = false;
+	private Boolean lockedTime;
+	private LocalTime startLockTime;
+	private LocalTime endLockTime;
 	
 	//GETTERS AND SETTERS
+	
 	public UserVO getBarberman() {
 		return barberman;
+	}
+
+	public Boolean getLockedTime() {
+		return lockedTime;
+	}
+
+	public void setLockedTime(Boolean lockedTime) {
+		this.lockedTime = lockedTime;
+	}
+
+	public LocalTime getStartLockTime() {
+		return startLockTime;
+	}
+
+	public void setStartLockTime(LocalTime startLockTime) {
+		this.startLockTime = startLockTime;
+	}
+
+	public LocalTime getEndLockTime() {
+		return endLockTime;
+	}
+
+	public void setEndLockTime(LocalTime endLockTime) {
+		this.endLockTime = endLockTime;
+	}
+
+	public Boolean getJobDone() {
+		return jobDone;
+	}
+
+	public void setJobDone(Boolean jobDone) {
+		this.jobDone = jobDone;
 	}
 
 	public void setBarberman(UserVO barberman) {

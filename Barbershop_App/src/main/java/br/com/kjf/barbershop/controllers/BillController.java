@@ -2,7 +2,10 @@ package br.com.kjf.barbershop.controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.kjf.barbershop.repository.BillRepository;
 import br.com.kjf.barbershop.repository.BillTypeRepository;
+import br.com.kjf.barbershop.repository.BookingRepository;
 import br.com.kjf.barbershop.vo.BillVO;
 
 @RestController
@@ -37,11 +41,19 @@ public class BillController {
 	@Autowired
 	private BillTypeRepository billTypeRepository;
 	
+	@Autowired
+	private BookingRepository bookingRepository;
+	
 	private ObjectMapper objMapper = new ObjectMapper();
 	
 	@GetMapping("/{month}/{year}")
 	public ResponseEntity<?> getMonthBills(@PathVariable int month, @PathVariable int year){
-		return ResponseEntity.ok(billRepository.getMonthBills(month, year));
+		Map<String, Object> response = new HashMap<>();
+		response.put("bills", billRepository.getMonthBills(month, year));
+		response.put("books", bookingRepository.getBooksForPeriod(
+				new GregorianCalendar(year, month, 1), 
+				new GregorianCalendar(year, month, LocalDate.of(year, month, 1).lengthOfMonth())));
+		return ResponseEntity.ok(response); 
 	}
 	
 	@PostMapping

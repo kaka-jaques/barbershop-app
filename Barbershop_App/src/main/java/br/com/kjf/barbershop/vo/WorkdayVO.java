@@ -22,7 +22,14 @@ public class WorkdayVO {
 	private LocalTime endPause;
 	@Column(nullable = false)
 	private LocalTime closeTime;
+	private UserVO barberman;
 	
+	public UserVO getBarberman() {
+		return barberman;
+	}
+	public void setBarberman(UserVO barberman) {
+		this.barberman = barberman;
+	}
 	public int getId() {
 		return id;
 	}
